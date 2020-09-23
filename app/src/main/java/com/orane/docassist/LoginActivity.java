@@ -1,18 +1,15 @@
 package com.orane.docassist;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.view.KeyEvent;
 import android.view.View;
@@ -22,15 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
-
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.New_Main.New_MainActivity;
-import com.orane.docassist.R;
-import com.orane.docassist.fileattach_library.EasyImage;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONObject;
 
@@ -38,15 +32,14 @@ import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import pl.tajchert.nammu.Nammu;
-import pl.tajchert.nammu.PermissionCallback;
-
 
 public class LoginActivity extends Activity {
 
     JSONObject login_jsonobj, login_json;
     Button btnlogin;
-    MaterialEditText edtemail, edtpassword;
+    MaterialEditText edtemail;
+    ShowHidePasswordEditText edtpassword;
+
     TextView tvforgotpw, tv_signup;
     BufferedReader reader = null;
     public StringBuffer json_response = new StringBuffer();
@@ -91,15 +84,15 @@ public class LoginActivity extends Activity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color));
         }
 
-        btnlogin = (Button) findViewById(R.id.btnlogin);
-        edtemail = (MaterialEditText) findViewById(R.id.edtemail);
-        edtpassword = (MaterialEditText) findViewById(R.id.edtpassword);
-        tvforgotpw = (TextView) findViewById(R.id.tvforgotpw);
-        tv_signup = (TextView) findViewById(R.id.tv_signup);
-        tv_otp = (TextView) findViewById(R.id.tv_otp);
+        btnlogin = findViewById(R.id.btnlogin);
+        edtemail = findViewById(R.id.edtemail);
+        edtpassword = findViewById(R.id.edtpassword);
+        tvforgotpw = findViewById(R.id.tvforgotpw);
+        tv_signup = findViewById(R.id.tv_signup);
+        tv_otp = findViewById(R.id.tv_otp);
 
         if (!isInternetOn()) {
-            Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
         }
 
         tvforgotpw.setText(Html.fromHtml(getResources().getString(R.string.forgotpw)));
@@ -107,6 +100,9 @@ public class LoginActivity extends Activity {
         tv_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+/*                Intent intent = new Intent(LoginActivity.this, Signup_MyCertificates_Activity.class);
+                startActivity(intent);*/
 
                 Intent intent = new Intent(LoginActivity.this, Signup1.class);
                 startActivity(intent);
@@ -173,14 +169,21 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+/*        Intent i = new Intent(LoginActivity.this, Voxeet.class);
+        i.putExtra("cons_user_name", "Mohan_app");
+        i.putExtra("conf_name", "icliniq");
+        startActivity(i);*/
+
+
                 uname = edtemail.getText().toString();
                 pwd = edtpassword.getText().toString();
 
                 if (isInternetOn()) {
 
                     try {
-                        if (uname.equals("")) edtemail.setError("User id cannot be empty");
-                        else if (pwd.equals("")) edtpassword.setError("Password cannot be empty");
+
+                        if (uname.equals("")) edtemail.setError("Please enter your Email or Mobile Number");
+                        else if (pwd.equals("")) edtpassword.setError("Please enter your password");
                         else {
                             //url = Model.BASE_URL + sub_url + "?username=" + uname + "&pwd=" + password + "&user_type=1";
 
@@ -193,8 +196,6 @@ public class LoginActivity extends Activity {
 
                             new JSON_Login().execute(login_json);
 
-
-
                             //------------ Google firebase Analitics--------------------
                             Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
                             Bundle params = new Bundle();
@@ -204,9 +205,10 @@ public class LoginActivity extends Activity {
 
                         }
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -340,6 +342,7 @@ public class LoginActivity extends Activity {
                         } else if (login_jsonobj.has("credentialing_progress")) {
 
                             String is_cred = login_jsonobj.getString("credentialing_progress");
+
                             Model.token = login_jsonobj.getString("token");
 
                             if (is_cred.equals("1")) {
@@ -354,9 +357,7 @@ public class LoginActivity extends Activity {
                         } else {
 
                             try {
-
-                                Toast.makeText(getApplicationContext(), "Login Failed. Try Again...", Toast.LENGTH_LONG).show();
-
+                                Toast.makeText(getApplicationContext(), "Incorrect Username or Password. Please enter your valid Username and Password", Toast.LENGTH_LONG).show();
 
                                 //----------- Flurry -------------------------------------------------
                                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -398,7 +399,7 @@ public class LoginActivity extends Activity {
                     } else {
                         Model.short_url = "";
                     }
-                    //----------------------------------------------------------------
+                    //--------------------------------  --------------------------------
 
                     //============================================================
                     SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -434,6 +435,7 @@ public class LoginActivity extends Activity {
                     try {
 
                         String PhoneModel = Build.MODEL;
+
                         System.out.println("PhoneModel--------------" + PhoneModel);
 
                         //----------- Flurry -------------------------------------------------

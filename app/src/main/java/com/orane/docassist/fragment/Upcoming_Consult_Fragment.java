@@ -7,8 +7,10 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
 import com.orane.docassist.LoginActivity;
 import com.orane.docassist.Model.ItemCons;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
+import com.orane.docassist.Prescription_home;
 import com.orane.docassist.R;
 import com.orane.docassist.UpcomingConsView;
 import com.orane.docassist.adapter.UpcomingConsRowAdapter;
@@ -89,12 +91,12 @@ public class Upcoming_Consult_Fragment extends Fragment {
                 container, false);
 
 
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
-        progressBar_bottom = (ProgressBar) rootView.findViewById(R.id.progressBar_bottom);
-        netcheck_layout = (LinearLayout) rootView.findViewById(R.id.netcheck_layout);
-        nolayout = (LinearLayout) rootView.findViewById(R.id.nolayout);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_query_new);
-        listView = (ListView) rootView.findViewById(R.id.listview);
+        progressBar = rootView.findViewById(R.id.progressBar);
+        progressBar_bottom = rootView.findViewById(R.id.progressBar_bottom);
+        netcheck_layout = rootView.findViewById(R.id.netcheck_layout);
+        nolayout = rootView.findViewById(R.id.nolayout);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_query_new);
+        listView = rootView.findViewById(R.id.listview);
 
         //================ Shared Pref ======================
         sharedpreferences = getActivity().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
@@ -113,11 +115,11 @@ public class Upcoming_Consult_Fragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                TextView tvpatient = (TextView) view.findViewById(R.id.tvpatient);
-                TextView tvnotes = (TextView) view.findViewById(R.id.tvnotes);
-                TextView tvstatus = (TextView) view.findViewById(R.id.tvstatus);
-                TextView tvid = (TextView) view.findViewById(R.id.tvid);
-                TextView tvapptdate = (TextView) view.findViewById(R.id.tvapptdate);
+                TextView tvpatient = view.findViewById(R.id.tvpatient);
+                TextView tvnotes = view.findViewById(R.id.tvnotes);
+                TextView tvstatus = view.findViewById(R.id.tvstatus);
+                TextView tvid = view.findViewById(R.id.tvid);
+                TextView tvapptdate = view.findViewById(R.id.tvapptdate);
 
                 consid = tvid.getText().toString();
 
@@ -133,6 +135,8 @@ public class Upcoming_Consult_Fragment extends Fragment {
                 to_consview.putString("cons_view_type", "Upcoming");
                 intent.putExtras(to_consview);
                 startActivity(intent);
+
+
             }
         });
 
@@ -493,6 +497,7 @@ public class Upcoming_Consult_Fragment extends Fragment {
     public void full_process() {
 
         if (isInternetOn()) {
+
             try {
                 //-----------------------------------------------
                 params = Model.BASE_URL + "sapp/cinboxDoc?user_id=" + (Model.id) + "&browser_country=" + (Model.browser_country) + "&page=1&token=" + Model.token;

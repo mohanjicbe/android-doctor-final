@@ -1,10 +1,13 @@
 package com.orane.docassist;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -16,9 +19,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import android.text.Html;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +35,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -38,19 +47,33 @@ import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.Detector;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.R;
+import com.orane.docassist.fileattach_library.DefaultCallback;
+import com.orane.docassist.fileattach_library.EasyImage;
 import com.squareup.picasso.Picasso;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -58,6 +81,8 @@ import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.drakeet.materialdialog.MaterialDialog;
+import pl.tajchert.nammu.Nammu;
+import pl.tajchert.nammu.PermissionCallback;
 
 public class HotlineChatViewActivity extends AppCompatActivity {
 
@@ -70,24 +95,24 @@ public class HotlineChatViewActivity extends AppCompatActivity {
     ProgressBar progressBar;
     Bitmap bitmap;
     CircleImageView doc_photo;
-    LinearLayout layout_file_open, layout_file_down, files_layout, layout_attachfile, ans_layout, myLayout, query_layout, send_message_layout;
-    public String str_response, track_id_val, complaint_more, p_history, c_medications, p_medications, tests;
-    public String file_direct_url, pb_cause_text, lab_t_text, ddx_text, pdx_text, treatment_plan_text, followup_text, p_tips_text;
+    LinearLayout main_data_layout,ans_extra_layout, quest_extra_layout, layout_file_open, layout_file_down, files_layout, layout_attachfile, ans_layout, myLayout, extra_hw_details,query_layout, send_message_layout;
+    public String title_text,fields_text,age_gender_txt,str_drug_dets, has_upload_file_val,enable_prescription_val, has_prescription_val, p_status_val, prescMsg_text, local_url, last_upload_file, attach_qid, attach_status, attach_file_url, attach_filename, attach_id, upload_response, answering_status, selectedfilename, doctor_id, str_response, track_id_val, complaint_more, p_history, c_medications, p_medications, tests;
+    public String age_txt,gender_txt,file_direct_url, pb_cause_text, lab_t_text, ddx_text, pdx_text, treatment_plan_text, followup_text, p_tips_text;
     View vi_ans, vi, vi_files;
-    public JSONObject jsonobj_files, jsonobj_items, chat_post_jsonobj, json, jsonobj, jsonobj1;
+    public JSONObject jsonon_titem,json_fields,jsonobj_hwextra,json_gender,jsonobj_canisnaswer, jsonobj_files, jsonobj_items, chat_post_jsonobj, json, jsonobj, jsonobj1;
     public JSONArray jsonarray;
     ScrollView scrollview;
     EditText edt_chat_msg;
-    Button btn_send;
+    View vi_hw_full,vi_hw;
+    Button btn_send, btn_ansquery, btn_prescription;
     CircleImageView imageview_poster;
-    ImageView file_image, take_photo_image;
+    ImageView file_image, take_photo_image, thumb_img;
 
-    TextView tv_furl, tv_ext, tv_userid, tv_filename, tv_pat_name, tv_pat_place, tv_query, tvt_morecomp, tv_morecomp, tvt_prevhist, tv_prevhist, tvt_curmedi, tv_curmedi, tvt_pastmedi, tv_pastmedi, tvt_labtest, tv_labtest, tv_datetime;
+    TextView tv_furl, tv_ext, tv_answer_query_id,tv_etitle, tv_attach_url, tv_attach_id, tv_userid, tv_filename, tv_pat_name, tv_pat_place, tv_query, tvt_morecomp, tv_morecomp, tvt_prevhist, tv_prevhist, tvt_curmedi, tv_curmedi, tvt_pastmedi, tv_pastmedi, tvt_labtest, tv_labtest, tv_age,tv_gender,tv_datetime;
     TextView tv_answer, tvt_probcause, tv_probcause, tvt_invdone, tv_invdone, tvt_diffdiag, tv_diffdiag, tvt_probdiag, tv_probdiag, tvt_tratplan, tv_tratplan, tvt_prevmeasure, tv_prevmeasure, tvt_follup, tv_follup, tv_datetimeans;
 
-    public String regards, file_user_id, file_doctype, file_file, file_ext, html_file_str, msg_text, msg_ext_text, files_text, time_text, class_text, qansby, qcanianswer, current_qid, qitems, follouwupcode, pat_name, pat_id, docurl, Doctor_id, selqid, fcode, chat_msg, prep_inv_id, prep_inv_fee, prep_inv_strfee, feedback_status, docname, answer, answerval, status, created_at, question, ratting_val, feedback_text, query_id_val, cur_answer_id, answerval_id, pass, uname, str_status, unpaid_fee, unpaid_invid, unpaid_json_text, str_follow_fee, ftrack_str_status_val, ftrack_str_status, ftrack_fee, ftrack_str, selquery_id;
+    public String regards, file_user_id, file_doctype, file_file, file_ext, html_file_str, msg_text, files_text, time_text, class_text, qansby, qcanianswer, current_qid, qitems, follouwupcode, pat_name, pat_id, docurl, Doctor_id, selqid, fcode, chat_msg, prep_inv_id, prep_inv_fee, prep_inv_strfee, feedback_status, docname, answer, answerval, status, created_at, question, ratting_val, feedback_text, query_id_val, cur_answer_id, answerval_id, pass, uname, str_status, unpaid_fee, unpaid_invid, unpaid_json_text, str_follow_fee, ftrack_str_status_val, ftrack_str_status, ftrack_fee, ftrack_str, selquery_id;
     public String selectedPath, filename, files_List;
-
 
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
@@ -125,6 +150,8 @@ public class HotlineChatViewActivity extends AppCompatActivity {
         setContentView(R.layout.hotline_chat_view);
 
         //Model.id = "437302";
+
+        btn_ansquery = (Button) findViewById(R.id.btn_ansquery);
 
         ad_layout = (FrameLayout) findViewById(R.id.ad_layout);
         home_ad = (ImageView) findViewById(R.id.home_ad);
@@ -179,6 +206,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             }
         });
 
+        btn_prescription = (Button) findViewById(R.id.btn_prescription);
         take_photo_image = (ImageView) findViewById(R.id.take_photo_image);
         scrollview = (ScrollView) findViewById(R.id.scrollview);
         myLayout = (LinearLayout) findViewById(R.id.parent_qalayout);
@@ -200,6 +228,15 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             pat_name = intent.getStringExtra("pat_name");
             selqid = intent.getStringExtra("selqid");
             follouwupcode = intent.getStringExtra("follouwupcode");
+
+            //----------------------------------------
+            if (intent.hasExtra("doctor_id")) {
+                doctor_id = intent.getStringExtra("doctor_id");
+            } else {
+                doctor_id = "0";
+            }
+            //----------------------------------------
+
             Model.fcode = "";
 
             if (getSupportActionBar() != null) {
@@ -227,6 +264,39 @@ public class HotlineChatViewActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+        btn_ansquery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (current_qid != null && !current_qid.isEmpty() && !current_qid.equals("null") && !current_qid.equals("")) {
+                        if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
+                            try {
+                                //------------------------ Can I answer ----------------
+                                String url = Model.BASE_URL + "sapp/canIAnswer?user_id=" + (Model.id) + "&qid=" + current_qid + "&token=" + Model.token;
+                                System.out.println("canIAnswer url------" + url);
+                                new JSON_canianswer().execute(url);
+                                //------------------------ Can I answer ----------------
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                                go_back_msg();
+                            }
+                        } else {
+                            go_back_msg();
+                        }
+                    } else {
+
+                        go_back_msg();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
         try {
 
@@ -303,6 +373,21 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btn_prescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HotlineChatViewActivity.this, Chat_Prescription_Home.class);
+                intent.putExtra("add_type", "new");
+                intent.putExtra("q_id", current_qid);
+                intent.putExtra("p_type", "chat");
+                intent.putExtra("pres_status", p_status_val);
+                intent.putExtra("enable_prescription_val", enable_prescription_val);
+                intent.putExtra("has_upload_file_val", has_upload_file_val);
+
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -347,8 +432,8 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                 System.out.println("urls[0]---------------" + urls[0]);
                 System.out.println("chat_post_jsonobj---------------" + chat_post_jsonobj.toString());
 
-
                 return true;
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -505,7 +590,11 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                 if (class_text.equals("bubbledRight")) {
 
                                     vi = getLayoutInflater().inflate(R.layout.chat_view_question, null);
+                                    quest_extra_layout = (LinearLayout) vi.findViewById(R.id.quest_extra_layout);
+
                                     query_layout = (LinearLayout) vi.findViewById(R.id.quest_layout);
+                                    extra_hw_details = (LinearLayout) vi.findViewById(R.id.extra_hw_details);
+
                                     tv_query = (TextView) vi.findViewById(R.id.tv_query);
                                     tv_datetime = (TextView) vi.findViewById(R.id.tv_datetime);
                                     files_layout = (LinearLayout) vi.findViewById(R.id.files_layout);
@@ -521,6 +610,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                     tvt_labtest = (TextView) vi.findViewById(R.id.tvt_labtest);
                                     tv_labtest = (TextView) vi.findViewById(R.id.tv_labtest);
                                     tv_datetime = (TextView) vi.findViewById(R.id.tv_datetime);
+                                    tv_gender = (TextView) vi.findViewById(R.id.tv_gender);
 
                                     if (new Detector().isTablet(getApplicationContext())) {
                                         tv_query.setTextSize(20);
@@ -557,10 +647,129 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                     layout_attachfile.setVisibility(View.GONE);
 
                                     msg_text = jsonobj_items.getString("msg");
-                                    msg_ext_text = jsonobj_items.getString("msg_ext");
+                                    String msg_ext_text = jsonobj_items.getString("msg_ext");
                                     files_text = jsonobj_items.getString("files");
                                     class_text = jsonobj_items.getString("class");
                                     time_text = jsonobj_items.getString("time");
+                                    enable_prescription_val = jsonobj_items.getString("enable_prescription");
+                                    has_upload_file_val = jsonobj_items.getString("has_upload_file");
+
+
+                                    //-------------------------- Age Gender ------------------------------------------------
+                                    if (jsonobj_items.has("age_gender")) {
+
+                                        age_gender_txt = jsonobj_items.getString("age_gender");
+
+                                        if (age_gender_txt.length() > 2) {
+                                            json_gender = new JSONObject(age_gender_txt);
+
+                                            if (json_gender.has("age")) {
+                                                age_txt = json_gender.getString("age");
+                                            }
+                                            if (json_gender.has("gender")) {
+                                                gender_txt = json_gender.getString("gender");
+                                            }
+
+                                            System.out.println("age_txt------" + age_txt);
+                                            System.out.println("gender_txt------" + gender_txt);
+
+                                            if (age_txt != null && !age_txt.isEmpty() && !age_txt.equals("null") && !age_txt.equals("")) {
+                                                tv_gender.setText(Html.fromHtml("<b>" + qansby + "</b> ," + age_txt + ", " + gender_txt));
+                                            } else {
+                                                tv_gender.setVisibility(View.GONE);
+                                            }
+
+                                            //-----------------------Extra HW --------------------------------------
+                                            if (json_gender.has("extra")) {
+                                                //extra_txt = json_gender.getString("extra");
+
+                                                JSONArray jarr = json_gender.getJSONArray("extra");
+                                                System.out.println("jarr Length------" + jarr.length());
+                                                System.out.println("jarr------" + jarr.toString());
+
+                                                for (int j = 0; j < jarr.length(); j++) {
+                                                    jsonobj_hwextra = jarr.getJSONObject(j);
+                                                    System.out.println("jsonobj_hwextra------" + j + " ----" + jsonobj_hwextra.toString());
+
+
+                                                    title_text = jsonobj_hwextra.getString("title");
+                                                    fields_text = jsonobj_hwextra.getString("fields");
+
+                                                    //--------------------- Title--------------------------------
+                                                    if (new Detector().isTablet(getApplicationContext())) {
+                                                        vi_hw_full = getLayoutInflater().inflate(R.layout.tab_query_view_extra_full, null);
+                                                    } else {
+                                                        vi_hw_full = getLayoutInflater().inflate(R.layout.query_view_extra_full, null);
+                                                    }
+
+                                                    tv_etitle = vi_hw_full.findViewById(R.id.tv_etitle);
+                                                    main_data_layout = vi_hw_full.findViewById(R.id.main_data_layout);
+                                                    tv_etitle.setText(Html.fromHtml("<b>" + title_text + "</b>"));
+                                                    System.out.println("title_text-------------------->" + title_text);
+                                                    //extra_hw_title.addView(vi_hw_tit);
+                                                    //--------------------- Title--------------------------------
+
+                                                    tv_etitle.setText(Html.fromHtml("<b>" + title_text + "</b>"));
+
+
+                                                    json_fields = new JSONObject(fields_text);
+
+                                                    for (int f = 1; f <= 10; f++) {
+
+                                                        String s = "" + f;
+                                                        if (json_fields.has("" + s)) {
+
+                                                            String thread = json_fields.getString("" + s);
+                                                            System.out.println("thread-----" + thread);
+
+                                                            jsonon_titem = new JSONObject(thread);
+                                                            System.out.println("jsonon_titem------" + jsonon_titem.toString());
+                                                            //String jsonon_titem.getString("");
+
+                                                            Iterator<String> iter = jsonon_titem.keys();
+                                                            while (iter.hasNext()) {
+                                                                String key = iter.next();
+                                                                System.out.println("key-----" + key);
+
+                                                                try {
+                                                                    Object value = jsonon_titem.get(key);
+                                                                    System.out.println("key_values=======" + value.toString());
+
+                                                                    if (new Detector().isTablet(getApplicationContext())) {
+                                                                        vi_hw = getLayoutInflater().inflate(R.layout.tab_query_view_extra_details, null);
+                                                                    } else {
+                                                                        vi_hw = getLayoutInflater().inflate(R.layout.query_view_extra_details, null);
+                                                                    }
+
+                                                                    //main_data_layout = (LinearLayout) vi_hw.findViewById(R.id.main_data_layout);
+                                                                    //tv_etitle = (TextView) vi_hw.findViewById(R.id.tv_etitle);
+                                                                    TextView tv_keytext = vi_hw.findViewById(R.id.tv_keytext);
+                                                                    TextView tv_valuetext = vi_hw.findViewById(R.id.tv_valuetext);
+
+                                                                    //tv_keytext.setText(Html.fromHtml("<b>" + key + "</b>"));
+                                                                    tv_keytext.setText(key + ": ");
+                                                                    tv_valuetext.setText(value.toString());
+
+                                                                    main_data_layout.addView(vi_hw);
+
+
+                                                                } catch (JSONException e) {
+                                                                    System.out.println("Exep----" + e.toString());
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    extra_hw_details.addView(vi_hw_full);
+                                                }
+                                            }
+                                            //-----------------------Extra  --------------------------------------
+                                        }
+                                        else{
+                                            tv_gender.setVisibility(View.GONE);
+                                        }
+                                    }
+                                    //-------------------------- Age Gender ---------------------------------------------
 
                                     System.out.println("msg_text------" + msg_text);
                                     System.out.println("msg_ext_text------" + msg_ext_text);
@@ -572,9 +781,20 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                     tv_query.setText(Html.fromHtml(msg_text));
                                     tv_datetime.setText(time_text);
 
+                                    //---------------- Show PRescription-----------------------------------
+                                    if (enable_prescription_val.equals("1")) {
+                                        btn_prescription.setVisibility(View.VISIBLE);
+                                    } else {
+                                        btn_prescription.setVisibility(View.GONE);
+                                    }
+                                    //---------------- Show Prescription-----------------------------------
+
 
                                     //---------------- Msg Extra ------------------------------------
-                                    if ((msg_ext_text.length()) > 2) {
+                                    if ((msg_ext_text.length()) > 5) {
+
+                                        quest_extra_layout.setVisibility(View.VISIBLE);
+
                                         JSONObject msg_ext_jsonobj = new JSONObject(msg_ext_text);
 
                                         if (msg_ext_jsonobj.has("complaint_more")) {
@@ -598,6 +818,8 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                         System.out.println("c_medications--------" + c_medications);
                                         System.out.println("p_medications--------" + p_medications);
                                         System.out.println("tests--------" + tests);
+                                    } else {
+                                        quest_extra_layout.setVisibility(View.GONE);
                                     }
                                     //---------------- Msg Extra ---------------------------------------
 
@@ -783,6 +1005,8 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
                                     vi_ans = getLayoutInflater().inflate(R.layout.chat_view_answer, null);
 
+                                    ans_extra_layout = (LinearLayout) vi_ans.findViewById(R.id.ans_extra_layout);
+
                                     tv_answer = (TextView) vi_ans.findViewById(R.id.tvanswer);
                                     tvt_probcause = (TextView) vi_ans.findViewById(R.id.tvt_probcause);
                                     tv_probcause = (TextView) vi_ans.findViewById(R.id.tv_probcause);
@@ -799,6 +1023,11 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                     tvt_follup = (TextView) vi_ans.findViewById(R.id.tvt_follup);
                                     tv_follup = (TextView) vi_ans.findViewById(R.id.tv_follup);
                                     tv_datetimeans = (TextView) vi_ans.findViewById(R.id.tv_datetime);
+                                    tv_answer_query_id = (TextView) vi_ans.findViewById(R.id.tv_answer_query_id);
+
+                                    Button btn_view_prescription = (Button) vi_ans.findViewById(R.id.btn_view_prescription);
+                                    Button btn_write_pres_answer = (Button) vi_ans.findViewById(R.id.btn_write_pres_answer);
+                                    TextView tv_pres_comment = (TextView) vi_ans.findViewById(R.id.tv_pres_comment);
 
                                     if (new Detector().isTablet(getApplicationContext())) {
                                         tv_answer.setTextSize(20);
@@ -841,11 +1070,83 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                     tv_datetimeans.setTypeface(font_reg);
 
 
+                                    String q_id_val = jsonobj_items.getString("q_id");
                                     msg_text = jsonobj_items.getString("msg");
-                                    msg_ext_text = jsonobj_items.getString("msg_ext");
+                                    String msg_ext_text = jsonobj_items.getString("msg_ext");
                                     class_text = jsonobj_items.getString("class");
                                     regards = jsonobj_items.getString("regards");
                                     time_text = jsonobj_items.getString("time");
+
+                                    tv_answer_query_id.setText(q_id_val);
+
+                                    //---------------------------------------------
+                                    if (jsonobj_items.has("has_prescription")) {
+                                        has_prescription_val = jsonobj_items.getString("has_prescription");
+                                        System.out.println("has_prescription_val----------" + has_prescription_val);
+
+                                        if ((jsonobj_items.getString("has_prescription")).equals("1")) {
+                                            btn_view_prescription.setVisibility(View.VISIBLE);
+                                        } else {
+                                            btn_view_prescription.setVisibility(View.GONE);
+                                        }
+                                    } else {
+                                        btn_view_prescription.setVisibility(View.GONE);
+                                    }
+                                    //----------------------------------------------
+
+                                    //-------------------------------------------------------------------------------
+                                    if (jsonobj_items.has("p_status")) {
+                                        p_status_val = jsonobj_items.getString("p_status");
+                                    } else {
+                                        p_status_val = "";
+                                    }
+
+                                    if (jsonobj_items.has("prescMsg")) {
+                                        prescMsg_text = jsonobj_items.getString("prescMsg");
+                                    } else {
+                                        prescMsg_text = "";
+                                    }
+
+                                    if (p_status_val.equals("pending_review")) {
+                                        btn_write_pres_answer.setVisibility(View.GONE);
+                                        tv_pres_comment.setVisibility(View.VISIBLE);
+                                        tv_pres_comment.setText(Html.fromHtml(prescMsg_text));
+
+                                    } else if (p_status_val.equals("rejected")) {
+                                        btn_write_pres_answer.setVisibility(View.VISIBLE);
+                                        btn_write_pres_answer.setText("Edit Prescription");
+                                        tv_pres_comment.setVisibility(View.VISIBLE);
+                                        tv_pres_comment.setText(Html.fromHtml(prescMsg_text));
+                                    } else {
+                                        btn_write_pres_answer.setVisibility(View.GONE);
+                                        tv_pres_comment.setVisibility(View.GONE);
+                                    }
+                                    //-------------------------------------------------------------------------------
+
+                                    System.out.println("p_status_val----------" + p_status_val);
+                                    System.out.println("prescMsg_text----------" + prescMsg_text);
+                                    System.out.println("has_prescription_val----------" + has_prescription_val);
+
+
+                                    btn_write_pres_answer.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            View parent = (View) v.getParent();
+                                            TextView tvqid = (TextView) parent.findViewById(R.id.tv_answer_query_id);
+                                            String qid_val = tvqid.getText().toString();
+
+                                            System.out.println("qid_val---------" + qid_val);
+
+                                            Intent intent = new Intent(HotlineChatViewActivity.this, Prescription_home.class);
+                                            intent.putExtra("add_type", "edit");
+                                            intent.putExtra("cur_qid", q_id_val);
+                                            intent.putExtra("p_type", "chat");
+                                            startActivity(intent);
+
+                                        }
+                                    });
+
 
                                     tv_answer.setText(Html.fromHtml(msg_text));
                                     tv_datetimeans.setText(time_text);
@@ -857,7 +1158,10 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                     System.out.println("time_text------" + time_text);
 
                                     //---------------- Msg Extra ---------------------------------------
-                                    if ((msg_ext_text.length()) > 2) {
+                                    if ((msg_ext_text.length()) > 4) {
+
+                                        ans_extra_layout.setVisibility(View.VISIBLE);
+
                                         JSONObject msg_ext_jsonobj = new JSONObject(msg_ext_text);
 
                                         if (msg_ext_jsonobj.has("pb_cause")) {
@@ -881,6 +1185,9 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                                         if (msg_ext_jsonobj.has("p_tips")) {
                                             p_tips_text = msg_ext_jsonobj.getString("p_tips");
                                         }
+                                    } else {
+
+                                        ans_extra_layout.setVisibility(View.GONE);
                                     }
                                     //---------------- Msg Extra ---------------------------------------
                                     //-------------------- Prob Cause -----------------------------------------------
@@ -967,9 +1274,18 @@ public class HotlineChatViewActivity extends AppCompatActivity {
                     }
                     //=============================================================================
 
+                    //-----------------------------------------------------
+                    if (doctor_id.equals("0")) {
+                        btn_ansquery.setVisibility(View.VISIBLE);
+                        send_message_layout.setVisibility(View.GONE);
+                    } else {
+                        btn_ansquery.setVisibility(View.GONE);
+                        send_message_layout.setVisibility(View.VISIBLE);
+                    }
+                    //-----------------------------------------------------
 
                     //--------------------Ad---------
-                    String ad_url = Model.BASE_URL + "/sapp/fetchAd?user_id=" + Model.id + "&browser_country=" + Model.browser_country + "&qid=" + current_qid + "page_src=6";
+                    String ad_url = Model.BASE_URL + "/sapp/fetchAd?user_id=" + Model.id + "&browser_country=" + Model.browser_country + "&qid=" + current_qid + "page_src=6&token=" + Model.token;
                     System.out.println("ad_url----------" + ad_url);
                     new JSON_Ad().execute(ad_url);
                     //---------------------Ad--------
@@ -991,7 +1307,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             scrollview.setVisibility(View.VISIBLE);
         }
-
     }
 
     private class DownloadImageWithURLTask extends AsyncTask<String, Void, Bitmap> {
@@ -1352,7 +1667,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             Model.mFirebaseAnalytics.logEvent("Hotline_Attach_File", params);
             //------------ Google firebase Analitics--------------------
 
-
             String file_full__url = "";
 
             if ("?".contains(url)) {
@@ -1366,7 +1680,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(file_full__url));
             startActivity(i);
-
 
           /*  Intent i = new Intent(getApplicationContext(), WebViewActivity.class);
             i.putExtra("url", url);
@@ -1432,6 +1745,7 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             timer.cancel();
             timer = null;
         }
+
         System.out.println("Model.screen_status- onPause------------" + (Model.screen_status));
     }
 
@@ -1440,8 +1754,9 @@ public class HotlineChatViewActivity extends AppCompatActivity {
         super.onResume();
         startTimer();
         Model.screen_status = "true";
-
         System.out.println("Model.screen_status--onResume-----------" + Model.screen_status);
+
+        fullprocess();
     }
 
     public void startTimer() {
@@ -1484,7 +1799,6 @@ public class HotlineChatViewActivity extends AppCompatActivity {
 
     public void force_logout() {
 
-
         //---------------- Dialog------------------------------------------------------------------
         final MaterialDialog alert = new MaterialDialog(HotlineChatViewActivity.this);
         alert.setTitle("Oops!");
@@ -1509,16 +1823,8 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             }
         });
 
-                          /*  alert.setNegativeButton("No", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    alert.dismiss();
-                                }
-                            });*/
         alert.show();
         //-----------------Dialog-----------------------------------------------------------------
-
-
 
     }
 
@@ -1598,6 +1904,201 @@ public class HotlineChatViewActivity extends AppCompatActivity {
             }
 
             return false;
+        }
+    }
+
+    private class JSON_canianswer extends AsyncTask<String, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+            dialog = new ProgressDialog(HotlineChatViewActivity.this);
+            dialog.setTitle("Picking this Query., please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... urls) {
+            try {
+                str_response = new JSONParser().getJSONString(urls[0]);
+                System.out.println("str_response--------------" + str_response);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                jsonobj_canisnaswer = new JSONObject(str_response);
+ /*
+                //------------ Tracker ------------------------
+                MyApp.tracker().send(new HitBuilders.EventBuilder()
+                        .setCategory("Query_View")
+                        .setAction("Answering_Status=" + str_response)
+                        .build());
+                //------------ Tracker ------------------------*/
+
+                if (jsonobj_canisnaswer.has("token_status")) {
+                    String token_status = jsonobj_canisnaswer.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        //============================================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //============================================================
+
+                        finishAffinity();
+                        Intent intent = new Intent(HotlineChatViewActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else {
+
+                    answering_status = jsonobj_canisnaswer.getString("status");
+
+                    //----------------------------------------------
+                    if ((answering_status).equals("0")) {
+                        Toast.makeText(getApplicationContext(), "Sorry! Another doctor has already picked this query.", Toast.LENGTH_LONG).show();
+                    } else {
+                        btn_ansquery.setVisibility(View.GONE);
+                        send_message_layout.setVisibility(View.VISIBLE);
+                    }
+
+                    dialog.cancel();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void go_back_msg() {
+
+        try {
+            //---------------- Dialog------------------------------------------------------------------
+            final MaterialDialog alert = new MaterialDialog(HotlineChatViewActivity.this);
+            alert.setTitle("Oops.!");
+            alert.setMessage("Something went wrong; please try again.");
+            alert.setCanceledOnTouchOutside(false);
+            alert.setPositiveButton("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                    finish();
+                }
+            });
+                          /*  alert.setNegativeButton("No", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alert.dismiss();
+                                }
+                            });*/
+            alert.show();
+            //-----------------Dialog-----------------------------------------------------------------
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onclick_viewpres(View v) {
+
+        try {
+            View parent = (View) v.getParent();
+
+            TextView cqid = (TextView) parent.findViewById(R.id.tv_answer_query_id);
+            String cqid_val = cqid.getText().toString();
+            System.out.println("cqid_val---------" + cqid_val);
+
+            String params = Model.BASE_URL + "sapp/previewPrescription?user_id=" + (Model.id) + "&token=" + Model.token + "&os_type=android&item_type=chat&item_id=" + cqid_val;
+            System.out.println("Pressed Prescription-----------" + params);
+            new list_drugs().execute(params);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private class list_drugs extends AsyncTask<String, Void, Void> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            dialog = new ProgressDialog(HotlineChatViewActivity.this);
+            dialog.setMessage("Please wait..");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                str_drug_dets = new JSONParser().getJSONString(params[0]);
+                System.out.println("str_drug_dets--------------" + str_drug_dets);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            try {
+
+                if (str_drug_dets != null && !str_drug_dets.isEmpty() && !str_drug_dets.equals("null") && !str_drug_dets.equals("")) {
+
+                    JSONObject jobj = new JSONObject(str_drug_dets);
+
+                    String status_text = jobj.getString("status");
+
+                    if (status_text.equals("1")) {
+
+                        if (jobj.has("strHtmlData")) {
+
+                            String strHtmlData = jobj.getString("strHtmlData");
+                            String prescPdfUrl_text = jobj.getString("prescPdfUrl");
+
+                            System.out.println("Final_strHtmlData-----" + strHtmlData);
+
+                            try {
+                                Intent i = new Intent(getApplicationContext(), Prescription_WebViewActivity.class);
+                                i.putExtra("str_html", strHtmlData);
+                                i.putExtra("pdf_url", prescPdfUrl_text);
+                                startActivity(i);
+                                overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                        } else {
+                            String msg_text = jobj.getString("msg");
+                            Toast.makeText(HotlineChatViewActivity.this, msg_text, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    dialog.dismiss();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

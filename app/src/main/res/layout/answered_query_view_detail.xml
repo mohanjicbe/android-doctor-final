@@ -7,26 +7,6 @@
     android:background="@color/grey_100"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.MyApp.ActionBar"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
-
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:text="Query View"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            android:textStyle="bold" />
-
-    </android.support.v7.widget.Toolbar>
-
     <LinearLayout
         android:id="@+id/netcheck_layout"
         android:layout_width="match_parent"
@@ -36,6 +16,15 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_reload"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@mipmap/reload"
+            android:padding="20dp"
+            android:visibility="visible" />
 
         <ImageView
             android:layout_width="60dp"
@@ -52,17 +41,7 @@
             android:textColor="@color/grey_700"
             android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btn_reload"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="20dp"
-            android:background="@mipmap/reload"
-            android:padding="20dp"
-            android:visibility="visible" />
-
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/nolayout"
@@ -96,6 +75,15 @@
 
     </LinearLayout>
 
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="visible" />
+
     <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
@@ -109,14 +97,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/parent_qalayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="5dp">
-
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/prescribe_layout"
@@ -127,20 +107,11 @@
                 android:paddingRight="15dp"
                 android:visibility="visible">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:text="Add a prescription?"
-                    android:textColor="@color/mds_bluegrey_800"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:visibility="visible" />
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="15dp"
                     android:gravity="center">
 
                     <Button
@@ -163,7 +134,7 @@
                         android:id="@+id/btn_write_pres"
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
-                        android:layout_marginLeft="25dp"
+                        android:layout_marginLeft="128dp"
                         android:layout_marginTop="10dp"
                         android:layout_toRightOf="@+id/btn_upload_pres"
                         android:background="@drawable/button_rounded"
@@ -175,12 +146,83 @@
 
                 </RelativeLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="Add a prescription?"
+                    android:textColor="@color/mds_bluegrey_800"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
             </LinearLayout>
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/parent_qalayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:orientation="vertical"
+                android:padding="5dp">
+
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btn_ansquery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="1"
+                android:background="@drawable/button_rounded"
+                android:text="Answer Query"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/followup_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_follow_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/edt_followup"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/button_rounded"
+                    android:elevation="10dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:text="Submit"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+
+                <EditText
+                    android:id="@+id/edt_followup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_followtit"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/answeredittext"
+                    android:fontFamily="sans-serif"
+                    android:gravity="left"
+                    android:hint="Type your answer here..."
+                    android:inputType="textMultiLine"
+                    android:isScrollContainer="true"
+                    android:minHeight="100dp"
+                    android:padding="10dp"
+                    android:textColor="@color/mds_bluegrey_800"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
 
                 <LinearLayout
                     android:id="@+id/info_layout"
@@ -215,7 +257,6 @@
 
                 </LinearLayout>
 
-
                 <TextView
                     android:id="@+id/tv_followtit"
                     android:layout_width="wrap_content"
@@ -231,54 +272,31 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/edt_followup"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_followtit"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/answeredittext"
-                    android:fontFamily="sans-serif"
-                    android:gravity="left"
-                    android:hint="Type your answer here..."
-                    android:inputType="textMultiLine"
-                    android:isScrollContainer="true"
-                    android:minHeight="100dp"
-                    android:padding="10dp"
-                    android:textColor="@color/mds_bluegrey_800"
-                    android:textSize="15sp"
-                    android:textStyle="normal" />
-
-                <Button
-                    android:id="@+id/btn_follow_submit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_below="@+id/edt_followup"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/button_rounded"
-                    android:elevation="10dp"
-                    android:paddingLeft="40dp"
-                    android:paddingRight="40dp"
-                    android:text="Submit"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
-
             </RelativeLayout>
+
 
         </LinearLayout>
     </ScrollView>
 
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="visible" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@mipmap/toolbar_bg"
+        android:theme="@style/ThemeOverlay.MyApp.ActionBar"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:text="Query View"
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
 
 </RelativeLayout>

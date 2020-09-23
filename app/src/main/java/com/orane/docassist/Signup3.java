@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -143,16 +144,16 @@ public class Signup3 extends AppCompatActivity {
                                 Signup_submit();
 
                             } else {
-                                edt_week.setError("Enter No.of patients by week");
+                                edt_week.setError("How many patients do you consult in a week?");
                             }
                         } else {
-                            edt_pat.setError("Enter No.of patients");
+                            edt_pat.setError("How many patients have you consulted so far?");
                         }
                     } else {
-                        edt_exp.setError("Enter the Experience");
+                        edt_exp.setError("How many years of experience do you have?");
                     }
                 } else {
-                    edt_personalbio.setError("Enter personal bio informations");
+                    edt_personalbio.setError("Please enter your professional bio");
                 }
 
             }

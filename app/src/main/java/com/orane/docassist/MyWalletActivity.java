@@ -8,8 +8,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,22 +20,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.Detector;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 import com.orane.docassist.cache_files.Wallet10transFile;
-import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 
 public class MyWalletActivity extends AppCompatActivity {
@@ -48,34 +44,33 @@ public class MyWalletActivity extends AppCompatActivity {
     public static final String password = "password_key";
     public static final String Name = "Name_key";
     public static final String wallet_balance = "wallet_balance_key";
-
-    SharedPreferences sharedpreferences;
-
     public String payout_bal, currentDateandTime;
     public String push_title, push_type, push_msg, Log_Status;
-    ArrayAdapter<String> mAdapter;
-    RelativeLayout mContainer;
-    ImageView mImageView;
     public JSONObject jsonobj, json, json_wallet_tran;
     public long startTime;
     public String url, desc_val, amt_val, type_val, date_val, id_val, currency_symbol, wallet_bal, po_url = "mobileajax/payouts", wb_url = "mobileajax/listearning";
+    public String wallet_balance_text, log_txt, str_earn_txt, itemlen_txt, sub_url = "mobileajax/listearning";
+    SharedPreferences sharedpreferences;
+    ArrayAdapter<String> mAdapter;
+    RelativeLayout mContainer;
+    ImageView mImageView;
     TextView tv_date, tv_bal, tv_desc, tv_price;
     View vi;
     LinearLayout parent_layout;
-    public String wallet_balance_text, log_txt, str_earn_txt, itemlen_txt, sub_url = "mobileajax/listearning";
-
     TextView wcursymbol;
     Button btn_trans, btn_payouts;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mywalletnew);
 
+
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -83,7 +78,7 @@ public class MyWalletActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -97,18 +92,12 @@ public class MyWalletActivity extends AppCompatActivity {
         currentDateandTime = sdf.format(new Date());
 
         //--------- initialize -------------------------------------------
-        mContainer = (RelativeLayout) findViewById(R.id.container);
-        mContainer.removeAllViews();
 
-        View v = getLayoutInflater().inflate(R.layout.mywallet_scrollview, mContainer, true);
-        ParallaxScrollView mScrollView = (ParallaxScrollView) v.findViewById(R.id.view);
-        parent_layout = (LinearLayout) v.findViewById(R.id.parent_layout);
-
-        mScrollView.setParallaxView(getLayoutInflater().inflate(R.layout.mywallet_header, mScrollView, false));
-        wcursymbol = (TextView) mScrollView.findViewById(R.id.wcursymbol);
-        tv_bal = (TextView) mScrollView.findViewById(R.id.tv_bal);
-        btn_trans = (Button) mScrollView.findViewById(R.id.btn_trans);
-        btn_payouts = (Button) mScrollView.findViewById(R.id.btn_payouts);
+        parent_layout = findViewById(R.id.parent_layout);
+        wcursymbol = findViewById(R.id.wcursymbol);
+        tv_bal = findViewById(R.id.tv_bal);
+        btn_trans = findViewById(R.id.btn_trans);
+        btn_payouts = findViewById(R.id.btn_payouts);
 
 
         //-------------- Animation ---------------------------------
@@ -123,7 +112,7 @@ public class MyWalletActivity extends AppCompatActivity {
 
 
         //--------------------- Font ----------------------------------
-        Typeface khand = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name);
+        Typeface khand = Typeface.createFromAsset(getAssets(), Model.font_name);
         //((TextView) toolbar.findViewById(R.id.tv_walletbal)).setTypeface(khand);
         tv_bal.setTypeface(khand);
         btn_trans.setTypeface(khand);
@@ -132,9 +121,9 @@ public class MyWalletActivity extends AppCompatActivity {
 
         //--------- initialize -------------------------------------------
 
-        if (new Detector().isTablet(getApplicationContext())) {
+        /*if (new Detector().isTablet(getApplicationContext())) {
             tv_bal.setTextSize(35);
-        }
+        }*/
 
         full_process();
 
@@ -278,9 +267,9 @@ public class MyWalletActivity extends AppCompatActivity {
                     desc_val = jsonobj_logs.getString("description");
 
                     vi = getLayoutInflater().inflate(R.layout.last10_trans_row, null);
-                    tv_date = (TextView) vi.findViewById(R.id.tv_date);
-                    tv_desc = (TextView) vi.findViewById(R.id.tv_desc);
-                    tv_price = (TextView) vi.findViewById(R.id.tv_price);
+                    tv_date = vi.findViewById(R.id.tv_date);
+                    tv_desc = vi.findViewById(R.id.tv_desc);
+                    tv_price = vi.findViewById(R.id.tv_price);
 
                     //---------- tab ---------------------------------------------
                     if (new Detector().isTablet(getApplicationContext())) {

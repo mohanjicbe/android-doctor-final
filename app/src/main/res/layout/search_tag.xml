@@ -13,7 +13,6 @@
         android:background="@drawable/search_words_bg"
         android:fontFamily="sans-serif-light"
         android:gravity="center_horizontal"
-        android:onClick="onClick2"
         android:paddingBottom="3dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"

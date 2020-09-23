@@ -1,17 +1,9 @@
 package com.orane.docassist.fragment;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,44 +11,23 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.orane.docassist.File_Browse;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+
 import com.orane.docassist.Model.Model;
-import com.orane.docassist.MyApp;
 import com.orane.docassist.MyClinicAddActivity;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.R;
-import com.orane.docassist.Signup3;
-import com.orane.docassist.ThankyouActivity;
-import com.orane.docassist.fileattach_library.DefaultCallback;
-import com.orane.docassist.fileattach_library.EasyImage;
-import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import me.drakeet.materialdialog.MaterialDialog;
-import pl.tajchert.nammu.Nammu;
-import pl.tajchert.nammu.PermissionCallback;
 
 public class ProffessionalFragment extends Fragment {
 
@@ -81,30 +52,30 @@ public class ProffessionalFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.professional_fragment, container, false);
 
-        tv_pending_text = (TextView) rootView.findViewById(R.id.tv_pending_text);
-        scroll_layout = (ScrollView) rootView.findViewById(R.id.scroll_layout);
+        tv_pending_text = rootView.findViewById(R.id.tv_pending_text);
+        scroll_layout = rootView.findViewById(R.id.scroll_layout);
 
-        tv_sub_chat = (TextView) rootView.findViewById(R.id.tv_sub_chat);
-        pat_week__layout = (RelativeLayout) rootView.findViewById(R.id.pat_week__layout);
-        awards_layout = (LinearLayout) rootView.findViewById(R.id.awards_layout);
+        tv_sub_chat = rootView.findViewById(R.id.tv_sub_chat);
+        pat_week__layout = rootView.findViewById(R.id.pat_week__layout);
+        awards_layout = rootView.findViewById(R.id.awards_layout);
 
-        bio_layout = (LinearLayout) rootView.findViewById(R.id.bio_layout);
-        year_layout = (RelativeLayout) rootView.findViewById(R.id.year_layout);
-        pat_layout = (RelativeLayout) rootView.findViewById(R.id.pat_layout);
-        pat_week__layout = (RelativeLayout) rootView.findViewById(R.id.pat_week__layout);
-        links_layout = (LinearLayout) rootView.findViewById(R.id.links_layout);
+        bio_layout = rootView.findViewById(R.id.bio_layout);
+        year_layout = rootView.findViewById(R.id.year_layout);
+        pat_layout = rootView.findViewById(R.id.pat_layout);
+        pat_week__layout = rootView.findViewById(R.id.pat_week__layout);
+        links_layout = rootView.findViewById(R.id.links_layout);
 
-        card_practise = (CardView) rootView.findViewById(R.id.card_practise);
-        btn_submit = (Button) rootView.findViewById(R.id.btn_submit);
+        card_practise = rootView.findViewById(R.id.card_practise);
+        btn_submit = rootView.findViewById(R.id.btn_submit);
 
-        edt_personalbio = (EditText) rootView.findViewById(R.id.edt_personalbio);
-        edt_pat = (EditText) rootView.findViewById(R.id.edt_pat);
-        edt_exp = (EditText) rootView.findViewById(R.id.edt_exp);
-        edt_week = (EditText) rootView.findViewById(R.id.edt_week);
-        edt_awards = (EditText) rootView.findViewById(R.id.edt_awards);
-        edt_lin = (EditText) rootView.findViewById(R.id.edt_lin);
-        edt_fb = (EditText) rootView.findViewById(R.id.edt_fb);
-        edt_tw = (EditText) rootView.findViewById(R.id.edt_tw);
+        edt_personalbio = rootView.findViewById(R.id.edt_personalbio);
+        edt_pat = rootView.findViewById(R.id.edt_pat);
+        edt_exp = rootView.findViewById(R.id.edt_exp);
+        edt_week = rootView.findViewById(R.id.edt_week);
+        edt_awards = rootView.findViewById(R.id.edt_awards);
+        edt_lin = rootView.findViewById(R.id.edt_lin);
+        edt_fb = rootView.findViewById(R.id.edt_fb);
+        edt_tw = rootView.findViewById(R.id.edt_tw);
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -184,16 +155,16 @@ public class ProffessionalFragment extends Fragment {
                                 Signup_submit();
 
                             } else {
-                                edt_week.setError("Enter average of patients by week");
+                                edt_week.setError("How many patients do you consult in a week?");
                             }
                         } else {
                             edt_pat.setError("Enter No.of patients");
                         }
                     } else {
-                        edt_exp.setError("Enter the Experience");
+                        edt_exp.setError("Please enter your Experience in years");
                     }
                 } else {
-                    edt_personalbio.setError("Enter personal bio informations");
+                    edt_personalbio.setError("Please fill the personal bio informations");
                 }
 
             }
@@ -230,7 +201,6 @@ public class ProffessionalFragment extends Fragment {
             json_address.put("title", Model.clinic_title);
             json_address.put("street", Model.clinic_street);
             json_address.put("place_id", Model.clinic_placeid);
-
 
             login_json.put("address", json_address);
 
@@ -286,6 +256,10 @@ public class ProffessionalFragment extends Fragment {
 
                 if (status_val.equals("1")) {
                     say_success();
+
+                    tv_pending_text.setVisibility(View.VISIBLE);
+                    scroll_layout.setVisibility(View.GONE);
+
                 } else {
 
                     if (login_jsonobj.has("err")) {
@@ -293,9 +267,6 @@ public class ProffessionalFragment extends Fragment {
                         Toast.makeText(getActivity(), err_val, Toast.LENGTH_SHORT).show();
                     }
                 }
-
-                //
-
                 dialog.cancel();
 
             } catch (Exception e) {
@@ -320,7 +291,6 @@ public class ProffessionalFragment extends Fragment {
             }
         });
         alert.show();
-
     }
 
 
@@ -373,25 +343,29 @@ public class ProffessionalFragment extends Fragment {
             }
 
 
-
             edt_awards.setText(Html.fromHtml(awards_text));
             edt_lin.setText(Html.fromHtml(linkedIn));
             edt_fb.setText(Html.fromHtml(fbLink));
             edt_tw.setText(Html.fromHtml(tweetLink));
 
-            JSONObject json_address = new JSONObject(address);
-            clinic_id = json_address.getString("id");
-            tit_text = json_address.getString("title");
-            street_text = json_address.getString("street");
-            city_text = json_address.getString("city");
-            state_text = json_address.getString("state");
-            zip_text = json_address.getString("zip");
-            country_text = json_address.getString("country");
+            if (address.length() > 5) {
+                JSONObject json_address = new JSONObject(address);
+                clinic_id = json_address.getString("id");
+                tit_text = json_address.getString("title");
+                street_text = json_address.getString("street");
+                city_text = json_address.getString("city");
+                state_text = json_address.getString("state");
+                zip_text = json_address.getString("zip");
+                country_text = json_address.getString("country");
 
+                address_text = city_text + ", " + state_text + ", " + zip_text + ", " + country_text;
 
-            address_text = city_text + ", " + state_text + ", " + zip_text + ", " + country_text;
-
-            tv_sub_chat.setText(Html.fromHtml(address_text));
+                tv_sub_chat.setVisibility(View.VISIBLE);
+                tv_sub_chat.setText(Html.fromHtml(address_text));
+            }
+            else{
+                tv_sub_chat.setVisibility(View.GONE);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

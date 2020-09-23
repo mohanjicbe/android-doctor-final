@@ -8,10 +8,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,14 +22,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import com.flurry.android.FlurryAgent;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hbb20.CountryCodePicker;
-
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 
 import org.json.JSONObject;
 
@@ -115,7 +112,7 @@ public class OTPActivity extends AppCompatActivity {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         //--------------------------------------------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -128,26 +125,26 @@ public class OTPActivity extends AppCompatActivity {
         }
         //--------------------------------------------------------------------
 
-        otp_layout = (LinearLayout) findViewById(R.id.otp_layout);
-        edt_phoneno = (EditText) findViewById(R.id.edt_phoneno);
-        btn_ignore = (Button) findViewById(R.id.btn_ignore);
+        otp_layout = findViewById(R.id.otp_layout);
+        edt_phoneno = findViewById(R.id.edt_phoneno);
+        btn_ignore = findViewById(R.id.btn_ignore);
 
-        tv_wait = (TextView) findViewById(R.id.tv_wait);
-        tv_timertext = (TextView) findViewById(R.id.tv_timertext);
-        tv_resend = (TextView) findViewById(R.id.tv_resend);
-        tv_text = (TextView) findViewById(R.id.tv_text);
-        tv_mobno = (TextView) findViewById(R.id.tv_mobno);
-        img_mob_edit = (ImageView) findViewById(R.id.img_mob_edit);
-        edt_mobno = (EditText) findViewById(R.id.edt_mobno);
-        edt_otp = (EditText) findViewById(R.id.edt_otp);
-        btn_mob_done = (Button) findViewById(R.id.btn_mob_done);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        tv_wait = findViewById(R.id.tv_wait);
+        tv_timertext = findViewById(R.id.tv_timertext);
+        tv_resend = findViewById(R.id.tv_resend);
+        tv_text = findViewById(R.id.tv_text);
+        tv_mobno = findViewById(R.id.tv_mobno);
+        img_mob_edit = findViewById(R.id.img_mob_edit);
+        edt_mobno = findViewById(R.id.edt_mobno);
+        edt_otp = findViewById(R.id.edt_otp);
+        btn_mob_done = findViewById(R.id.btn_mob_done);
+        btn_submit = findViewById(R.id.btn_submit);
+        progressBar = findViewById(R.id.progressBar);
 
-        countryCodePicker = (CountryCodePicker) findViewById(R.id.ccp);
-        mobno_layout = (RelativeLayout) findViewById(R.id.mobno_layout);
-        edit_mobno_layout = (LinearLayout) findViewById(R.id.edit_mobno_layout);
-        timer_layout = (LinearLayout) findViewById(R.id.timer_layout);
+        countryCodePicker = findViewById(R.id.ccp);
+        mobno_layout = findViewById(R.id.mobno_layout);
+        edit_mobno_layout = findViewById(R.id.edit_mobno_layout);
+        timer_layout = findViewById(R.id.timer_layout);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -203,7 +200,7 @@ public class OTPActivity extends AppCompatActivity {
 
                         new Async_SendOTP().execute(json_validate);
 
-                        Toast.makeText(getApplicationContext(), "OTP has been sent to your mobile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "OTP has been sent to the registered mobile number", Toast.LENGTH_SHORT).show();
 
                         //--------------------------------------------------
                     } catch (Exception e) {
@@ -337,8 +334,8 @@ public class OTPActivity extends AppCompatActivity {
 
                 } else {
                     //edt_otp.setError("Enter OTP");
-                    Snackbar.make(v, "OTP mismatched", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                    edt_otp.setError("OTP mismatched");
+                    Snackbar.make(v, "The OTP you have entered is incorrect. Please enter the valid OTP.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    edt_otp.setError("The OTP you have entered is incorrect. Please enter the valid OTP.");
                 }
 
                 //finish();
@@ -390,14 +387,13 @@ public class OTPActivity extends AppCompatActivity {
                             //------------ Google firebase Analitics--------------------
 
 
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please enter mobile number", Toast.LENGTH_SHORT).show();
-                    edt_phoneno.setError("Mobile number cannot be empty");
+                    Toast.makeText(getApplicationContext(), "Please enter your mobile number", Toast.LENGTH_SHORT).show();
+                    edt_phoneno.setError("Please enter your mobile number");
                 }
             }
         });
@@ -422,7 +418,7 @@ public class OTPActivity extends AppCompatActivity {
 
                         new Async_SendOTP().execute(json_validate);
 
-                        Toast.makeText(getApplicationContext(), "OTP has been sent again", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "OTP has been resent to your registered mobile number to your email address", Toast.LENGTH_SHORT).show();
 
                         //--------------------------------------------------
                     } catch (Exception e) {
@@ -542,7 +538,7 @@ public class OTPActivity extends AppCompatActivity {
     public void ask_Signup() {
 
         final MaterialDialog alert = new MaterialDialog(OTPActivity.this);
-        //alert.setTitle("Mobile no not Exist..!");
+        //alert.setTitle("mobile number not Exist..!");
         alert.setMessage("This mobile number is not exist, Do you want to signup now?");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Yes, Signup", new View.OnClickListener() {
@@ -609,7 +605,7 @@ public class OTPActivity extends AppCompatActivity {
 
                 System.out.println("jsonobj-------------" + jsonobj.toString());
 
-                email_text = "";
+               // email_text = "";
                 status_val = jsonobj.getString("status");
                 cccode_text = jsonobj.getString("ccode");
                 phno_text = jsonobj.getString("mobile");
@@ -787,40 +783,47 @@ public class OTPActivity extends AppCompatActivity {
 
             try {
 
-                status_val = jsonobj_verify_mono_response.getString("status");
+                if (jsonobj_verify_mono_response.has("token_status")) {
+                    String token_status = jsonobj_verify_mono_response.getString("token_status");
 
-                if (status_val.equals("1")) {
-
-                    email_pin_val = jsonobj_verify_mono_response.getString("vpin");
-                    String email_t_val = jsonobj_verify_mono_response.getString("t");
-
-                    Toast.makeText(getApplicationContext(), "Success..! Mobile OTP verified", Toast.LENGTH_LONG).show();
-
-                    //finishAffinity();
-                    Intent i = new Intent(OTPActivity.this, Email_OTPActivity.class);
-                    i.putExtra("email", email_text);
-                    i.putExtra("email_pin", email_pin_val);
-                    startActivity(i);
-                    finish();
-
-
+                    if (token_status.equals("0")) {
+                        Toast.makeText(OTPActivity.this, "Invalid token, please verify and try again.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
 
-                    String err_val = jsonobj_verify_mono_response.getString("err");
+                    status_val = jsonobj_verify_mono_response.getString("status");
 
-                    Toast.makeText(getApplicationContext(), err_val, Toast.LENGTH_LONG).show();
+                    if (status_val.equals("1")) {
 
+                        email_pin_val = jsonobj_verify_mono_response.getString("vpin");
+                        String email_t_val = jsonobj_verify_mono_response.getString("t");
 
-                    try {
+                        Toast.makeText(getApplicationContext(), "OTP verified successfully", Toast.LENGTH_LONG).show();
 
-                        //----------- Flurry -------------------------------------------------
-                        Map<String, String> articleParams = new HashMap<String, String>();
-                        articleParams.put("android.doc.App_version:", (Model.app_ver));
-                        FlurryAgent.logEvent("android.doc.Mob_Update_Failed", articleParams);
-                        //----------- Flurry -------------------------------------------------
+                        //finishAffinity();
+                        Intent i = new Intent(OTPActivity.this, Email_OTPActivity.class);
+                        i.putExtra("email", email_text);
+                        i.putExtra("email_pin", email_pin_val);
+                        startActivity(i);
+                        finish();
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+
+                        String err_val = jsonobj_verify_mono_response.getString("err");
+
+                        Toast.makeText(getApplicationContext(), err_val, Toast.LENGTH_LONG).show();
+
+                        try {
+
+                            //----------- Flurry -------------------------------------------------
+                            Map<String, String> articleParams = new HashMap<String, String>();
+                            articleParams.put("android.doc.App_version:", (Model.app_ver));
+                            FlurryAgent.logEvent("android.doc.Mob_Update_Failed", articleParams);
+                            //----------- Flurry -------------------------------------------------
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             } catch (Exception e) {

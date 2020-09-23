@@ -9,9 +9,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,27 +25,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.github.barteksc.pdfviewer.PDFView;
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
-import com.github.barteksc.pdfviewer.listener.OnPageErrorListener;
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.R;
-import com.shockwave.pdfium.PdfDocument;
 
 import java.io.File;
 import java.util.List;
 
 
-public class WebViewActivity extends AppCompatActivity implements OnPageChangeListener, OnLoadCompleteListener,
-        OnPageErrorListener {
+public class WebViewActivity extends AppCompatActivity {
 
     public String url, type;
     WebView webView;
     ImageView close_button;
-    PDFView pdfView;
     private static final String TAG = WebViewActivity.class.getSimpleName();
 
     @Override
@@ -51,7 +45,7 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.terms_consitions);
 
-        final ProgressBar progress = (ProgressBar) findViewById(R.id.progress);
+        final ProgressBar progress = findViewById(R.id.progress);
 
         //------ getting Values ---------------------------
         Intent intent = getIntent();
@@ -61,7 +55,7 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
         //------ getting Values ---------------------------
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -69,8 +63,8 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
-            close_button = (ImageView) toolbar.findViewById(R.id.close_button);
+            TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
+            close_button = toolbar.findViewById(R.id.close_button);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
             mTitle.setText(type);
@@ -81,14 +75,23 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color2));
         }
         //------------ Object Creations -------------------------------
-        webView = (WebView) findViewById(R.id.webview);
-        pdfView = (PDFView) findViewById(R.id.pdfView);
+        webView = findViewById(R.id.webview);
 
 
         try {
 
+
+            webView.setVisibility(View.VISIBLE);
+
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setBuiltInZoomControls(true);
+            webView.setInitialScale(0);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setUseWideViewPort(true);
+
+
             if (type.equals("PDF View")) {
-                System.out.println("PDF View SECTION-------------");
+                /*System.out.println("PDF View SECTION-------------");
                 pdfView.setVisibility(View.VISIBLE);
                 webView.setVisibility(View.GONE);
 
@@ -101,12 +104,12 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
                         .scrollHandle(new DefaultScrollHandle(this))
                         .spacing(10) // in dp
                         .onPageError(this)
-                        .load();
+                        .load();*/
 
             } else {
                 System.out.println("WEB View SECTION-------------");
 
-                pdfView.setVisibility(View.GONE);
+                // pdfView.setVisibility(View.GONE);
                 webView.setVisibility(View.VISIBLE);
 
                 webView.getSettings().setJavaScriptEnabled(true);
@@ -118,7 +121,6 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
         webView.setWebViewClient(new WebViewClient() {
@@ -269,12 +271,13 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
                                 }
 
                                 finish();
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
-
                     })
+
                     .setNegativeButton("No", null)
                     .show();
         }
@@ -287,11 +290,6 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
         }
     }
 
-    @Override
-    public void onPageChanged(int page, int pageCount) {
-        // pageNumber = page;
-        // setTitle(String.format("%s %s / %s", pdfFileName, page + 1, pageCount));
-    }
 
     public String getFileName(Uri uri) {
         String result = null;
@@ -312,39 +310,6 @@ public class WebViewActivity extends AppCompatActivity implements OnPageChangeLi
             result = uri.getLastPathSegment();
         }
         return result;
-    }
-
-    @Override
-    public void loadComplete(int nbPages) {
-
-        PdfDocument.Meta meta = pdfView.getDocumentMeta();
-        Log.e(TAG, "title = " + meta.getTitle());
-        Log.e(TAG, "author = " + meta.getAuthor());
-        Log.e(TAG, "subject = " + meta.getSubject());
-        Log.e(TAG, "keywords = " + meta.getKeywords());
-        Log.e(TAG, "creator = " + meta.getCreator());
-        Log.e(TAG, "producer = " + meta.getProducer());
-        Log.e(TAG, "creationDate = " + meta.getCreationDate());
-        Log.e(TAG, "modDate = " + meta.getModDate());
-
-        printBookmarksTree(pdfView.getTableOfContents(), "-");
-
-    }
-
-    public void printBookmarksTree(List<PdfDocument.Bookmark> tree, String sep) {
-        for (PdfDocument.Bookmark b : tree) {
-
-            // Log.e(TAG, String.format("%s %s, p %d", sep, b.getTitle(), b.getPageIdx()));
-
-            if (b.hasChildren()) {
-                printBookmarksTree(b.getChildren(), sep + "-");
-            }
-        }
-    }
-
-
-    @Override
-    public void onPageError(int page, Throwable t) {
     }
 
 

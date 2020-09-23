@@ -8,33 +8,34 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.orane.docassist.Model.Model;
-import com.orane.docassist.R;
-import com.orane.docassist.fileattach_library.DefaultCallback;
-import com.orane.docassist.fileattach_library.EasyImage;
+import com.orane.docassist.Model.MultipartEntity2;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import pl.tajchert.nammu.Nammu;
@@ -54,11 +55,11 @@ public class FileAttahcment_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fileattachment);
 
-        btn_camera = (Button) findViewById(R.id.btn_camera);
-        btn_browse = (Button) findViewById(R.id.btn_browse);
+        btn_camera = findViewById(R.id.btn_camera);
+        btn_browse = findViewById(R.id.btn_browse);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -66,7 +67,7 @@ public class FileAttahcment_Activity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -94,18 +95,18 @@ public class FileAttahcment_Activity extends AppCompatActivity {
             });
         }
 
-        EasyImage.configuration(FileAttahcment_Activity.this)
+     /*   EasyImage.configuration(FileAttahcment_Activity.this)
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
                 .setCopyPickedImagesToPublicGalleryAppFolder(true)
                 .setAllowMultiplePickInGallery(true);
-
+*/
         //------------------ Initialize File Attachment ---------------------------------
 
         btn_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int permissionCheck = ContextCompat.checkSelfPermission(FileAttahcment_Activity.this, Manifest.permission.CAMERA);
+               /* int permissionCheck = ContextCompat.checkSelfPermission(FileAttahcment_Activity.this, Manifest.permission.CAMERA);
                 if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                     EasyImage.openCamera(FileAttahcment_Activity.this, 0);
                 } else {
@@ -120,14 +121,14 @@ public class FileAttahcment_Activity extends AppCompatActivity {
 
                         }
                     });
-                }
+                }*/
             }
         });
 
         btn_browse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int permissionCheck = ContextCompat.checkSelfPermission(FileAttahcment_Activity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+               /* int permissionCheck = ContextCompat.checkSelfPermission(FileAttahcment_Activity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                 if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                     EasyImage.openDocuments(FileAttahcment_Activity.this, 0);
                 } else {
@@ -142,7 +143,7 @@ public class FileAttahcment_Activity extends AppCompatActivity {
 
                         }
                     });
-                }
+                }*/
             }
         });
     }
@@ -188,7 +189,7 @@ public class FileAttahcment_Activity extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -243,7 +244,7 @@ public class FileAttahcment_Activity extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+   /* public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -272,7 +273,7 @@ public class FileAttahcment_Activity extends AppCompatActivity {
 
             try {
 
-                upLoadServerUri = Model.BASE_URL + "mobileajax/uploadDocPhoto?user_id=" + Model.id;
+                upLoadServerUri = Model.BASE_URL + "mobileajax/uploadDocPhoto?user_id=" + Model.id + "&token=" + Model.token;
                 System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
 
                 FileInputStream fileInputStream = new FileInputStream(fullpath);
@@ -331,12 +332,12 @@ public class FileAttahcment_Activity extends AppCompatActivity {
 
             return contentAsString;
         }
-    }
+    }*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
             total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -360,7 +361,7 @@ public class FileAttahcment_Activity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, FileAttahcment_Activity.this, new DefaultCallback() {
+       /* EasyImage.handleActivityResult(requestCode, resultCode, data, FileAttahcment_Activity.this, new DefaultCallback() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
                 System.out.println("File Error------------" + e.toString());
@@ -381,7 +382,7 @@ public class FileAttahcment_Activity extends AppCompatActivity {
                     if (photoFile != null) photoFile.delete();
                 }
             }
-        });
+        });*/
     }
 
     private void onPhotosReturned(List<File> returnedPhotos) {
@@ -434,6 +435,46 @@ public class FileAttahcment_Activity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EasyImage.clearConfiguration(FileAttahcment_Activity.this);
+        //  EasyImage.clearConfiguration(FileAttahcment_Activity.this);
     }
+
+
+    private String upload_file(String file_path) {
+
+        last_upload_file = file_path;
+        String ServerUploadPath = Model.BASE_URL + "mobileajax/uploadDocPhoto?user_id=" + Model.id + "&token=" + Model.token;
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString = response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return contentAsString;
+    }
+
+
 }

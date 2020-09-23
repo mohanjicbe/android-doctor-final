@@ -7,8 +7,11 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,7 +48,7 @@ import co.lujun.androidtagview.TagContainerLayout;
 public class Signup2 extends AppCompatActivity {
 
     Map<String, String> spec_map = new HashMap<String, String>();
-    String user_id, select_langs, speak_lang, search_tag_text, str_response, lang_val, speciality_list, spec_val, specialities_text;
+    String user_id, education_flag, select_langs, speak_lang, search_tag_text, str_response, lang_val, speciality_list, spec_val, specialities_text;
     CardView card_spec, card_lang, card_certificates;
     JSONObject signup2_jsonobj, jsonobj_items, spec_json, lang_obj, json_signup2;
     LinearLayout course_layout, lang_layout, medi_lay, spec_lay, lang_lay, select_spec_layout;
@@ -56,7 +59,7 @@ public class Signup2 extends AppCompatActivity {
     EditText edtname;
     Button btn_submit;
     List<String> list;
-    MultiSpinnerSearch searchMultiSpinnerUnlimited,searchLanguage;
+    MultiSpinnerSearch searchMultiSpinnerUnlimited, searchLanguage;
     CustomAdapter adapter;
 
     private static final String TAG = "MainActivity";
@@ -211,41 +214,44 @@ public class Signup2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (spec_val != null && !spec_val.isEmpty() && !spec_val.equals("null") && !spec_val.equals("")) {
-                    if (lang_val != null && !lang_val.isEmpty() && !lang_val.equals("null") && !lang_val.equals("")) {
 
-                        try {
+                if (education_flag != null && !education_flag.isEmpty() && !education_flag.equals("null") && !education_flag.equals("") && !education_flag.equals("false")) {
+                    if (spec_val != null && !spec_val.isEmpty() && !spec_val.equals("null") && !spec_val.equals("")) {
+                        if (lang_val != null && !lang_val.isEmpty() && !lang_val.equals("null") && !lang_val.equals("")) {
 
-                            String mrno = edtname.getText().toString();
+                            try {
+                                String mrno = edtname.getText().toString();
 
-                            if (!mrno.equals("")) {
+                                if (!mrno.equals("")) {
 
-                                json_signup2 = new JSONObject();
-                                json_signup2.put("specialities", spec_val);
-                                json_signup2.put("language", lang_val);
-                                json_signup2.put("imc_id", mrno);
+                                    json_signup2 = new JSONObject();
+                                    json_signup2.put("specialities", spec_val);
+                                    json_signup2.put("language", lang_val);
+                                    json_signup2.put("imc_id", mrno);
 
-                                System.out.println("json_signup2----" + json_signup2.toString());
+                                    System.out.println("json_signup2----" + json_signup2.toString());
 
-                                new Async_Signup2().execute(json_signup2);
+                                    new Async_Signup2().execute(json_signup2);
 
-                            } else {
-                                edtname.requestFocus();
-                                edtname.setError("Please enter medical reg no");
+                                } else {
+                                    edtname.requestFocus();
+                                    edtname.setError("Please enter your Medical Registration Number");
+                                }
+
+                                //--------------------------------------------------
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
-                            //--------------------------------------------------
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please select your language", Toast.LENGTH_SHORT).show();
                         }
-
                     } else {
-                        Toast.makeText(getApplicationContext(), "Please select Languages", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please select your specialities", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please select specialities", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Signup2.this, "Please add your education to continue.", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -398,6 +404,7 @@ public class Signup2 extends AppCompatActivity {
 
         if ((Model.education_response) != null && !(Model.education_response).isEmpty() && !(Model.education_response).equals("null") && !(Model.education_response).equals("")) {
 
+            education_flag = "true";
             try {
                 JSONArray jarray = new JSONArray((Model.education_response));
 
@@ -425,6 +432,8 @@ public class Signup2 extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+        } else {
+            education_flag = "false";
         }
 
 

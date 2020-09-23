@@ -8,8 +8,8 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -170,7 +170,7 @@ public class Patient_Profile extends AppCompatActivity {
         if (isInternetOn()) {
 
             try {
-                String patientProfile_url = Model.BASE_URL + "docapp/patientProfile?user_id=" + (Model.id) + "&patient_id=" + pat_id;
+                String patientProfile_url = Model.BASE_URL + "docapp/patientProfile?user_id=" + (Model.id) + "&patient_id=" + pat_id + "&token=" + Model.token;
                 System.out.println("patientProfile_url-----" + patientProfile_url);
                 new JSON_patient_info().execute(patientProfile_url);
 
@@ -418,8 +418,8 @@ public class Patient_Profile extends AppCompatActivity {
                         }
 
 
-                    } else edt_msg.setError("Message cannot be empty");
-                } else edt_msg.setError("Subject cannot be empty");
+                    } else edt_msg.setError("Please enter your message");
+                } else edt_msg.setError("Please enter the subject");
 
 
                 alert.dismiss();
@@ -522,7 +522,7 @@ public class Patient_Profile extends AppCompatActivity {
             Model.query_launch = "";
             try {
                 //----------------------------------------------------------------------------------
-                String patientProfile_url = Model.BASE_URL + "docapp/patientProfile?user_id=" + (Model.id) + "&patient_id=" + pat_id;
+                String patientProfile_url = Model.BASE_URL + "docapp/patientProfile?user_id=" + (Model.id) + "&patient_id=" + pat_id + "&token=" + Model.token;
                 System.out.println("patientProfile_url-----" + patientProfile_url);
                 new JSON_patient_info().execute(patientProfile_url);
                 //----------------------------------------------------------------------------------

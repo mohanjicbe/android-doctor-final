@@ -6,8 +6,6 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,9 +14,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
 
@@ -44,13 +44,13 @@ public class AddNotesActivity extends AppCompatActivity {
             Intent intent = getIntent();
             pat_id = intent.getStringExtra("pat_id");
             System.out.println("Get pat_id---" + pat_id);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -58,7 +58,7 @@ public class AddNotesActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -69,8 +69,8 @@ public class AddNotesActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color));
         }
 
-        edt_feedback = (EditText) findViewById(R.id.edt_feedback);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
+        edt_feedback = findViewById(R.id.edt_feedback);
+        btn_submit = findViewById(R.id.btn_submit);
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +80,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
                 if (feedback_val.equals("")) {
 
-                    edt_feedback.setError("Entered notes cannot be empty");
+                    edt_feedback.setError("Please enter your notes");
 
                 } else {
 
@@ -97,7 +97,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
                         //say_success();
 
-                        //------------ Google firebase Analitics--------------------
+                        //------------ Google firebase Analytics--------------------
                         Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(AddNotesActivity.this);
                         Bundle params = new Bundle();
                         params.putString("User", Model.id + "/" + Model.name);
@@ -105,11 +105,11 @@ public class AddNotesActivity extends AppCompatActivity {
                         Model.mFirebaseAnalytics.logEvent("notes_entry", params);
                         //------------ Google firebase Analitics--------------------
 
-                        //----------- Flurry -------------------------------------------------
+                        //------------- Flurry ----------------------------------------------
                         Map<String, String> articleParams = new HashMap<String, String>();
                         articleParams.put("android.doc.notes_entry:", feedback_val);
                         FlurryAgent.logEvent("android.doc.notes_entry", articleParams);
-                        //----------- Flurry -------------------------------------------------
+                        //------------- Flurry ----------------------------------------------
 
                     } catch (Exception e2) {
                         e2.printStackTrace();
@@ -167,7 +167,7 @@ public class AddNotesActivity extends AppCompatActivity {
                 if (report_response.equals("1")) {
                     say_success();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Notes entered failed, try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
                 }
 
                 dialog.cancel();
@@ -194,9 +194,9 @@ public class AddNotesActivity extends AppCompatActivity {
                             finish();
                         }
                     })
-                    .show();*/
+              .show();*/
 
-            Toast.makeText(getApplicationContext(), "Success...! Your note has been saved", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "Your notes has sent successfully", Toast.LENGTH_SHORT);
 
             finish();
 

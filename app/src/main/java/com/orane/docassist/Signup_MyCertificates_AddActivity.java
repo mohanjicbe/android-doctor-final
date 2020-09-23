@@ -10,10 +10,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,26 +22,32 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
+import com.flurry.android.FlurryAgent;
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 import com.orane.docassist.fileattach_library.DefaultCallback;
 import com.orane.docassist.fileattach_library.EasyImage;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +61,7 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
     TextView tvtit, tv_upload_photo, tvmore, tv_attach_id, tv_attach_url;
     ImageView thumb_img;
     Button btn_submit;
-    String upload_response, eduId_val, upload_response_status;
+    String upload_response, eduId_val, clinic_id_text,clinic_name_text,clinic_geo_text,mode_text;
     LinearLayout file_list;
     InputStream is = null;
     int serverResponseCode = 0;
@@ -73,7 +76,7 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
         setContentView(R.layout.signup_my_certificates_add);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -88,63 +91,66 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
         }
 
 
-        tv_upload_photo = (TextView) findViewById(R.id.tv_upload_photo);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        file_list = (LinearLayout) findViewById(R.id.file_list);
-        edt_course = (EditText) findViewById(R.id.edt_course);
-        edt_college = (EditText) findViewById(R.id.edt_college);
-        edt_year = (EditText) findViewById(R.id.edt_year);
-        profile_image = (ImageView) findViewById(R.id.profile_image);
+        tv_upload_photo = findViewById(R.id.tv_upload_photo);
+        btn_submit = findViewById(R.id.btn_submit);
+        file_list = findViewById(R.id.file_list);
+        edt_course = findViewById(R.id.edt_course);
+        edt_college = findViewById(R.id.edt_college);
+        edt_year = findViewById(R.id.edt_year);
+        profile_image = findViewById(R.id.profile_image);
 
         btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String course_name = edt_course.getText().toString();
-                String college_name = edt_college.getText().toString();
-                String year_val = edt_year.getText().toString();
+                if (selectedPath != null && !selectedPath.isEmpty() && !selectedPath.equals("null") && !selectedPath.equals("")) {
 
-                System.out.println("course_name------" + course_name);
-                System.out.println("college_name------" + college_name);
-                System.out.println("year_val------" + year_val);
-                System.out.println("selectedPath------" + selectedPath);
-                System.out.println("eduId_val------" + eduId_val);
+                    String course_name = edt_course.getText().toString();
+                    String college_name = edt_college.getText().toString();
+                    String year_val = edt_year.getText().toString();
 
-                if (!course_name.equals("")) {
-                    if (!college_name.equals("")) {
-                        if (!year_val.equals("") && year_val.length() == 4) {
+                    System.out.println("course_name------" + course_name);
+                    System.out.println("college_name------" + college_name);
+                    System.out.println("year_val------" + year_val);
+                    System.out.println("selectedPath------" + selectedPath);
+                    System.out.println("eduId_val------" + eduId_val);
 
-                            try {
-                                json_post_edu = new JSONObject();
-                                json_post_edu.put("eduId", eduId_val);
-                                json_post_edu.put("education", course_name);
-                                json_post_edu.put("educationYear", year_val);
-                                json_post_edu.put("college", college_name);
-                                json_post_edu.put("filename", "filename");
+                    if (!course_name.equals("")) {
+                        if (!college_name.equals("")) {
+                            if (!year_val.equals("") && year_val.length() == 4) {
 
-                                System.out.println("json_post_edu---" + json_post_edu.toString());
+                                try {
+                                    json_post_edu = new JSONObject();
+                                    json_post_edu.put("eduId", eduId_val);
+                                    json_post_edu.put("education", course_name);
+                                    json_post_edu.put("educationYear", year_val);
+                                    json_post_edu.put("college", college_name);
+                                    json_post_edu.put("filename", "filename");
 
-                                new Async_post_acdemic().execute(json_post_edu);
+                                    System.out.println("json_post_edu---" + json_post_edu.toString());
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                    new Async_post_acdemic().execute(json_post_edu);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else {
+                                edt_year.requestFocus();
+                                edt_year.setError("Please add the year of graduation");
                             }
 
                         } else {
-                            edt_year.requestFocus();
-                            edt_year.setError("Year is not valid");
+                            edt_college.requestFocus();
+                            edt_college.setError("Please add your college or institution name");
                         }
-
                     } else {
-                        edt_college.requestFocus();
-                        edt_college.setError("Institution cannot be empty");
+                        edt_course.requestFocus();
+                        edt_course.setError("Please enter the course");
                     }
                 } else {
-                    edt_course.requestFocus();
-                    edt_course.setError("Course cannot be empty");
+                    Toast.makeText(Signup_MyCertificates_AddActivity.this, "Please select your certificate.", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
 
@@ -173,14 +179,6 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
                 }
             });
         }
-        EasyImage.configuration(this)
-                .setImagesFolderName("Attachments")
-                .setCopyTakenPhotosToPublicGalleryAppFolder(true)
-                .setCopyPickedImagesToPublicGalleryAppFolder(true)
-                .setAllowMultiplePickInGallery(true);
-        //------------------ Initialize File Attachment ---------------------------------
-
-
     }
 
     @Override
@@ -284,7 +282,7 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -299,19 +297,23 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
 
             try {
 
+                Model.query_launch = "add_education";
+
                 JSONObject jObj = new JSONObject(upload_response);
 
-                upload_response_status = jObj.getString("status");
-
+                String upload_response_status = jObj.getString("status");
 
                 System.out.println("upload_response_status ----------" + upload_response_status);
 
                 if (upload_response_status.equals("1")) {
 
-                    if (jObj.has("eduId")) {
+                   /* if (jObj.has("eduId")) {
                         eduId_val = jObj.getString("eduId");
-                        System.out.println("eduId_val ----------" + eduId_val);
+                        System.out.println("Getting eduId_val ----------" + eduId_val);
+
                     }
+*/
+                    finish();
 
                 } else {
 
@@ -329,6 +331,7 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
         }
     }
 
+/*
 
     public String upload_file(String fullpath) {
 
@@ -365,7 +368,6 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
                 System.out.println("fullpath---------------------------------" + fullpath);
                 URL url = new URL(upLoadServerUri);
 
-                // Open a HTTP  connection to  the URL
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
@@ -424,11 +426,12 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
             return contentAsString;
         }
     }
+*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
             total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -451,7 +454,6 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
@@ -515,7 +517,7 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
             }
 
 
-            //new AsyncTask_fileupload().execute(selectedPath);
+            //  new AsyncTask_fileupload().execute(selectedPath);
 
         }
 
@@ -523,7 +525,7 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        EasyImage.clearConfiguration(this);
+        //EasyImage.clearConfiguration(this);
         super.onDestroy();
     }
 
@@ -564,6 +566,9 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
 
                 String status_val = json_post_acedemic_resp.getString("status");
 
+                System.out.println("status_val--------------" + status_val);
+
+
                 if (status_val.equals("1")) {
 
                     if (json_post_acedemic_resp.has("education")) {
@@ -577,9 +582,9 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
 
                     if (education_text != null && !education_text.isEmpty() && !education_text.equals("null") && !education_text.equals("")) {
                         if (education_text.length() > 5) {
-                            finish();
                             Model.query_launch = "add_education";
                             Model.education_response = education_text;
+                            //finish();
                         }
                     }
 
@@ -601,4 +606,45 @@ public class Signup_MyCertificates_AddActivity extends AppCompatActivity {
         }
     }
 
+    private String upload_file(String file_path) {
+
+        last_upload_file = file_path;
+        String ServerUploadPath = Model.BASE_URL + "/sapp/uploadDocEduCertificates?id=" + eduId_val + "&user_id=" + (Model.id) + "&token=" + Model.token;
+
+        System.out.println("ServerUploadPath-------------" + ServerUploadPath);
+        System.out.println("file_path-------------" + file_path);
+
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString = response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+
+        return contentAsString;
+    }
 }

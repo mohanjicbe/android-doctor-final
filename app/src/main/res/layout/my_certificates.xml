@@ -8,16 +8,16 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?attr/colorPrimary"
+            android:background="@mipmap/toolbar_bg"
             android:theme="@style/ThemeOverlay.MyApp.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -26,14 +26,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
-                android:text="My Education"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="17sp"
                 android:textStyle="normal" />
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <LinearLayout
@@ -126,7 +126,7 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_query_new"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -155,10 +155,10 @@
             android:scrollingCache="true"
             tools:listitem="@layout/my_certificates_row" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -170,7 +170,6 @@
         android:clickable="true"
         android:src="@mipmap/plus_white"
         app:borderWidth="0dp"
-        app:fab_colorNormal="@color/app_color"
         app:layout_anchorGravity="bottom|right|end" />
 
 

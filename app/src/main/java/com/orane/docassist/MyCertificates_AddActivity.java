@@ -10,10 +10,14 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,14 +29,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.internal.http.multipart.MultipartEntity;
 import com.flurry.android.FlurryAgent;
 
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.R;
 import com.orane.docassist.fileattach_library.DefaultCallback;
 import com.orane.docassist.fileattach_library.EasyImage;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -73,6 +85,7 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
         setContentView(R.layout.my_certificates_add);
 
         //------------ Object Creations -------------------------------
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -86,7 +99,6 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color));
         }
-
 
         try {
 
@@ -110,7 +122,6 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         upload_layout = (LinearLayout) findViewById(R.id.upload_layout);
         tv_upload_photo = (TextView) findViewById(R.id.tv_upload_photo);
@@ -176,9 +187,9 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
 
                                 System.out.println("Model.new_education---------------------" + Model.new_education);
 
-                                finish();
+                               finish();
 
-                                //new Async_post_acdemic().execute(json_post_edu);
+                               // new Async_post_acdemic().execute(json_post_edu);
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -186,16 +197,16 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
 
                         } else {
                             edt_year.requestFocus();
-                            edt_year.setError("Year is not valid");
+                            edt_year.setError("Invalid year");
                         }
 
                     } else {
                         edt_college.requestFocus();
-                        edt_college.setError("Institution cannot be empty");
+                        edt_college.setError("Please add your college or institution name");
                     }
                 } else {
                     edt_course.requestFocus();
-                    edt_course.setError("Course cannot be empty");
+                    edt_course.setError("Please enter the course");
                 }
 
 
@@ -227,11 +238,12 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
                 }
             });
         }
-        EasyImage.configuration(this)
+
+      /*  EasyImage.configuration(this)
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
                 .setCopyPickedImagesToPublicGalleryAppFolder(true)
-                .setAllowMultiplePickInGallery(true);
+                .setAllowMultiplePickInGallery(true);*/
         //------------------ Initialize File Attachment ---------------------------------
 
 
@@ -338,7 +350,8 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]);  //ok
+
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -389,7 +402,7 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+    /*public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -405,7 +418,7 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
 
         String lineEnd = "\r\n";
         String twoHyphens = "--";
-        String boundary = "*****";
+        String boundary = "**************";
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
         int maxBufferSize = 1024 * 1024;
@@ -424,23 +437,24 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
                 System.out.println("fullpath---------------------------------" + fullpath);
                 URL url = new URL(upLoadServerUri);
 
-                // Open a HTTP  connection to  the URL
                 conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true);
+                 conn.setDoInput(true);
                 conn.setDoOutput(true);
                 conn.setUseCaches(false);
                 conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
+                  conn.setRequestProperty("Connection", "Keep-Alive");
                 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
                 conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                 conn.setRequestProperty("uploaded_file", fullpath);
 
+                conn.getRequestMethod();
+                conn.connect();
                 dos = new DataOutputStream(conn.getOutputStream());
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
                 dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fullpath + "\"" + lineEnd);
                 dos.writeBytes(lineEnd);
 
-                bytesAvailable = fileInputStream.available();
+               bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
                 buffer = new byte[bufferSize];
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
@@ -456,7 +470,11 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
                 dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
                 serverResponseCode = conn.getResponseCode();
-                serverResponseMessage = conn.getResponseMessage();
+                System.out.println("serverResponseCode----------" + serverResponseCode);
+
+
+                 serverResponseMessage = conn.getResponseMessage();
+              System.out.println("serverResponseMessage----------" + serverResponseMessage);
 
                 int response = conn.getResponseCode();
                 System.out.println("response-------" + response);
@@ -482,7 +500,7 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
 
             return contentAsString;
         }
-    }
+    }*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
@@ -583,7 +601,7 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        EasyImage.clearConfiguration(this);
+      //  EasyImage.clearConfiguration(this);
         super.onDestroy();
     }
 
@@ -654,5 +672,44 @@ public class MyCertificates_AddActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    private String upload_file(String file_path) {
+
+        last_upload_file=file_path;
+        String ServerUploadPath = Model.BASE_URL + "/sapp/uploadDocEduCertificates?os_type=android&user_id=" + (Model.id) + "&token=" + Model.token;
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
+    }
+
 
 }

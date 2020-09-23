@@ -3,59 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.orane.docassist">
 
-    <!-- Required to act as a custom watch face. -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <!-- Required for complications to receive complication data and open the provider chooser. -->
-    <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature
-        android:name="android.hardware.telephony"
-        android:required="false" />
-
     <application
         android:name=".MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/logo_fordoctors"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:icon">
+
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
             android:name=".Signup1"
@@ -63,7 +34,42 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".chime.InMeetingActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Signature_Activity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".chime.MeetingHomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Chat_Prescription_Home"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".POD_Queries_Activity_New"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Voxeet_New"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Prescription_home"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".Prescription_WebViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ExpandableActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
@@ -136,7 +142,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".DeepLink_resetpwd"
             android:theme="@style/AppTheme.NoActionBar">
@@ -152,14 +157,16 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="io.github.memfis19.annca.internal.ui.camera.Camera1Activity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ThemeFullscreen" />
-        <activity
-            android:name="io.github.memfis19.annca.internal.ui.preview.PreviewActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ThemeFullscreen" />
+
+        <!--
+                <activity
+                    android:name="io.github.memfis19.annca.internal.ui.camera.Camera1Activity"
+                    android:screenOrientation="portrait"
+                    android:theme="@style/ThemeFullscreen" />
+                <activity
+                    android:name="io.github.memfis19.annca.internal.ui.preview.PreviewActivity"
+                    android:screenOrientation="portrait"
+                    android:theme="@style/ThemeFullscreen" />-->
         <activity
             android:name=".QR_Code_Activity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -187,16 +194,22 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Prescriptions_Activity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Prescription_Entry_Activity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Multiselect.ListViewExample"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MultiSpeciality_ListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Voxeet"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".Profile_Activity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -206,9 +219,9 @@
         <activity
             android:name=".Attachment_List_Activity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Webrtc_Activity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--        <activity
+                    android:name=".Webrtc_Activity"
+                    android:theme="@style/AppTheme.NoActionBar" />-->
         <activity
             android:name=".Inbox_view"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -250,9 +263,6 @@
             android:name=".QasesHome"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".FileChooserActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Qases_Post1"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -267,6 +277,12 @@
         <activity
             android:name=".attachment_view.DetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Attachment_WebViewActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
         <activity
             android:name=".attachment_view.GridViewActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -276,9 +292,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SendApptHome"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".Home.Home_MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NotificationViewActivity"
@@ -377,26 +390,53 @@
             android:name=".ReferDoctorActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-
-        <service android:name=".MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="cc53deb84851c3c6ee51f3c400c51e251432482b" />
 
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!--
+                <service android:name=".MyFirebaseMessagingService">
+                    <intent-filter>
+                        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                    </intent-filter>
+                </service>-->
+
     </application>
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>

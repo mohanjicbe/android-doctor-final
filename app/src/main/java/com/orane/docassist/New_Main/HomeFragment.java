@@ -1,45 +1,35 @@
 package com.orane.docassist.New_Main;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 
-import com.orane.docassist.AddNotesActivity;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orane.docassist.Consultation_Activity_New;
 import com.orane.docassist.LoginActivity;
 import com.orane.docassist.Model.Model;
@@ -49,21 +39,18 @@ import com.orane.docassist.MyWalletActivity;
 import com.orane.docassist.Network.Detector;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.Network.ShareIntent;
-import com.orane.docassist.NewQueriesActivity;
 import com.orane.docassist.QR_Code_Activity;
 import com.orane.docassist.Queries_Activity_New;
 import com.orane.docassist.R;
+import com.orane.docassist.Voxeet;
 import com.orane.docassist.WebViewActivity;
 import com.skyfishjy.library.RippleBackground;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 
 import me.drakeet.materialdialog.MaterialDialog;
-
-import static android.content.Context.NOTIFICATION_SERVICE;
 
 
 public class HomeFragment extends Fragment {
@@ -94,10 +81,11 @@ public class HomeFragment extends Fragment {
     TranslateAnimation anim;
     ObjectAnimator objectanimator_close, objectanimator;
     RippleBackground rippleBackground;
-    ScrollView scroll_view;
+    ObservableScrollView scroll_view;
+    //ExtendedFloatingActionButton fab;
+    FloatingActionButton fab;
 
     String pressFlagg = "false";
-    private YoYo.YoYoString rope;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,23 +103,26 @@ public class HomeFragment extends Fragment {
         sensappt_home_flag_val = sharedpreferences.getString(sensappt_home_flag, "");
         //------------ Object Creations -------------------------------
 
-        scroll_view = (ScrollView) rootView.findViewById(R.id.scroll_view);
-        rippleBackground = (RippleBackground) rootView.findViewById(R.id.content);
-        tv_feedback = (TextView) rootView.findViewById(R.id.tv_feedback);
-        feedback_layout = (LinearLayout) rootView.findViewById(R.id.feedback_layout);
-        queries_layout = (LinearLayout) rootView.findViewById(R.id.queries_layout);
-        cons_layout = (LinearLayout) rootView.findViewById(R.id.cons_layout);
-        qases_layout = (LinearLayout) rootView.findViewById(R.id.qases_layout);
-        home_row1 = (LinearLayout) rootView.findViewById(R.id.home_row1);
-        home_row2 = (LinearLayout) rootView.findViewById(R.id.home_row2);
-        card_educations = (CardView) rootView.findViewById(R.id.card_educations);
-        gl_layout = (LinearLayout) rootView.findViewById(R.id.gl_layout);
-        img_share_icon = (ImageView) rootView.findViewById(R.id.img_share_icon);
-        img_search_logo = (ImageView) rootView.findViewById(R.id.img_search_logo);
-        tvqnotify = (TextView) rootView.findViewById(R.id.tvqnotify);
-        tvcons = (TextView) rootView.findViewById(R.id.tvcons);
-        tv_wallet_balance = (TextView) rootView.findViewById(R.id.tv_wallet_balance);
-        img_feedback = (ImageView) rootView.findViewById(R.id.img_feedback);
+        scroll_view = rootView.findViewById(R.id.scroll_view);
+        rippleBackground = rootView.findViewById(R.id.content);
+        tv_feedback = rootView.findViewById(R.id.tv_feedback);
+        feedback_layout = rootView.findViewById(R.id.feedback_layout);
+        queries_layout = rootView.findViewById(R.id.queries_layout);
+        cons_layout = rootView.findViewById(R.id.cons_layout);
+        qases_layout = rootView.findViewById(R.id.qases_layout);
+        home_row1 = rootView.findViewById(R.id.home_row1);
+        home_row2 = rootView.findViewById(R.id.home_row2);
+        card_educations = rootView.findViewById(R.id.card_educations);
+        gl_layout = rootView.findViewById(R.id.gl_layout);
+        img_share_icon = rootView.findViewById(R.id.img_share_icon);
+        img_search_logo = rootView.findViewById(R.id.img_search_logo);
+        tvqnotify = rootView.findViewById(R.id.tvqnotify);
+        tvcons = rootView.findViewById(R.id.tvcons);
+        tv_wallet_balance = rootView.findViewById(R.id.tv_wallet_balance);
+        img_feedback = rootView.findViewById(R.id.img_feedback);
+
+        fab = rootView.findViewById(R.id.fab);
+        // fab = (ExtendedFloatingActionButton) rootView.findViewById(R.id.fab);
 
         font_reg = Typeface.createFromAsset(getActivity().getAssets(), Model.font_name);
         font_bold = Typeface.createFromAsset(getActivity().getAssets(), Model.font_name_bold);
@@ -144,7 +135,7 @@ public class HomeFragment extends Fragment {
             new JSON_Counts().execute(url2);
             //-------------------------------------------------------------------------
         } else {
-            Toast.makeText(getActivity(), "Sorry..! Something went wrong. Go back and try again..", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
             //force_logout();
         }
 
@@ -163,6 +154,24 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+/*                pressFlagg = "false";
+                objectanimator_close.setDuration(500);
+                objectanimator_close.start();
+                //img_feedback.setRotation((float) 170.0);*/
+
+                String url = Model.surveyFormUrl;
+                System.out.println("Survey url-------------------" + url);
+
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+
+            }
+        });
 
 
     /*    Animation animSlideDown1 = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce);
@@ -176,9 +185,6 @@ public class HomeFragment extends Fragment {
         Animation animSlideDown3 = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce3);
         animSlideDown3.setStartOffset(500);
         card_educations.startAnimation(animSlideDown3);
-
-
-
 
         Animation animSlideDown4 = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_right_to_left2);
         animSlideDown4.setStartOffset(700);
@@ -200,7 +206,6 @@ public class HomeFragment extends Fragment {
         Animation animSlideDown4 = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce4);
         animSlideDown4.setStartOffset(700);
         gl_layout.startAnimation(animSlideDown4);
-
 
 /*
         //--- Set Marging Programitically --------------------------------------
@@ -226,7 +231,6 @@ public class HomeFragment extends Fragment {
                 objectanimator_close.start();
                 //img_feedback.setRotation((float) 170.0);
 
-
                 String url = Model.surveyFormUrl;
                 System.out.println("Survey url-------------------" + url);
 
@@ -237,6 +241,21 @@ public class HomeFragment extends Fragment {
                 // feedback_layout.setVisibility(View.GONE);
             }
         });
+
+       /* fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String url = Model.surveyFormUrl;
+                System.out.println("Survey url-------------------" + url);
+
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+
+                // feedback_layout.setVisibility(View.GONE);
+            }
+        });*/
 
 
         img_feedback.setOnClickListener(new View.OnClickListener() {
@@ -270,7 +289,7 @@ public class HomeFragment extends Fragment {
         });
 
 
-        rope = YoYo.with(Techniques.Pulse)
+      /*  rope = YoYo.with(Techniques.Pulse)
                 .duration(600)
                 .repeat(YoYo.INFINITE)
                 .pivot(YoYo.CENTER_PIVOT, YoYo.CENTER_PIVOT)
@@ -296,7 +315,7 @@ public class HomeFragment extends Fragment {
                     }
                 })
                 .playOn(img_feedback);
-
+*/
 
         try {
 
@@ -318,7 +337,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //Intent i = new Intent(getActivity(), NewQueriesActivity.class);
+                //Intent i = new Intent(getActivity(), Voxeet.class);
                 Intent i = new Intent(getActivity(), Queries_Activity_New.class);
                 startActivity(i);
 
@@ -509,10 +528,10 @@ public class HomeFragment extends Fragment {
             alert.setTitle("Answering Guidelines");
             alert.setCanceledOnTouchOutside(false);
 
-            Toolbar toolBar = (Toolbar) view.findViewById(R.id.toolBar);
-            ImageView imgapp = (ImageView) view.findViewById(R.id.imgapp);
-            final TextView tvguidline = (TextView) view.findViewById(R.id.tvguidline);
-            final TextView tvappverview = (TextView) view.findViewById(R.id.tvappverview);
+            Toolbar toolBar = view.findViewById(R.id.toolBar);
+            ImageView imgapp = view.findViewById(R.id.imgapp);
+            final TextView tvguidline = view.findViewById(R.id.tvguidline);
+            final TextView tvappverview = view.findViewById(R.id.tvappverview);
 
             if (new Detector().isTablet(getActivity())) {
                 tvguidline.setTextSize(18);
@@ -594,25 +613,42 @@ public class HomeFragment extends Fragment {
                     ccount = json_count.getString("new_consult_count");
                     bcount = json_count.getString("new_booking_count");
 
+                    //----------------------------------------------------------------
+                    if (json_count.has("short_url")) {
+                        Model.short_url = json_count.getString("short_url");
+                    } else {
+                        Model.short_url = "";
+                    }
+                    //----------------------------------------------------------------
+
                     //---------------------------------------------------------
                     if (json_count.has("isShowSurvey")) {
                         isShowSurvey_val = json_count.getString("isShowSurvey");
                         if (isShowSurvey_val.equals("1")) {
-                            feedback_layout.setVisibility(View.VISIBLE);
+                            //feedback_layout.setVisibility(View.VISIBLE);
+                            fab.setVisibility(View.VISIBLE);
                         } else {
-                            feedback_layout.setVisibility(View.GONE);
+                            //feedback_layout.setVisibility(View.GONE);
+                            fab.setVisibility(View.GONE);
                         }
                     } else {
-                        feedback_layout.setVisibility(View.GONE);
+                        //feedback_layout.setVisibility(View.GONE);
+                        fab.setVisibility(View.GONE);
                     }
                     //---------------------------------------------------------
 
                     //---------------------------------------------------------
                     if (json_count.has("surveyFormUrl")) {
                         surveyFormUrl_val = json_count.getString("surveyFormUrl");
-                        Model.surveyFormUrl = surveyFormUrl_val;
+                        if (surveyFormUrl_val != null && !surveyFormUrl_val.isEmpty() && !surveyFormUrl_val.equals("null") && !surveyFormUrl_val.equals("")) {
+                            surveyFormUrl_val = json_count.getString("surveyFormUrl");
+                            Model.surveyFormUrl = surveyFormUrl_val;
+                        } else {
+                            fab.setVisibility(View.GONE);
+                        }
                     } else {
-                        feedback_layout.setVisibility(View.GONE);
+                        //feedback_layout.setVisibility(View.GONE);
+                        fab.setVisibility(View.GONE);
                     }
                     //---------------------------------------------------------
 

@@ -11,8 +11,8 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -54,7 +54,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 
-import dmax.dialog.SpotsDialog;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class POD_NewQueryViewActivity extends AppCompatActivity {
@@ -309,7 +308,7 @@ public class POD_NewQueryViewActivity extends AppCompatActivity {
 
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. please try again..!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -322,7 +321,7 @@ public class POD_NewQueryViewActivity extends AppCompatActivity {
                 if (isInternetOn()) {
                     fullprocess();
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. please try again..!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again!", Toast.LENGTH_SHORT).show();
 
                     progressBar.setVisibility(View.GONE);
                     scrollview.setVisibility(View.GONE);
@@ -341,7 +340,7 @@ public class POD_NewQueryViewActivity extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(getApplicationContext(), "No internet connection. please try again..!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again!", Toast.LENGTH_SHORT).show();
 
             progressBar.setVisibility(View.GONE);
             scrollview.setVisibility(View.GONE);
@@ -368,10 +367,10 @@ public class POD_NewQueryViewActivity extends AppCompatActivity {
                     if (!ent_ans.equals("")) {
                         submit_answer();
                     } else {
-                        edt_answer.setError("Answer cannot be Empty");
+                        edt_answer.setError("Please enter the answer");
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -447,7 +446,7 @@ public class POD_NewQueryViewActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Internet is not connected.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1677,12 +1676,12 @@ public class POD_NewQueryViewActivity extends AppCompatActivity {
 
     class Resume_canianswer extends AsyncTask<String, Void, Boolean> {
 
-        AlertDialog dialog;
+        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = new SpotsDialog(POD_NewQueryViewActivity.this);
+            dialog = new ProgressDialog(POD_NewQueryViewActivity.this);
             dialog.setCanceledOnTouchOutside(false);
             dialog.setTitle("Checking Query Status., please wait");
             dialog.show();
@@ -1748,7 +1747,7 @@ public class POD_NewQueryViewActivity extends AppCompatActivity {
                     }
 
                     if ((answering_status).equals("0")) {
-                       // Toast.makeText(getApplicationContext(), "Sorry.! Another doctor has picked. You are not allowed to answer this query.", Toast.LENGTH_LONG).show();
+                       // Toast.makeText(getApplicationContext(), "Sorry! Another doctor has already picked this query.", Toast.LENGTH_LONG).show();
                        // query_release_check();
                     }
                 }

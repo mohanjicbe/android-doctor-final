@@ -7,20 +7,20 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?attr/colorPrimary"
+            android:background="@mipmap/toolbar_bg"
             android:theme="@style/ThemeOverlay.MyApp.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -88,7 +88,7 @@
                             android:id="@+id/spinner_mypatients"
                             style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                             android:layout_width="match_parent"
-                            android:layout_height="37dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="5dp"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
@@ -152,7 +152,6 @@
                         android:fontFamily="sans-serif-light"
                         android:hint="Patient Name"
                         android:inputType="text"
-
                         android:textColor="@color/mds_bluegrey_800"
                         android:textSize="15sp"
                         app:met_floatingLabel="highlight" />

@@ -7,8 +7,8 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -150,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
                 Intent i = new Intent(getApplicationContext(), WebViewActivity.class);
-                i.putExtra("url", Model.BASE_URL + "/p/terms");
+                i.putExtra("url", Model.BASE_URL + "/p/terms?nolayout=1");
                 i.putExtra("type", "Terms");
                 startActivity(i);
 
@@ -164,7 +164,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
                 Intent i = new Intent(getApplicationContext(), WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/privacy");
+                i.putExtra("url", "https://www.icliniq.com/p/privacy?nolayout=1");
                 i.putExtra("type", "Privacy Policy");
                 startActivity(i);
                 overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);

@@ -2,8 +2,10 @@ package com.orane.docassist;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDex;
+
 import android.util.Log;
+
+import androidx.multidex.MultiDex;
 
 import com.flurry.android.FlurryAgent;
 import com.orane.docassist.Model.Model;

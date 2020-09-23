@@ -3,33 +3,24 @@ package com.orane.docassist.attachment_view;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.downloader.Error;
-import com.downloader.OnCancelListener;
-import com.downloader.OnDownloadListener;
-import com.downloader.OnPauseListener;
-import com.downloader.OnProgressListener;
-import com.downloader.OnStartOrResumeListener;
-import com.downloader.PRDownloader;
-import com.downloader.Progress;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
-
 import com.obsez.android.lib.filechooser.ChooserDialog;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Model.Utils;
 import com.orane.docassist.R;
-import com.orane.docassist.WebViewActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -70,7 +61,7 @@ public class GridViewActivity extends AppCompatActivity {
         setContentView(R.layout.attach_activity_gridview);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -93,8 +84,8 @@ public class GridViewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        mGridView = (GridView) findViewById(R.id.gridView);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mGridView = findViewById(R.id.gridView);
+        mProgressBar = findViewById(R.id.progressBar);
 
         mGridData = new ArrayList<>();
         mGridAdapter = new GridViewAdapter(this, R.layout.attach_grid_item_layout, mGridData);
@@ -128,7 +119,12 @@ public class GridViewActivity extends AppCompatActivity {
 
                     System.out.println("file_full__url--------" + file_full__url);
 
-                    Download_file(file_full__url, extension);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(file_full__url));
+                    startActivity(i);
+
+
+                    //Download_file(file_full__url, extension);
 
 
 
@@ -315,16 +311,22 @@ public class GridViewActivity extends AppCompatActivity {
     }
 
 
-    public void Download_file(final String file_path, final String extension) {
+  /*  public void Download_file(final String file_path, final String extension) {
 
         try {
+            System.out.println("Download in");
+            System.out.println("Download in file_path----------" + file_path);
+            System.out.println("Download in extension----------" + extension);
 
             final ProgressDialog dialog = new ProgressDialog(GridViewActivity.this);
 
             downloadIdOne = PRDownloader.download(file_path, dirPath, "filename." + extension)
 
+
                     .build()
                     .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+
+
                         @Override
                         public void onStartOrResume() {
 
@@ -336,23 +338,27 @@ public class GridViewActivity extends AppCompatActivity {
                     .setOnPauseListener(new OnPauseListener() {
                         @Override
                         public void onPause() {
+                            System.out.println("Download on Pause");
                         }
                     })
                     .setOnCancelListener(new OnCancelListener() {
                         @Override
                         public void onCancel() {
+                            System.out.println("Download on Cancel");
                         }
                     })
                     .setOnProgressListener(new OnProgressListener() {
                         @Override
                         public void onProgress(Progress progress) {
-
+                            System.out.println("Download on Progress");
 
                         }
                     })
                     .start(new OnDownloadListener() {
                         @Override
                         public void onDownloadComplete() {
+
+                            System.out.println("Download on Complete");
 
                             dialog.cancel();
 
@@ -397,7 +403,7 @@ public class GridViewActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
+*/
 
     public void ask_to_save(final String file_path) {
 
@@ -405,7 +411,7 @@ public class GridViewActivity extends AppCompatActivity {
 
             final MaterialDialog alert = new MaterialDialog(GridViewActivity.this);
             alert.setTitle("Downloading file..");
-            alert.setMessage("This file can view only after downloading. Do you want to download now?");
+            alert.setMessage("This file can be viewed only after download. Do you want to download now?");
             alert.setCanceledOnTouchOutside(false);
             alert.setPositiveButton("Download", new View.OnClickListener() {
                 @Override
@@ -428,7 +434,7 @@ public class GridViewActivity extends AppCompatActivity {
                                     _path = path;
                                     System.out.println("_path---------" + _path);
 
-                                    Asked_Download_file(file_path, extension, _path);
+                                    //  Asked_Download_file(file_path, extension, _path);
                                 }
                             })
                             .build()
@@ -455,7 +461,7 @@ public class GridViewActivity extends AppCompatActivity {
         }
     }
 
-
+/*
     public void Asked_Download_file(final String file_path, final String extension, final String dirPath_text) {
 
         try {
@@ -503,5 +509,5 @@ public class GridViewActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

@@ -16,9 +16,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,16 +38,18 @@ import android.widget.ViewSwitcher;
 
 import com.flurry.android.FlurryAgent;
 
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.R;
 import com.orane.docassist.file_picking.utils.FileUtils;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -79,7 +84,6 @@ public class QaseComment_Post2 extends AppCompatActivity {
 
     String action;
     ViewSwitcher viewSwitcher;
-    ImageLoader imageLoader;
 
     InputStream is = null;
     int serverResponseCode = 0;
@@ -182,7 +186,7 @@ public class QaseComment_Post2 extends AppCompatActivity {
 
 
     private void initImageLoader() {
-
+/*
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .cacheOnDisc().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                 .bitmapConfig(Bitmap.Config.RGB_565).build();
@@ -192,7 +196,7 @@ public class QaseComment_Post2 extends AppCompatActivity {
 
         ImageLoaderConfiguration config = builder.build();
         imageLoader = ImageLoader.getInstance();
-        imageLoader.init(config);
+        imageLoader.init(config);*/
     }
 
    /* private void init() {
@@ -497,7 +501,7 @@ public class QaseComment_Post2 extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]);  //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -589,7 +593,7 @@ public class QaseComment_Post2 extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+ /*   public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -689,7 +693,7 @@ public class QaseComment_Post2 extends AppCompatActivity {
             return contentAsString;
         }
     }
-
+*/
     public String convertInputStreamToString(InputStream stream, int length) throws IOException {
         Reader reader = null;
         reader = new InputStreamReader(stream, "UTF-8");
@@ -868,6 +872,51 @@ public class QaseComment_Post2 extends AppCompatActivity {
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    private String upload_file(String file_path) {
+
+        last_upload_file=file_path;
+
+        if (comment_id != null && !comment_id.isEmpty() && !comment_id.equals("null") && !comment_id.equals("")){
+            comment_id="0";
+        }
+
+
+        String ServerUploadPath = Model.BASE_URL + "/sapp/CaseUpload?user_id=" + Model.id + "&token=" + Model.token + "&case_id=" + qase_id + "&comment_Id=" + comment_id;
+        System.out.println("ServerUploadPath---------" + ServerUploadPath);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString = response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return contentAsString;
     }
 
 }

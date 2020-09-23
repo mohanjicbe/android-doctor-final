@@ -8,9 +8,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +19,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.flurry.android.FlurryAgent;
 import com.orane.docassist.Model.Item;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 import com.orane.docassist.adapter.QueryAnsweredRowAdapter;
 
 import org.json.JSONArray;
@@ -39,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -97,7 +94,7 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
         setContentView(R.layout.query_answered);
 
         //------------------------------------------------------
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -105,7 +102,7 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -116,65 +113,15 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
 
         //================ Shared Pref ======================
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        /*
-        Ads Positions
-        -----------
-
-        Web : Top, Right, Custom Ads, Banner
-        App : home-mid, home-bott, categoty pages
-        Facebook : facebook ads
-        twitter : twitter ads
-        News List Ads : Ads as news
-        Video Ads : Inline Video ads - Permanent
-        Documentry videos : Sponcered ads
-        Web Series Title Ads
-
-        - intro speech, nature-targetzero title, abt tz, team speech-abt tz, team speech-abt plastic, cleaning videos,
-        public opinions, activists opinions, team speech-abt tz, Forest officer speech, End Speech
-
-        *. Online Quizzes, Offers coupons, declarations
-        *. College events,
-        * . Sports
-        *
-        1. CEO - Chief Reporter : Mohan
-        2. Reporters : Mohan
-        3. Camera Persons - Boobalan
-        4. Video Editors - Mohan
-        5. Technical Head - Karthick
-        6. Development & Marketting Team - Moorthy
-
-        1. Executive Summary
-        2. Company Description
-        3. Products and Services
-        4. Marketing Plan
-        5. Operational Plan
-        6. Management & Organization
-        7. Startup Expenses & Capitalization
-        8. Financial Plan
-
-
-        Office Advance : 25,000
-        Rent : 3,000
-        Furniture : 25,000
-        Systems : 2 Nos : 40,000
-        Internet (3 months) : 3000
-        Employees : 1 News Entry, 1 Reporter, 1 camera man, 1 video editor, 1 marketing
-        EB Bill : 2500
-        1 Video Camera : 75,000
-        Instruments : 5000
-        Stationaries : 3000
-
-        * */
         //============================================================
 
-        progressBar_Bottom = (ProgressBar) findViewById(R.id.progressBar_Bottom);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        netcheck_layout = (LinearLayout) findViewById(R.id.netcheck_layout);
-        btn_reload = (Button) findViewById(R.id.btn_reload);
-        nolayout = (LinearLayout) findViewById(R.id.nolayout);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_query_new);
-        listView = (ListView) findViewById(R.id.listview);
-
+        progressBar_Bottom = findViewById(R.id.progressBar_Bottom);
+        progressBar = findViewById(R.id.progressBar);
+        netcheck_layout = findViewById(R.id.netcheck_layout);
+        btn_reload = findViewById(R.id.btn_reload);
+        nolayout = findViewById(R.id.nolayout);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_query_new);
+        listView = findViewById(R.id.listview);
         //----------------------------------------------------------------------------------
 
         try {
@@ -220,10 +167,14 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
-                    full_process();
-                } else {
-                    force_logout();
+                try {
+                    if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
+                        full_process();
+                    } else {
+                        force_logout();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -234,12 +185,12 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 try {
-                    TextView query = (TextView) view.findViewById(R.id.tvquery);
-                    TextView speciality = (TextView) view.findViewById(R.id.tvspeciality);
-                    TextView followcode = (TextView) view.findViewById(R.id.tvfollowupcode);
-                    TextView patient = (TextView) view.findViewById(R.id.tvaskedname);
-                    TextView from = (TextView) view.findViewById(R.id.tvgeo);
-                    TextView askeddate = (TextView) view.findViewById(R.id.tvdate);
+                    TextView query = view.findViewById(R.id.tvquery);
+                    TextView speciality = view.findViewById(R.id.tvspeciality);
+                    TextView followcode = view.findViewById(R.id.tvfollowupcode);
+                    TextView patient = view.findViewById(R.id.tvaskedname);
+                    TextView from = view.findViewById(R.id.tvgeo);
+                    TextView askeddate = view.findViewById(R.id.tvdate);
 
                     Model.query = query.getText().toString();
                     Model.from = from.getText().toString();
@@ -250,15 +201,28 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
                     Intent intent = new Intent(AnsweredQueriesActivity.this, QueryAnsweredDetailActivity.class);
                     intent.putExtra("followupcode", Model.followcode);
                     startActivity(intent);
-
                     */
 
-                    Intent intent = new Intent(AnsweredQueriesActivity.this, AnsweredQueryViewActivity.class);
+/*                  Intent intent = new Intent(AnsweredQueriesActivity.this, AnsweredQueryViewActivity.class);
                     intent.putExtra("followupcode", (Model.followcode));
                     intent.putExtra("query_price", "0");
+
                     intent.putExtra("pat_from", (Model.from));
                     intent.putExtra("qtype", "answered_query");
                     startActivity(intent);
+*/
+                    Intent intent = new Intent(AnsweredQueriesActivity.this, NewQueryViewActivity.class);
+                    intent.putExtra("followupcode", Model.followcode);
+                    intent.putExtra("pat_location", Model.patient);
+                    intent.putExtra("str_price", "");
+                    intent.putExtra("qtype", "new_query");
+                    intent.putExtra("finisher", new android.os.ResultReceiver(null) {
+                        @Override
+                        protected void onReceiveResult(int resultCode, Bundle resultData) {
+                            AnsweredQueriesActivity.this.finish();
+                        }
+                    });
+                    startActivityForResult(intent, 1);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -414,7 +378,6 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
 
                 if (str_response != null && !str_response.isEmpty() && !str_response.equals("null") && !str_response.equals("")) {
 
-                    //----------Mohan-23/06/2018-----------------------------------------------
                     Object json = new JSONTokener(str_response).nextValue();
                     if (json instanceof JSONObject) {
                         System.out.println("This is JSON OBJECT---------------" + str_response);
@@ -516,7 +479,6 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
 
                         new JSON_Feedback().execute(json_err_feedback);
 
-
                         //----------- Flurry -------------------------------------------------
                         Map<String, String> articleParams = new HashMap<String, String>();
                         articleParams.put("android.doc.Not_Respond_Issue:", json_err_feedback.toString());
@@ -566,6 +528,7 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             try {
+
                 //----------------------------------------------------------
                 Object json = new JSONTokener(str_response).nextValue();
                 if (json instanceof JSONObject) {
@@ -800,7 +763,7 @@ public class AnsweredQueriesActivity extends AppCompatActivity {
             try {
                 //--------------------------------------------------
                 String answered_url = Model.BASE_URL + "sapp/qAnsweredDoc?os_type=android&user_id=" + (Model.id) + "&browser_country=" + (Model.browser_country) + "&page=1&patient_id=" + pat_id + "&token=" + Model.token;
-                //String answered_url = Model.BASE_URL + "sapp/qAnsweredDoc?os_type=android&user_id=450760&browser_country=" + (Model.browser_country) + "&page=1&patient_id=" + pat_id + "&token=" + Model.token;
+                //String answered_url = Model.BASE_URL + "sapp/qAnsweredDoc?os_type=android&user_id=597789&browser_country=" + (Model.browser_country) + "&page=1&patient_id=" + pat_id + "&token=" + Model.token;
                 System.out.println("url----" + answered_url);
                 new MyTask_server().execute(answered_url);
                 //--------------------------------------------------

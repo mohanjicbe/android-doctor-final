@@ -1,9 +1,9 @@
 package com.orane.docassist.Home;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 class ContentFragmentAdapter extends FragmentPagerAdapter {
 
@@ -26,7 +26,7 @@ class ContentFragmentAdapter extends FragmentPagerAdapter {
         switch (position) {
 
             case 0:
-                return HomeFragment.newInstance(position);
+                return BookingsFragment.newInstance(position);
             case 1:
                 return BookingsFragment.newInstance(position);
             case 2:

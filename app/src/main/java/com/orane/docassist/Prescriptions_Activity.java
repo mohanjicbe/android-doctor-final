@@ -8,9 +8,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,12 +20,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.flurry.android.FlurryAgent;
 import com.orane.docassist.Model.Item;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 import com.orane.docassist.adapter.Presription_ListAdapter;
 
 import org.json.JSONArray;
@@ -38,8 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class Prescriptions_Activity extends AppCompatActivity {
@@ -55,7 +52,7 @@ public class Prescriptions_Activity extends AppCompatActivity {
     ListView listView;
     TextView empty_msgmsg, tv_info;
     JSONObject object, json_response_obj, jsonobj_canisnaswer, json_err_feedback;
-    public String tv_id_val,patient_id, cur_qid, drugs_text, str_response, Log_Status, pat_location, str_price, params, prio_text, followcode_text;
+    public String ptype_val, tv_id_val, patient_id, cur_qid, drugs_text, str_response, Log_Status, pat_location, str_price, params, prio_text, followcode_text;
     private ProgressBar bar;
     LinearLayout nolayout, netcheck_layout;
     ProgressBar progressBar, progressBar_bottom;
@@ -91,7 +88,7 @@ public class Prescriptions_Activity extends AppCompatActivity {
     Integer int_floor;
     public boolean pagination = true;
     TextView tv_noqueries;
-    android.support.design.widget.FloatingActionButton fab;
+    com.github.clans.fab.FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +99,7 @@ public class Prescriptions_Activity extends AppCompatActivity {
         Model.query_launch = "";
 
         //------------------------------------------------------
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //---------------------------------------------------
@@ -111,7 +108,7 @@ public class Prescriptions_Activity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -144,17 +141,17 @@ public class Prescriptions_Activity extends AppCompatActivity {
 
         //Model.id = "59700";
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar_bottom = (ProgressBar) findViewById(R.id.progressBar_bottom);
-        btn_reload = (Button) findViewById(R.id.btn_reload);
-        netcheck_layout = (LinearLayout) findViewById(R.id.netcheck_layout);
-        nolayout = (LinearLayout) findViewById(R.id.nolayout);
-        empty_msgmsg = (TextView) findViewById(R.id.empty_msgmsg);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_query_new);
-        listView = (ListView) findViewById(R.id.listview);
-        tv_noqueries = (TextView) findViewById(R.id.tv_noqueries);
-        tv_info = (TextView) findViewById(R.id.tv_info);
-        fab = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fab);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar_bottom = findViewById(R.id.progressBar_bottom);
+        btn_reload = findViewById(R.id.btn_reload);
+        netcheck_layout = findViewById(R.id.netcheck_layout);
+        nolayout = findViewById(R.id.nolayout);
+        empty_msgmsg = findViewById(R.id.empty_msgmsg);
+        mSwipeRefreshLayout = findViewById(R.id.swipe_query_new);
+        listView = findViewById(R.id.listview);
+        tv_noqueries = findViewById(R.id.tv_noqueries);
+        tv_info = findViewById(R.id.tv_info);
+        fab = findViewById(R.id.fab);
 
         Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name);
         tv_noqueries.setTypeface(khandBold);
@@ -164,6 +161,13 @@ public class Prescriptions_Activity extends AppCompatActivity {
             Intent intent = getIntent();
             cur_qid = intent.getStringExtra("qid");
             patient_id = intent.getStringExtra("patient_id");
+
+            if (intent.hasExtra("ptype")) {
+                ptype_val = intent.getStringExtra("ptype");
+            } else {
+                ptype_val = "";
+            }
+
 
             System.out.println("cur_qid-------------" + cur_qid);
             System.out.println("P List patient_id-------------" + patient_id);
@@ -204,14 +208,22 @@ public class Prescriptions_Activity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(Prescriptions_Activity.this, Prescription_Entry_Activity.class);
+/*                intent = new Intent(Prescriptions_Activity.this, Prescription_Entry_Activity.class);
+                intent.putExtra("add_type", "new");
+                intent.putExtra("cur_qid", cur_qid);
+                intent.putExtra("ptype", "new");
+                intent.putExtra("pat_id", patient_id);
+                intent.putExtra("prescription_id", "0");
+                startActivity(intent);
+
+                System.out.println("patient_id*****+ " + patient_id);*/
+
+                intent = new Intent(Prescriptions_Activity.this, Prescription_home.class);
                 intent.putExtra("add_type", "new");
                 intent.putExtra("cur_qid", cur_qid);
                 intent.putExtra("pat_id", patient_id);
                 intent.putExtra("prescription_id", "0");
                 startActivity(intent);
-
-                System.out.println("patient_id*****+ " + patient_id);
             }
         });
 
@@ -224,14 +236,14 @@ public class Prescriptions_Activity extends AppCompatActivity {
 
                     objAdapter.setSelection(position);
 
-                    TextView tv_id = (TextView) view.findViewById(R.id.tv_id);
-                    TextView tvquery = (TextView) view.findViewById(R.id.tvquery);
-                    TextView tvspeciality = (TextView) view.findViewById(R.id.tvspeciality);
-                    TextView tvprice = (TextView) view.findViewById(R.id.tvprice);
-                    TextView tv_drug_type = (TextView) view.findViewById(R.id.tv_drug_type);
-                    TextView tv_when_to_take = (TextView) view.findViewById(R.id.tv_when_to_take);
-                    TextView tv_how_to_take = (TextView) view.findViewById(R.id.tv_how_to_take);
-                    TextView tv_days = (TextView) view.findViewById(R.id.tv_days);
+                    TextView tv_id = view.findViewById(R.id.tv_id);
+                    TextView tvquery = view.findViewById(R.id.tvquery);
+                    TextView tvspeciality = view.findViewById(R.id.tvspeciality);
+                    TextView tvprice = view.findViewById(R.id.tvprice);
+                    TextView tv_drug_type = view.findViewById(R.id.tv_drug_type);
+                    TextView tv_when_to_take = view.findViewById(R.id.tv_when_to_take);
+                    TextView tv_how_to_take = view.findViewById(R.id.tv_how_to_take);
+                    TextView tv_days = view.findViewById(R.id.tv_days);
 
                     tv_id_val = tv_id.getText().toString();
                     String drug_name = tvquery.getText().toString();
@@ -256,6 +268,7 @@ public class Prescriptions_Activity extends AppCompatActivity {
                     intent.putExtra("days_val", days_val);
                     intent.putExtra("drug_type", drug_type_val);
                     intent.putExtra("when_to_take", when_to_take);
+                    intent.putExtra("ptype", ptype_val);
                     startActivity(intent);
 
                 } catch (Exception e) {
@@ -579,29 +592,17 @@ public class Prescriptions_Activity extends AppCompatActivity {
     }
 
     public void go_back_msg() {
-
-        //---------------- Dialog------------------------------------------------------------------
-        final MaterialDialog alert = new MaterialDialog(Prescriptions_Activity.this);
-        alert.setTitle("");
-        alert.setMessage("Oops.! Something went wrong. Please go back and Try again.");
-        alert.setCanceledOnTouchOutside(false);
-        alert.setPositiveButton("OK", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alert.dismiss();
-            }
-        });
-
-                          /*  alert.setNegativeButton("No", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    alert.dismiss();
-                                }
-                            });*/
-        alert.show();
-        //-----------------Dialog-----------------------------------------------------------------
-
-
+/*        new SweetAlertDialog(Prescriptions_Activity.this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("")
+                .setContentText("Something went wrong; please try again.")
+                .setConfirmText("Ok.!")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        finish();
+                    }
+                })
+                .show();*/
     }
 
 

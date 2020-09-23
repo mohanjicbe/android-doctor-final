@@ -9,20 +9,20 @@
     android:background="@color/grey_100"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?attr/colorPrimary"
+            android:background="@mipmap/toolbar_bg"
             android:theme="@style/ThemeOverlay.MyApp.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <ScrollView
@@ -203,7 +203,7 @@
                     android:orientation="horizontal"
                     android:visibility="gone">
 
-                    <android.support.v7.widget.SwitchCompat
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switch_show"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

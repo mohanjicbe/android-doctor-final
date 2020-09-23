@@ -26,7 +26,7 @@
             android:visibility="gone" />
 
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="visible">
-
 
                 <LinearLayout
                     android:id="@+id/doc_layout"
@@ -163,7 +162,6 @@
                         android:textColor="@color/grey_700"
                         android:textSize="12sp" />
 
-
                 </RelativeLayout>
 
                 <View
@@ -201,18 +199,146 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-
-
                     </LinearLayout>
+
                 </LinearLayout>
 
 
-                <WebView
+                <com.github.ksoichiro.android.observablescrollview.ObservableWebView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/webview_answer"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content" />
 
-                </WebView>
+                <LinearLayout
+                    android:id="@+id/prescribe_view_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                   <!-- <Button
+                        android:id="@+id/btn_view_prescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/button_rounded"
+                        android:gravity="center"
+                        android:onClick="onclick_viewpres"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:text="View a Prescription"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />-->
+
+
+                    <LinearLayout
+                        android:id="@+id/prescribe_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+
+                                    <Button
+                                        android:id="@+id/btn_view_prescription"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="35dp"
+                                        android:layout_alignParentLeft="true"
+                                        android:layout_centerInParent="true"
+                                        android:layout_gravity="center"
+                                        android:background="@drawable/button_rounded"
+                                        android:gravity="center"
+                                        android:onClick="onclick_viewpres"
+                                        android:paddingLeft="20dp"
+                                        android:paddingRight="20dp"
+                                        android:text="View a Prescription"
+                                        android:textAllCaps="false"
+                                        android:textColor="@color/white"
+                                        android:visibility="visible" />
+
+                                    <Button
+                                        android:id="@+id/btn_write_pres_answer"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="35dp"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="5dp"
+                                        android:layout_toRightOf="@+id/btn_view_prescription"
+                                        android:background="@drawable/button_rounded"
+                                        android:paddingLeft="20dp"
+                                        android:paddingRight="20dp"
+                                        android:text="Write Prescription"
+                                        android:textAllCaps="false"
+                                        android:textColor="@color/white" />
+
+                                    <TextView
+                                        android:id="@+id/tv_answer_query_id"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:visibility="gone" />
+
+                                </LinearLayout>
+
+                                <TextView
+                                    android:id="@+id/tv_pres_comment"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="10dp"
+                                    android:fontFamily="sans-serif"
+                                    android:text=""
+                                    android:textColor="@color/mds_bluegrey_800"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:visibility="visible" />
+
+                                <LinearLayout
+                                    android:id="@+id/file_list"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
+
+
+
+
+
+                    <TextView
+                        android:id="@+id/tv_cuurent_query_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/answer_layout_attachfile"
@@ -252,7 +378,6 @@
                             android:textSize="13sp"
                             android:textStyle="bold|italic" />
 
-
                         <TextView
                             android:id="@+id/tv_answer_filename"
                             android:layout_width="wrap_content"
@@ -284,7 +409,6 @@
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/feedback_section"
                     android:layout_width="match_parent"
@@ -309,6 +433,163 @@
                         android:layout_height="0.5dip"
                         android:layout_marginTop="5dp"
                         android:background="@color/grey_700" />
+
+
+                    <LinearLayout
+                        android:id="@+id/ratting_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                        <TextView
+                            android:id="@+id/text_ratting1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+
+                        <TextView
+                            android:id="@+id/text_ratting1_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+
+                        <RatingBar
+                            android:id="@+id/ratingBar1"
+                            style="@style/Widget.AppCompat.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:rating="0"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/text_ratting2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/text_ratting2_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+
+                        <RatingBar
+                            android:id="@+id/ratingBar2"
+                            style="@style/Widget.AppCompat.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/text_ratting3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/text_ratting3_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+
+                        <RatingBar
+                            android:id="@+id/ratingBar3"
+                            style="@style/Widget.AppCompat.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/text_ratting4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/text_ratting4_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="Enter your feedback here.."
+                            android:textColor="@color/mds_bluegrey_800"
+                            android:textSize="15sp"
+                            android:visibility="gone" />
+
+                        <RatingBar
+                            android:id="@+id/ratingBar4"
+                            style="@style/Widget.AppCompat.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="12dp"
+                            android:autoLink="web"
+                            android:fontFamily="sans-serif"
+                            android:text="This is the Patient Feedback"
+                            android:textColor="@color/mds_bluegrey_900"
+                            android:textSize="16sp"
+                            android:textStyle="italic" />
+
+                    </LinearLayout>
 
 
                     <TextView
@@ -380,7 +661,7 @@
                 </LinearLayout>
 
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 </LinearLayout>

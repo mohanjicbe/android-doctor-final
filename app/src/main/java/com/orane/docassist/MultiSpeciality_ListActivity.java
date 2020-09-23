@@ -3,8 +3,8 @@ package com.orane.docassist;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -185,14 +185,14 @@ public class MultiSpeciality_ListActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.nav_cfilter) {
+      /*  if (id == R.id.nav_cfilter) {
             spec_val = "0";
             Model.select_spec_val = "0";
             Model.query_launch = "SpecialityListActivity";
             finish();
 
             return true;
-        }
+        }*/
 
 
         return true;

@@ -10,8 +10,8 @@ import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -245,21 +245,21 @@ public class MyPatientSendSlot extends AppCompatActivity implements
                                                 post_slot();
 
 
-                                            } else edt_fee.setError("Enter Fees");
+                                            } else edt_fee.setError("Please enter the fees");
                                         } else
-                                            Toast.makeText(getApplicationContext(), "Select Currency", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "Please Select Currency", Toast.LENGTH_LONG).show();
                                     } else
-                                        Toast.makeText(getApplicationContext(), "Select your Clinic", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Please select your Clinic", Toast.LENGTH_LONG).show();
                                 } else
-                                    Toast.makeText(getApplicationContext(), "Select Consultation type", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "Please select Consultation type", Toast.LENGTH_LONG).show();
                             } else
-                                Toast.makeText(getApplicationContext(), "Select Time for consultation", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Please select Time for consultation", Toast.LENGTH_LONG).show();
                         } else
-                            Toast.makeText(getApplicationContext(), "Select Timezone", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Please select your Timezone", Toast.LENGTH_LONG).show();
                     } else
-                        Toast.makeText(getApplicationContext(), "Select Date for consultation", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Please select Date for consultation", Toast.LENGTH_LONG).show();
                 } else
-                    Toast.makeText(getApplicationContext(), "Please enter notes", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please enter your notes or message", Toast.LENGTH_LONG).show();
 
 
             }

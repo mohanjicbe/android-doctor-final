@@ -2,7 +2,6 @@ package com.orane.docassist;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,13 +13,9 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,29 +31,36 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
+import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hbb20.CountryCodePicker;
-
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.fileattach_library.DefaultCallback;
 import com.orane.docassist.fileattach_library.EasyImage;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,6 +68,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.drakeet.materialdialog.MaterialDialog;
 import pl.tajchert.nammu.Nammu;
@@ -85,13 +89,14 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
     InputStream is = null;
     ImageView profile_image;
     public StringBuilder total;
-    EditText edtname, edt_emailid, edt_password, edt_confirmpassword;
+    EditText edtname, edt_emailid, edt_confirmpassword;
+    ShowHidePasswordEditText edt_password;
     EditText edt_userid, edt_phoneno;
     RelativeLayout ccode_layout;
     public String gender_val, upload_response_status, cons_select_date, userid, country_code_val, user_id, selected_cc_value, selected_cc_text, status_val, gender_code, gender_name, cc_name, cccode, fullanme, emailid, pwd, phno, cpwd;
     JSONObject login_json, login_jsonobj;
     TextView tv_ccode;
-    RadioButton rad_male, rad_female;
+    RadioButton rad_male, rad_gender, rad_female;
     CountryCodePicker countryCodePicker;
     ImageView thumb_img;
     TextView mTitle;
@@ -105,7 +110,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
         setContentView(R.layout.signup1);
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -113,7 +118,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
             getSupportActionBar().setDisplayShowHomeEnabled(false);
             getSupportActionBar().setTitle("");
 
-            mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -122,33 +127,35 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color));
         }
+        //------------ Object Creations -------------------------------
 
         Model.query_launch = "";
         selectedPath = "";
 
-        layout_check = (RelativeLayout) findViewById(R.id.layout_check);
-        layout_correct = (RelativeLayout) findViewById(R.id.layout_correct);
-        layout_wrong = (RelativeLayout) findViewById(R.id.layout_wrong);
+        layout_check = findViewById(R.id.layout_check);
+        layout_correct = findViewById(R.id.layout_correct);
+        layout_wrong = findViewById(R.id.layout_wrong);
 
-        photo_layout = (LinearLayout) findViewById(R.id.photo_layout);
-        profile_image = (ImageView) findViewById(R.id.profile_image);
+        photo_layout = findViewById(R.id.photo_layout);
+        profile_image = findViewById(R.id.profile_image);
 
-        countryCodePicker = (CountryCodePicker) findViewById(R.id.ccp);
-        edt_userid = (EditText) findViewById(R.id.edt_userid);
-        edtname = (EditText) findViewById(R.id.edtname);
-        edt_emailid = (EditText) findViewById(R.id.edt_emailid);
-        edt_password = (EditText) findViewById(R.id.edt_password);
-        edt_confirmpassword = (EditText) findViewById(R.id.edt_confirmpassword);
-        edt_phoneno = (EditText) findViewById(R.id.edt_phoneno);
+        countryCodePicker = findViewById(R.id.ccp);
+        edt_userid = findViewById(R.id.edt_userid);
+        edtname = findViewById(R.id.edtname);
+        edt_emailid = findViewById(R.id.edt_emailid);
+        edt_password = findViewById(R.id.edt_password);
+        edt_confirmpassword = findViewById(R.id.edt_confirmpassword);
+        edt_phoneno = findViewById(R.id.edt_phoneno);
 
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        spinner_ccode = (Spinner) findViewById(R.id.spinner_ccode);
-        spinner_gender = (Spinner) findViewById(R.id.spinner_gender);
-        tv_ccode = (TextView) findViewById(R.id.tv_ccode);
-        ccode_layout = (RelativeLayout) findViewById(R.id.ccode_layout);
-        rad_male = (RadioButton) findViewById(R.id.rad_male);
-        rad_female = (RadioButton) findViewById(R.id.rad_female);
-        btn_dob = (Button) findViewById(R.id.btn_dob);
+        btn_submit = findViewById(R.id.btn_submit);
+        spinner_ccode = findViewById(R.id.spinner_ccode);
+        spinner_gender = findViewById(R.id.spinner_gender);
+        tv_ccode = findViewById(R.id.tv_ccode);
+        ccode_layout = findViewById(R.id.ccode_layout);
+        rad_male = findViewById(R.id.rad_male);
+        rad_female = findViewById(R.id.rad_female);
+        rad_gender = findViewById(R.id.rad_gender);
+        btn_dob = findViewById(R.id.btn_dob);
 
         gender_code = "0";
         rad_male.setSelected(true);
@@ -185,6 +192,8 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
             @Override
             public void onClick(View view) {
 
+                System.out.println("check_userid---");
+
                 String uname = edt_userid.getText().toString();
 
                 if (!uname.equals("")) {
@@ -202,7 +211,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                     }
                 } else {
                     edt_userid.requestFocus();
-                    edt_userid.setError("User id cannot be empty");
+                    edt_userid.setError("Please enter your User Id");
                 }
 
             }
@@ -275,7 +284,6 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         });
@@ -297,15 +305,15 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                 }
             });
         }
-        EasyImage.configuration(this)
+
+      /*  EasyImage.configuration(this)
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
                 .setCopyPickedImagesToPublicGalleryAppFolder(true)
-                .setAllowMultiplePickInGallery(true);
+                .setAllowMultiplePickInGallery(true);*/
         //------------------ Initialize File Attachment ---------------------------------
 
-
-        layout_check.setOnClickListener(new View.OnClickListener() {
+        /*layout_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 layout_check.setVisibility(View.GONE);
@@ -327,10 +335,16 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
             @Override
             public void onClick(View view) {
                 layout_check.setVisibility(View.GONE);
+
+
+
+
+
+
                 layout_correct.setVisibility(View.VISIBLE);
                 layout_wrong.setVisibility(View.GONE);
             }
-        });
+        });*/
 
         photo_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -354,6 +368,15 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     gender_code = "2";
+                }
+            }
+        });
+
+        rad_gender.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    gender_code = "3";
                 }
             }
         });
@@ -438,52 +461,60 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                                         if (!phno.equals("")) {
                                             if (!gender_code.equals("0")) {
                                                 if (!date_text.equals("Date of birth")) {
-                                                    if (pwd.equals(cpwd)) {
 
-                                                        if (layout_correct.getVisibility() == View.VISIBLE) {
-                                                            //signup();
-                                                            validate_mob_email();
-                                                        } else {
-                                                            Toast.makeText(Signup1.this, "Please check availability of User ID", Toast.LENGTH_SHORT).show();
-                                                        }
-
+                                                    if (pwd.length() < 8 || !isValidPassword(pwd)) {
+                                                        System.out.println("Pwd is Not Valid");
+                                                        diag_err_pwd();
                                                     } else {
-                                                        edt_confirmpassword.requestFocus();
-                                                        edt_confirmpassword.setError("Confirm password is not matched");
-                                                        Toast.makeText(Signup1.this, "Confirm password is not matched", Toast.LENGTH_SHORT).show();
+
+                                                        if (pwd.equals(cpwd)) {
+
+                                                            if (layout_correct.getVisibility() == View.VISIBLE) {
+                                                                //signup();
+                                                                validate_mob_email();
+                                                            } else {
+                                                                Toast.makeText(Signup1.this, "User ID already exists (Please choose another user ID)", Toast.LENGTH_SHORT).show();
+                                                            }
+
+
+                                                        } else {
+                                                            edt_confirmpassword.requestFocus();
+                                                            edt_confirmpassword.setError("Those passwords don't match");
+                                                            Toast.makeText(Signup1.this, "Those passwords don't match", Toast.LENGTH_SHORT).show();
+                                                        }
                                                     }
                                                 } else {
-                                                    Toast.makeText(Signup1.this, "Select Date of Birth", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(Signup1.this, "Please select your date of birth", Toast.LENGTH_SHORT).show();
                                                 }
                                             } else
-                                                Toast.makeText(Signup1.this, "Choose Gender", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(Signup1.this, "Please choose your Gender", Toast.LENGTH_SHORT).show();
                                         } else {
                                             edt_phoneno.requestFocus();
-                                            edt_phoneno.setError("Mobile no cannot be empty");
+                                            edt_phoneno.setError("Please enter your mobile number");
                                         }
                                     } else {
                                         edt_emailid.requestFocus();
-                                        edt_emailid.setError("Enter Email id");
+                                        edt_emailid.setError("Please enter the Please enter your valid Email address");
                                     }
                                 } else {
                                     edtname.requestFocus();
-                                    edtname.setError("Name cannot be empty");
+                                    edtname.setError("Please enter your name");
                                 }
                             } else {
                                 edt_userid.requestFocus();
-                                edt_userid.setError("User ID cannot be empty");
+                                edt_userid.setError("Please enter your User Id");
                             }
                         } else {
                             edt_confirmpassword.requestFocus();
-                            edt_confirmpassword.setError("Confirm password in not matched");
+                            edt_confirmpassword.setError("Those passwords don't match");
                         }
                     } else {
                         edt_password.requestFocus();
-                        edt_password.setError("Confirm password in not matched");
+                        edt_password.setError("Those passwords don't match");
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -506,7 +537,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                 dpd.dismissOnPause(false);
                 dpd.showYearPickerFirst(false);
                 dpd.setAccentColor(Color.parseColor("#9C27B0"));
-                dpd.setTitle("Select Date of Birth");
+                dpd.setTitle("Please select your date of birth");
                 now.add(Calendar.YEAR, -15); // Selecting max Date
                 dpd.setMaxDate(now);
 
@@ -722,8 +753,6 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                     //new AsyncTask_fileupload().execute(selectedPath);
 
 
-
-
                 } else {
 
                     String err_val = signup_jsonobj.getString("err");
@@ -792,7 +821,6 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
 
                 } else {
                     //showChooser();
-
                     int permissionCheck = ContextCompat.checkSelfPermission(Signup1.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                         EasyImage.openDocuments(Signup1.this, 0);
@@ -839,7 +867,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -881,106 +909,105 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
         }
     }
 
+    /* public String upload_file(String fullpath) {
 
-    public String upload_file(String fullpath) {
+         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
-        String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
+         local_url = fullpath;
 
-        local_url = fullpath;
+         System.out.println("fpath-------" + fullpath);
+         System.out.println("fpath_filename---------" + fpath_filename);
 
-        System.out.println("fpath-------" + fullpath);
-        System.out.println("fpath_filename---------" + fpath_filename);
+         last_upload_file = fpath_filename;
 
-        last_upload_file = fpath_filename;
+         HttpURLConnection conn = null;
+         DataOutputStream dos = null;
 
-        HttpURLConnection conn = null;
-        DataOutputStream dos = null;
+         String lineEnd = "\r\n";
+         String twoHyphens = "--";
+         String boundary = "*****";
+         int bytesRead, bytesAvailable, bufferSize;
+         byte[] buffer;
+         int maxBufferSize = 1024 * 1024;
+         File sourceFile = new File(fullpath);
 
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1024 * 1024;
-        File sourceFile = new File(fullpath);
+         if (!sourceFile.isFile()) {
+             System.out.println("Source File not exist :" + fullpath);
+             return "";
+         } else {
 
-        if (!sourceFile.isFile()) {
-            System.out.println("Source File not exist :" + fullpath);
-            return "";
-        } else {
+             try {
+                 upLoadServerUri = Model.BASE_URL + "/sapp/uploadDocPhoto?os_type=android&user_id=" + (Model.id) + "&token=" + Model.token;
+                 System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
 
-            try {
-                upLoadServerUri = Model.BASE_URL + "/sapp/uploadDocPhoto?os_type=android&user_id=" + (Model.id) + "&token=" + Model.token;
-                System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
+                 FileInputStream fileInputStream = new FileInputStream(fullpath);
+                 System.out.println("fullpath---------------------------------" + fullpath);
+                 URL url = new URL(upLoadServerUri);
 
-                FileInputStream fileInputStream = new FileInputStream(fullpath);
-                System.out.println("fullpath---------------------------------" + fullpath);
-                URL url = new URL(upLoadServerUri);
+                 // Open a HTTP  connection to  the URL
+                 conn = (HttpURLConnection) url.openConnection();
+                 conn.setDoInput(true);
+                 conn.setDoOutput(true);
+                 conn.setUseCaches(false);
+                 conn.setRequestMethod("POST");
+                 conn.setRequestProperty("Connection", "Keep-Alive");
+                 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                 conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                 conn.setRequestProperty("uploaded_file", fullpath);
 
-                // Open a HTTP  connection to  the URL
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.setUseCaches(false);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                conn.setRequestProperty("uploaded_file", fullpath);
+                 dos = new DataOutputStream(conn.getOutputStream());
+                 dos.writeBytes(twoHyphens + boundary + lineEnd);
+                 dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fullpath + "\"" + lineEnd);
+                 dos.writeBytes(lineEnd);
 
-                dos = new DataOutputStream(conn.getOutputStream());
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fullpath + "\"" + lineEnd);
-                dos.writeBytes(lineEnd);
+                 bytesAvailable = fileInputStream.available();
+                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                 buffer = new byte[bufferSize];
+                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                 while (bytesRead > 0) {
+                     dos.write(buffer, 0, bufferSize);
+                     bytesAvailable = fileInputStream.available();
+                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                     bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                 }
 
-                while (bytesRead > 0) {
-                    dos.write(buffer, 0, bufferSize);
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                }
+                 dos.writeBytes(lineEnd);
+                 dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                 serverResponseCode = conn.getResponseCode();
+                 serverResponseMessage = conn.getResponseMessage();
 
-                serverResponseCode = conn.getResponseCode();
-                serverResponseMessage = conn.getResponseMessage();
+                 int response = conn.getResponseCode();
+                 System.out.println("response-------" + response);
+                 is = conn.getInputStream();
+                 contentAsString = convertInputStreamToString(is);
+                 System.out.println("Upload File Response-----------------" + contentAsString);
 
-                int response = conn.getResponseCode();
-                System.out.println("response-------" + response);
-                is = conn.getInputStream();
-                contentAsString = convertInputStreamToString(is);
-                System.out.println("Upload File Response-----------------" + contentAsString);
+                 fileInputStream.close();
+                 dos.flush();
+                 dos.close();
 
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
+             } catch (MalformedURLException ex) {
+                 ex.printStackTrace();
 
-            } catch (MalformedURLException ex) {
-                ex.printStackTrace();
+                 runOnUiThread(new Runnable() {
+                     public void run() {
+                     }
+                 });
 
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                    }
-                });
+             } catch (Exception e) {
+                 e.printStackTrace();
+             }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return contentAsString;
-        }
-    }
-
+             return contentAsString;
+         }
+     }
+ */
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
             total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -1066,7 +1093,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
 
     @Override
     protected void onDestroy() {
-        EasyImage.clearConfiguration(this);
+        //EasyImage.clearConfiguration(this);
         super.onDestroy();
     }
 
@@ -1111,7 +1138,6 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                 JSONParser jParser = new JSONParser();
                 login_jsonobj = jParser.JSON_POST(urls[0], "validatemobnoexists");
 
-
                 System.out.println("Signup json---------------" + login_jsonobj.toString());
 
                 return true;
@@ -1144,6 +1170,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                         alert.setPositiveButton("Yes", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                alert.dismiss();
                                 signup();
                             }
                         });
@@ -1173,7 +1200,6 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                             edt_emailid.requestFocus();
                             edt_emailid.setError(err_val);
                         }
-
                     } else {
                         Toast.makeText(getApplicationContext(), err_val, Toast.LENGTH_SHORT).show();
                     }
@@ -1193,6 +1219,8 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
     public void signup() {
 
         try {
+
+            System.out.println("Pwd is Valid-----------");
             login_json = new JSONObject();
 
             phno = phno.replaceAll(" ", "");
@@ -1278,7 +1306,7 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
                 } else {
                     Toast.makeText(getApplicationContext(), msg_text, Toast.LENGTH_LONG).show();
                     edt_userid.requestFocus();
-                    edt_userid.setError("User id is not available");
+                    edt_userid.setError("Provided User Id is not available. Please enter a different one.");
 
                     layout_check.setVisibility(View.GONE);
                     layout_correct.setVisibility(View.GONE);
@@ -1295,6 +1323,92 @@ public class Signup1 extends AppCompatActivity implements DatePickerDialog.OnDat
     }
 
 
+    private String upload_file(String file_path) {
+
+        last_upload_file = file_path;
+        String ServerUploadPath = Model.BASE_URL + "/sapp/uploadDocPhoto?os_type=android&user_id=" + (Model.id) + "&token=" + Model.token;
+
+        System.out.println("ServerUploadPath-------------" + ServerUploadPath);
+        System.out.println("file_path-------------" + file_path);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString = response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return contentAsString;
+    }
+
+    public static boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+
+    }
+
+    public void diag_err_pwd() {
+
+
+        try {
+            final MaterialDialog alert = new MaterialDialog(Signup1.this);
+            alert.setTitle("Incorrect password. Please try again.");
+            alert.setMessage("Password should contain atleast 1 Uppercase, 1 lowercase, 1 number, 1 special symbol and minimum 8 charecters");
+            alert.setCanceledOnTouchOutside(false);
+            alert.setPositiveButton("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    edt_password.setError("Incorrect password. Please try again.");
+                    edt_password.requestFocus();
+
+                    alert.dismiss();
+                }
+            });
+/*
+
+            alert.setNegativeButton("No", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+*/
+
+            alert.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

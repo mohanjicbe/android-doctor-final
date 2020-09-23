@@ -1,8 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.tajchert:nammu:1.1.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/nammu-1.1.1.aar/c95adea54e92531390869e6783c59f32/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/nammu-1.1.1.aar/c95adea54e92531390869e6783c59f32/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d630061cc31422a253a602915d94f815/jetified-nammu-1.1.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d630061cc31422a253a602915d94f815/jetified-nammu-1.1.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d630061cc31422a253a602915d94f815/jetified-nammu-1.1.1/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

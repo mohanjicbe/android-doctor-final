@@ -5,11 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@mipmap/toolbar_bg"
         android:theme="@style/ThemeOverlay.MyApp.ActionBar"
         android:visibility="gone"
         app:popupTheme="@style/AppTheme.PopupOverlay" />

@@ -8,9 +8,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -228,20 +229,25 @@ public class Attached_List_Activity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                            View parent = (View) v.getParent();
-                            //View grand_parent = (View)parent.getParent();
+                            try {
+                                View parent = (View) v.getParent();
+                                //View grand_parent = (View)parent.getParent();
 
-                            tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
-                            String attid = tv_attach_id.getText().toString();
+                                tv_attach_id = (TextView) parent.findViewById(R.id.tv_attach_id);
+                                String attid = tv_attach_id.getText().toString();
 
-                            //---------------------------
-                            String url = Model.BASE_URL + "/sapp/removeQAttachment?os_type=android&qid=" + qid_val + "&user_id=" + (Model.id) + "&attach_id=" + attid + "&token=" + Model.token;
-                            System.out.println("Remover Attach url-------------" + url);
-                            new JSON_remove_file().execute(url);
-                            //---------------------------
+                                //---------------------------
+                                String url = Model.BASE_URL + "/sapp/removeQAttachment?os_type=android&qid=" + qid_val + "&user_id=" + (Model.id) + "&attach_id=" + attid + "&token=" + Model.token;
+                                System.out.println("Remover Attach url-------------" + url);
+                                new JSON_remove_file().execute(url);
+                                //---------------------------
 
-                            System.out.println("Removed attach_id-----------" + attid);
-                            ((LinearLayout) addView.getParent()).removeView(addView);
+                                System.out.println("Removed attach_id-----------" + attid);
+                                ((LinearLayout) addView.getParent()).removeView(addView);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
 
@@ -249,26 +255,31 @@ public class Attached_List_Activity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                            View parent = (View) v.getParent();
-                            TextView tv_fileurl = (TextView) parent.findViewById(R.id.tv_fileurl);
+                            try {
 
-                            String url_text = tv_fileurl.getText().toString();
+                                View parent = (View) v.getParent();
+                                TextView tv_fileurl = (TextView) parent.findViewById(R.id.tv_fileurl);
+
+                                String url_text = tv_fileurl.getText().toString();
 
 /*                            Intent intent = new Intent(Attached_List_Activity.this, Image_Preview.class);
                             intent.putExtra("url", url_text);
                             startActivity(intent);*/
 
-                            Intent i = new Intent(getApplicationContext(), WebViewActivity.class);
-                            i.putExtra("url", "http://docs.google.com/viewer?url=" + url_text);
-                            i.putExtra("type", "Attachment View");
-                            startActivity(i);
-                            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+                                Intent i = new Intent(getApplicationContext(), WebViewActivity.class);
+                                i.putExtra("url", "http://docs.google.com/viewer?url=" + url_text);
+                                i.putExtra("type", "Attachment View");
+                                startActivity(i);
+                                overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
 
                     file_list_layout.addView(addView);
                     //------------------------------------
-
                 }
             }
 

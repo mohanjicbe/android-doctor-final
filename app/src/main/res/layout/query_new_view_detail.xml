@@ -8,11 +8,11 @@
     android:background="@color/grey_100"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
-        android:background="?attr/colorPrimary"
+        android:background="@mipmap/toolbar_bg"
         android:theme="@style/ThemeOverlay.MyApp.ActionBar"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -26,7 +26,7 @@
             android:textSize="17sp"
             android:textStyle="bold" />
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/netcheck_layout"
@@ -505,6 +505,7 @@
                             android:visibility="visible">
 
                             <TextView
+                                android:id="@+id/prescription_title"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="sans-serif"
@@ -512,9 +513,10 @@
                                 android:textColor="@color/mds_bluegrey_800"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
-                                android:visibility="visible" />
+                                android:visibility="gone" />
 
                             <RelativeLayout
+                                android:id="@+id/pres_wrie_layout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -548,6 +550,12 @@
                                     android:text="Write Prescription"
                                     android:textAllCaps="false"
                                     android:textColor="@color/white" />
+
+                                <TextView
+                                    android:id="@+id/tv_write_query_id"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone" />
 
                             </RelativeLayout>
 
@@ -776,146 +784,100 @@
 
             </LinearLayout>
 
-
-            <!-- <LinearLayout
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginBottom="25dp"
-                 android:layout_marginTop="15dp"
-                 android:orientation="vertical"
-                 android:padding="10dp"
-                 android:visibility="visible">
-
-                 <TextView
-                     android:id="@+id/tv_discc"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:fontFamily="sans-serif"
-                     android:text="Patient Feedback :"
-                     android:textColor="@color/mds_bluegrey_700"
-                     android:textSize="15sp"
-                     android:textStyle="italic" />
-
-                 <View
-                     android:layout_width="match_parent"
-                     android:layout_height="0.5dip"
-                     android:layout_marginTop="5dp"
-                     android:background="@color/grey_700" />
+            <RelativeLayout
+                android:id="@+id/followup_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
 
 
-                 <TextView
-                     android:id="@+id/tv_nocomm"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_gravity="center_vertical"
-                     android:layout_marginTop="10dp"
-                     android:fontFamily="sans-serif-light"
-                     android:gravity="center"
-                     android:text="No Feedback posted yet"
-                     android:textColor="@color/mds_bluegrey_700"
-                     android:textSize="15sp"
-                     android:textStyle="italic" />
+                <EditText
+                    android:id="@+id/edt_followup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_followtit"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/answeredittext"
+                    android:fontFamily="sans-serif"
+                    android:gravity="left"
+                    android:hint="Type your answer here..."
+                    android:inputType="textMultiLine"
+                    android:isScrollContainer="true"
+                    android:minHeight="100dp"
+                    android:padding="10dp"
+                    android:textColor="@color/mds_bluegrey_800"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
 
+                <Button
+                    android:id="@+id/btn_follow_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/edt_followup"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/button_rounded"
+                    android:elevation="10dp"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:text="Submit"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
 
-                 <LinearLayout
-                     android:id="@+id/comments_layout"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/info_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="@drawable/free_query_border"
+                    android:padding="5dp"
+                    android:visibility="gone">
 
-                 </LinearLayout>
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@mipmap/warning_icon" />
 
-             </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="left|center_vertical"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="0dp"
+                        android:text="You have already answered the query. If you would wold like to follow-up with the user regarding his concerns, please use this message box."
+                        android:textColor="@color/black"
+                        android:textSize="13sp" />
 
-             <LinearLayout
-                 android:id="@+id/post_qases_layout"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginBottom="25dp"
-                 android:background="@color/white"
-                 android:descendantFocusability="beforeDescendants"
-                 android:elevation="5dp"
-                 android:focusableInTouchMode="true"
-                 android:orientation="vertical"
-                 android:padding="10dp">
+                </LinearLayout>
 
-                 <TextView
-                     android:id="@+id/tv_ask_tit"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_marginLeft="15dp"
-                     android:layout_marginRight="25dp"
-                     android:layout_marginTop="10dp"
-                     android:fontFamily="sans-serif"
-                     android:text="Write a Reply"
-                     android:textColor="@color/mds_bluegrey_700"
-                     android:textSize="17dp"
-                     android:textStyle="bold"
-                     android:visibility="visible" />
+                <TextView
+                    android:id="@+id/tv_followtit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/info_layout"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:fontFamily="sans-serif"
+                    android:padding="5dp"
+                    android:text="Enter your followup message to Patient"
+                    android:textColor="@color/mds_bluegrey_600"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-                 <View
-                     android:layout_width="match_parent"
-                     android:layout_height="0.5dip"
-                     android:layout_marginLeft="15dp"
-                     android:layout_marginRight="100dp"
-                     android:layout_marginTop="2dp"
-                     android:background="@color/mds_bluegrey_700" />
+            </RelativeLayout>
 
-                 <TextView
-                     android:id="@+id/tvtit"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_marginLeft="15dp"
-                     android:layout_marginRight="25dp"
-                     android:layout_marginTop="5dp"
-                     android:fontFamily="sans-serif"
-                     android:text="Discuss medical cases with fellow icliniq doctors"
-                     android:textColor="@color/mds_bluegrey_800"
-                     android:textSize="14dp"
-                     android:textStyle="normal"
-                     android:visibility="gone" />
-
-                 <EditText
-                     android:id="@+id/edt_comment"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_centerHorizontal="true"
-                     android:layout_marginLeft="15dp"
-                     android:layout_marginRight="15dp"
-                     android:layout_marginTop="10dp"
-                     android:background="@drawable/edittext_border"
-                     android:fontFamily="sans-serif"
-                     android:gravity="left"
-                     android:hint="Type your reply here.."
-                     android:inputType="textMultiLine"
-                     android:isScrollContainer="true"
-                     android:minHeight="100dp"
-                     android:padding="10dp"
-                     android:textColor="@color/mds_bluegrey_700"
-                     android:textSize="15sp"
-                     android:textStyle="normal" />
-
-                 <Button
-                     android:id="@+id/btn_post_submit"
-                     android:layout_width="wrap_content"
-                     android:layout_height="37dp"
-                     android:layout_alignParentBottom="true"
-                     android:layout_centerHorizontal="true"
-                     android:layout_gravity="center"
-                     android:layout_marginTop="15dp"
-                     android:background="@drawable/button_rounded"
-                     android:fontFamily="sans-serif"
-                     android:gravity="center"
-                     android:paddingLeft="20dp"
-                     android:paddingRight="20dp"
-                     android:text="Submit"
-                     android:textAllCaps="false"
-                     android:textColor="@color/white"
-                     android:textSize="15sp"
-                     android:textStyle="bold" />
-
-             </LinearLayout>
- -->
 
             <TextView
                 android:layout_width="match_parent"

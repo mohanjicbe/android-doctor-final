@@ -1,5 +1,7 @@
 package com.orane.docassist;
 
+import java.util.Iterator;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,8 +15,6 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -23,26 +23,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import com.flurry.android.FlurryAgent;
+import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.Detector;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 import com.orane.docassist.attachment_view.GridViewActivity;
 
 import org.json.JSONArray;
@@ -51,54 +52,13 @@ import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
 
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class AnsweredQueryViewActivity extends AppCompatActivity {
 
 
-    Switch followup_switch;
-    Button btn_notanswer;
-    WebView query_webview;
-    public String strHtml_text, answer_files_text, attach_file_text, has_prescription_val, title_text, fields_text, qtype, query_price_text, pat_from_text, check_enable_ffollowup, answering_status, opt_freefollow, enable_freefollow, isEnablefFollowup, qansby, qcanianswer, html_file_str, followupcode, qitems, regards, msg_text, msg_ext_text, files_text, class_text, time_text;
-    public String str_response, ans_followup_text, file_full_url, complaint_more, p_history, c_medications, p_medications, tests, file_user_id, file_doctype, file_file, file_ext;
-    public String feedback_id_text, enable_prescription_val, current_answer_id, followup_txt, report_response, feedback_text, rating_text, pat_feedback_text, reply_text, arr_feedback_text, q_comments, extension, age_txt, gender_txt, extra_txt, age_gender_txt, prescribe_value, pb_cause_text, lab_t_text, ddx_text, pdx_text, treatment_plan_text, followup_text, p_tips_text;
-    JSONObject json_response_obj, feedback_json, jsonobj_feedbacks, jsonobj_postans, jsonon_titem, json_gender, jsonobj_canisnaswer, jsonobj, jsonobj_items, jsonobj_files;
-    LinearLayout answer_files_layout, answer_layout_attachfile, answer_display_layout, query_display_layout, doctor_reply_section, ans_extra_layout, extra_layout, feedback_section, main_data_layout, extra_hwlayout, extra_ans_layout, answer_layout, netcheck_layout, nolayout, layout_attachfile, myLayout, files_layout;
-    public View vi_ans, vi, vi_files;
-    EditText edt_followup;
-    WebView webview_answer;
-    TextView tv_answer_filename, tv_patfeedback, tv_replytext, tv_ext_title, tv_etitle, tv_valuetext, tv_keytext, tv_title, tv_extra, tv_ext, tv_userid, tv_gender, tvattached, tv_filename, tv_pat_name, tv_pat_place, tv_query, tv_morecomp, tvt_prevhist, tv_prevhist, tvt_curmedi, tv_curmedi, tvt_pastmedi, tv_pastmedi, tvt_labtest, tv_labtest, tv_datetime;
-    TextView tv_answer, tv_ext_desc, tv_followtit, tvt_probcause, tv_probcause, tvt_invdone, tv_invdone, tvt_diffdiag, tv_diffdiag, tvt_probdiag, tv_probdiag, tvt_tratplan, tv_tratplan, tvt_prevmeasure, tv_prevmeasure, tvt_follup, tv_follup, tv_datetimeans;
-    ScrollView scrollview;
-    ImageView file_image;
-    ProgressBar progressBar;
-    View vi_ext;
-    Typeface font_bold, font_reg;
-    Button btn_reload, btn_feedbacksubmit;
-    long startTime;
-    Button btn_write_pres;
-    View vi_hw, vi_ans_ext, vi_hw_full;
-    Map<String, String> extra_ans_map = new HashMap<String, String>();
-    Map<String, String> extra_query_map = new HashMap<String, String>();
-
-    public JSONObject json_fields, jsonobj_hwextra, text_jsonobj, draft_json, json;
-    public JSONArray jarray_hw;
-    Button btn_done, btn_follow_submit;
-    public String type, ent_ans, current_qid, answer_txt, allow_answer, params, ans_isvalid, ans_status;
-    EditText edt_answer;
-    LinearLayout extra_hw_title, extra_hw_details, prescribe_layout, ans_more_dets, show_less;
-    TextView tvclear;
-    EditText prescribe_text, diagnosis, pb_cause, lab_t, ddx, pdx, treatment_plan, p_tips, followup;
-
-    private GoogleApiClient client;
-
-    //public HashMap<String, String> attach_files_map;
-
-    SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String Login_Status = "Login_Status_key";
     public static final String user_name = "user_name_key";
@@ -119,7 +79,44 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
     public static final String sp_km_id = "sp_km_id_key";
     public static final String first_query = "first_query_key";
     public static final String first_hotline = "first_hotline_key";
+    public String strHtml_text, str_drug_dets, answer_files_text, attach_file_text, title_text, fields_text, qtype, query_price_text, pat_from_text, check_enable_ffollowup, answering_status, opt_freefollow, enable_freefollow, isEnablefFollowup, qansby, qcanianswer, html_file_str, followupcode, qitems, regards, msg_text, msg_ext_text, files_text, class_text, time_text;
+    public String str_response, ans_followup_text, file_full_url, complaint_more, p_history, c_medications, p_medications, tests, file_user_id, file_doctype, file_file, file_ext;
+    public String feedback_id_text, enable_prescription_val, current_answer_id, followup_txt, report_response, feedback_text, rating_text, pat_feedback_text, reply_text, arr_feedback_text, q_comments, extension, age_txt, gender_txt, extra_txt, age_gender_txt, prescribe_value, pb_cause_text, lab_t_text, ddx_text, pdx_text, treatment_plan_text, followup_text, p_tips_text;
+    public View vi_ans, vi, vi_files;
+    public JSONObject json_fields, jsonobj_hwextra, text_jsonobj, draft_json, json;
+    public JSONArray jarray_hw;
+    public String type, ent_ans, current_qid, answer_txt, allow_answer, params, ans_isvalid, ans_status;
+    Switch followup_switch;
+    Button btn_notanswer;
+    ObservableWebView query_webview;
+    JSONObject json_response_obj, feedback_json, jsonobj_feedbacks, jsonobj_postans, jsonon_titem, json_gender, jsonobj_canisnaswer, jsonobj, jsonobj_items, jsonobj_files;
+    LinearLayout answer_files_layout, answer_layout_attachfile, answer_display_layout, query_display_layout, doctor_reply_section, ans_extra_layout, extra_layout, feedback_section, main_data_layout, extra_hwlayout, extra_ans_layout, answer_layout, netcheck_layout, nolayout, layout_attachfile, myLayout, files_layout;
+    EditText edt_followup;
+    ObservableWebView webview_answer;
+    TextView tv_answer_filename, tv_patfeedback, tv_replytext, tv_ext_title, tv_etitle, tv_valuetext, tv_keytext, tv_title, tv_extra, tv_ext, tv_userid, tv_gender, tvattached, tv_filename, tv_pat_name, tv_pat_place, tv_query, tv_morecomp, tvt_prevhist, tv_prevhist, tvt_curmedi, tv_curmedi, tvt_pastmedi, tv_pastmedi, tvt_labtest, tv_labtest, tv_datetime;
 
+    //public HashMap<String, String> attach_files_map;
+    TextView tv_answer, tv_ext_desc, tv_followtit, tvt_probcause, tv_probcause, tvt_invdone, tv_invdone, tvt_diffdiag, tv_diffdiag, tvt_probdiag, tv_probdiag, tvt_tratplan, tv_tratplan, tvt_prevmeasure, tv_prevmeasure, tvt_follup, tv_follup, tv_datetimeans;
+    ScrollView scrollview;
+    ImageView file_image;
+    ProgressBar progressBar;
+    View vi_ext;
+    Typeface font_bold, font_reg;
+    Button btn_reload, btn_feedbacksubmit;
+    long startTime;
+    Button btn_write_pres;
+    View vi_hw, vi_ans_ext, vi_hw_full;
+    Map<String, String> extra_ans_map = new HashMap<String, String>();
+    Map<String, String> extra_query_map = new HashMap<String, String>();
+    Button btn_done, btn_follow_submit;
+    EditText edt_answer;
+    LinearLayout extra_hw_title, extra_hw_details, ans_more_dets, show_less;
+    TextView tvclear;
+    EditText prescribe_text, diagnosis, pb_cause, lab_t, ddx, pdx, treatment_plan, p_tips, followup;
+    Button btn_ansquery;
+    RelativeLayout followup_layout;
+    SharedPreferences sharedpreferences;
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,8 +143,10 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         allow_answer = "no";
 
+        followup_layout = (RelativeLayout) findViewById(R.id.followup_layout);
+        btn_ansquery = (Button) findViewById(R.id.btn_ansquery);
         prescribe_text = (EditText) findViewById(R.id.prescribe_text);
-        prescribe_layout = (LinearLayout) findViewById(R.id.prescribe_layout);
+        //prescribe_layout = (LinearLayout) findViewById(R.id.prescribe_layout);
         extra_ans_layout = (LinearLayout) findViewById(R.id.extra_ans_layout);
         btn_notanswer = (Button) findViewById(R.id.btn_notanswer);
         followup_switch = (Switch) findViewById(R.id.followup_switch);
@@ -229,10 +228,10 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
                     if (!ans_followup_text.equals("")) {
                         submit_followup();
                     } else {
-                        edt_followup.setError("Message cannot be Empty");
+                        edt_followup.setError("Please enter your message");
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -240,12 +239,56 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
         btn_write_pres.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(AnsweredQueryViewActivity.this, Prescriptions_Activity.class);
+/*                Intent i = new Intent(AnsweredQueryViewActivity.this, Prescriptions_Activity.class);
                 i.putExtra("qid", current_qid);
                 startActivity(i);
-                //finish();
+                //finish();*/
+
+             /*   try {
+                    String params = Model.BASE_URL + "sapp/previewPrescription?user_id=" + (Model.id) + "&token=" + Model.token + "&os_type=android&item_type=query&item_id=" + current_qid;
+                    System.out.println("Prescription-----------" + params);
+                    new list_drugs().execute(params);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
             }
         });
+
+
+        btn_ansquery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (current_qid != null && !current_qid.isEmpty() && !current_qid.equals("null") && !current_qid.equals("")) {
+                        if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
+                            try {
+                                //------------------------ Can I answer ----------------
+                                String url = Model.BASE_URL + "sapp/canIAnswer?user_id=" + (Model.id) + "&qid=" + current_qid + "&token=" + Model.token;
+                                System.out.println("canIAnswer url------" + url);
+                                new JSON_canianswer().execute(url);
+                                //------------------------ Can I answer ----------------
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
+                                go_back_msg();
+                            }
+                        } else {
+
+
+                            go_back_msg();
+                        }
+                    } else {
+
+                        go_back_msg();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
+
     }
 
 
@@ -297,6 +340,8 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
             if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
                 if (followupcode != null && !followupcode.isEmpty() && !followupcode.equals("null") && !followupcode.equals("")) {
 
+                    //Model.id = "597789";
+
                     //---------------Query View ------------------------------------------
                     String full_url = Model.BASE_URL + "sapp/jsonviewquery4doc?os_type=android&followupcode=" + followupcode + "&user_id=" + (Model.id) + "&token=" + Model.token + "&enc=1&isAFiles=1";
                     System.out.println("full_url-------------" + full_url);
@@ -317,6 +362,231 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
         //------------ Object Creations ---------------------------------------------
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //getMenuInflater().inflate(R.menu.ask_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public final boolean isInternetOn() {
+
+        ConnectivityManager connec = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+
+        if (connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED ||
+                connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTING ||
+                connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTING ||
+                connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED) {
+
+            return true;
+
+        } else if (
+                connec.getNetworkInfo(0).getState() == NetworkInfo.State.DISCONNECTED ||
+                        connec.getNetworkInfo(1).getState() == NetworkInfo.State.DISCONNECTED) {
+
+            return false;
+        }
+
+        return false;
+    }
+
+    public void go_back_msg() {
+
+
+        //---------------- Dialog------------------------------------------------------------------
+        final MaterialDialog alert = new MaterialDialog(AnsweredQueryViewActivity.this);
+        alert.setTitle("");
+        alert.setMessage("Something went wrong; please try again.");
+        alert.setCanceledOnTouchOutside(false);
+        alert.setPositiveButton("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alert.dismiss();
+            }
+        });
+
+                          /*  alert.setNegativeButton("No", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alert.dismiss();
+                                }
+                            });*/
+        alert.show();
+        //-----------------Dialog-----------------------------------------------------------------
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+    }
+
+    public void query_release_check() {
+
+        //---------------- Dialog------------------------------------------------------------------
+        final MaterialDialog alert = new MaterialDialog(AnsweredQueryViewActivity.this);
+        alert.setTitle("Oops!");
+        alert.setMessage("This query has been released. Please check your dashboard for new query.");
+        alert.setCanceledOnTouchOutside(false);
+        alert.setPositiveButton("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AnsweredQueryViewActivity.this, NewQueriesActivity.class);
+                startActivity(i);
+                finish();
+                alert.dismiss();
+            }
+        });
+
+                          /*  alert.setNegativeButton("No", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alert.dismiss();
+                                }
+                            });*/
+        alert.show();
+        //-----------------Dialog-----------------------------------------------------------------
+
+        //----------- Flurry -------------------------------------------------
+        Map<String, String> articleParams = new HashMap<String, String>();
+        articleParams.put("qid:", current_qid);
+        articleParams.put("user_id:", (Model.id));
+        FlurryAgent.logEvent("android.doc.resume_return_msgbox", articleParams);
+        //----------- Flurry -------------------------------------------------
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    public void showFeedbackDialog() {
+
+        try {
+            final MaterialDialog alert = new MaterialDialog(AnsweredQueryViewActivity.this);
+            View view = LayoutInflater.from(AnsweredQueryViewActivity.this).inflate(R.layout.ask_feedback, null);
+            alert.setView(view);
+
+            alert.setTitle("Reply to feedback");
+
+            final EditText edt_coupon = (EditText) view.findViewById(R.id.edt_coupon);
+
+            alert.setCanceledOnTouchOutside(false);
+            alert.setPositiveButton("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    feedback_text = edt_coupon.getText().toString();
+
+                    if (!(feedback_text.equals(""))) {
+                        try {
+                            feedback_json = new JSONObject();
+                            feedback_json.put("feedback_id", feedback_id_text);
+                            feedback_json.put("user_id", (Model.id));
+                            feedback_json.put("qid", current_qid);
+                            feedback_json.put("reply", feedback_text);
+
+                            System.out.println("feedback_json----------" + feedback_json.toString());
+
+                            new JSON_post_feedback().execute(feedback_json);
+
+                            alert.dismiss();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        edt_coupon.setError("Please enter your feedback");
+                    }
+                }
+            });
+
+            alert.setNegativeButton("CANCEL", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+            alert.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void submit_followup() {
+
+        try {
+
+            if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
+                if (current_answer_id != null && !current_answer_id.isEmpty() && !current_answer_id.equals("null") && !current_answer_id.equals("")) {
+
+                    try {
+                        followup_txt = URLEncoder.encode((edt_followup.getText().toString()), "UTF-8");
+
+                        Model.query_typed = "";
+
+                        json = new JSONObject();
+                        json.put("user_id", (Model.id));
+                        json.put("answer_id", current_answer_id);
+                        json.put("followup", ans_followup_text);
+
+                        System.out.println("json------------" + json.toString());
+
+                        new JSONPostFollowup().execute(json);
+
+                        //------------ Google firebase Analitics--------------------
+                        Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                        Bundle params = new Bundle();
+                        params.putString("User", Model.id + "/" + Model.name);
+                        params.putString("Details", ans_followup_text);
+                        Model.mFirebaseAnalytics.logEvent("Followup_toPat", params);
+                        //------------ Google firebase Analitics--------------------
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void alertdia(String diamsg) {
+
+        final Context context = this;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder
+                .setMessage(diamsg)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        edt_followup.setText("");
+                        fullprocess();
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
     private class JSON_QueryView extends AsyncTask<String, Void, Boolean> {
 
@@ -345,6 +615,7 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
                 System.out.println("str_response--------------" + str_response);
 
                 return true;
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -380,6 +651,17 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
                     qcanianswer = jsonobj.getString("cananswer");
                     current_qid = jsonobj.getString("qid");
                     qitems = jsonobj.getString("items");
+
+
+                    //--------------------------------------------------------
+                    if (qcanianswer.equals("1")) {
+                        btn_ansquery.setVisibility(View.VISIBLE);
+                        followup_layout.setVisibility(View.GONE);
+                    } else {
+                        btn_ansquery.setVisibility(View.GONE);
+                        followup_layout.setVisibility(View.VISIBLE);
+                    }
+                    //--------------------------------------------------------
 
                     //------------ Get Array -----------------------------------
                     String array_text = jsonobj.getString("ans_ext_expansion");
@@ -445,7 +727,10 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
                                     //vi = getLayoutInflater().inflate(R.layout.query_thread_view, null);
 
                                     query_display_layout = (LinearLayout) vi.findViewById(R.id.query_display_layout);
-                                    query_webview = (WebView) vi.findViewById(R.id.query_webview);
+
+
+                                    query_webview = (ObservableWebView) vi.findViewById(R.id.query_webview);
+                                    query_webview.setVerticalScrollBarEnabled(false);
 
 
                                     extra_layout = (LinearLayout) vi.findViewById(R.id.extra_layout);
@@ -489,9 +774,42 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
                                         query_display_layout.setVisibility(View.GONE);
                                         query_webview.setVisibility(View.VISIBLE);
 
+                                        query_webview.setBackgroundColor(Color.TRANSPARENT);
                                         query_webview.getSettings().setJavaScriptEnabled(true);
                                         query_webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+
+                                        strHtml_text = "<b>Patient:</b> Rajah (Myself), 35 years, Male<br /><br /><b>Query</b><br />Common We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniqCommon We have helped solve over a million cases. Ask a doctor online and get quick medical advice for your health queries. Our medical panel consists of over 3500 doctors from 80+ specialities. Get professi...\n" +
+                                                "Read more at: https://www.icliniq.com/dashboard/patientV2\n" +
+                                                "this is a copyright content of iCliniq<br /><br /><ul style=\"padding-left:15px;\"><li style=\"padding-bottom:10px;\"><b>More details about the presenting complaint</b>:<br />Dfgdf</li><li style=\"padding-bottom:10px;\"><b>Previous history of the same issue</b>:<br />Gdfgd</li></ul><br /><b>Height, Weight&nbsp;:</b><br /><br /><table width=\"100%\" cellspacing=\"0\" cellpadding=\"5\" border=\"1\" style=\"border:1px solid #000;\"><tr><td width=\"40%\"><b>Height</b></td><td valign=\"top\" width=\"60%\">6' 0\" (182.88 cm)</td></tr><tr><td width=\"40%\"><b>Weight</b></td><td valign=\"top\" width=\"60%\">167 lbs (75.75 kg)</td></tr></table>";
+
+/*                                        query_webview.loadDataWithBaseURL("", strHtml_text, "text/html", "UTF-8", "");
+                                        query_webview.setLongClickable(false);*/
                                         query_webview.loadDataWithBaseURL("", strHtml_text, "text/html", "UTF-8", "");
+                                        query_webview.setLongClickable(false);
                                     } else {
 
                                         query_display_layout.setVisibility(View.VISIBLE);
@@ -759,8 +1077,12 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
                                     answer_layout_attachfile = (LinearLayout) vi_ans.findViewById(R.id.answer_layout_attachfile);
                                     answer_files_layout = (LinearLayout) vi_ans.findViewById(R.id.answer_files_layout);
 
+                                    Button btn_view_prescription = (Button) vi_ans.findViewById(R.id.btn_view_prescription);
+                                    TextView tv_cuurent_query_id = (TextView) vi_ans.findViewById(R.id.tv_cuurent_query_id);
+                                    LinearLayout prescribe_layout = (LinearLayout) vi_ans.findViewById(R.id.prescribe_layout);
+
                                     answer_display_layout = (LinearLayout) vi_ans.findViewById(R.id.answer_display_layout);
-                                    webview_answer = (WebView) vi_ans.findViewById(R.id.webview_answer);
+                                    webview_answer = (ObservableWebView) vi_ans.findViewById(R.id.webview_answer);
                                     tv_answer = (TextView) vi_ans.findViewById(R.id.tvanswer);
                                     ans_extra_layout = (LinearLayout) vi_ans.findViewById(R.id.ans_extra_layout);
                                     tvt_probcause = (TextView) vi_ans.findViewById(R.id.tvt_probcause);
@@ -824,12 +1146,14 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
 
                                     System.out.println("time_text---------" + time_text);
                                     System.out.println("arr_feedback_text---------" + arr_feedback_text);
-                                    System.out.println("has_prescription_val---------" + has_prescription_val);
 
+                                    tv_cuurent_query_id.setText(current_qid);
                                     //----------------------------------------------
                                     if (jsonobj_items.has("has_prescription")) {
-                                        has_prescription_val = jsonobj_items.getString("has_prescription");
-                                        if ((jsonobj_items.getString("has_prescription")).equals("1")) {
+                                        String has_prescription_val = jsonobj_items.getString("has_prescription");
+                                        System.out.println("has_prescription_val---------" + has_prescription_val);
+
+                                        if (has_prescription_val.equals("1")) {
                                             prescribe_layout.setVisibility(View.VISIBLE);
                                         } else {
                                             prescribe_layout.setVisibility(View.GONE);
@@ -1030,6 +1354,7 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
 
                 }
 
+
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Exception---3---" + e.toString());
@@ -1079,181 +1404,6 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
 
         }
     }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.ask_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public final boolean isInternetOn() {
-
-        ConnectivityManager connec = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-
-        if (connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED ||
-                connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED) {
-
-            return true;
-
-        } else if (
-                connec.getNetworkInfo(0).getState() == NetworkInfo.State.DISCONNECTED ||
-                        connec.getNetworkInfo(1).getState() == NetworkInfo.State.DISCONNECTED) {
-
-            return false;
-        }
-
-        return false;
-    }
-
-
-    public void go_back_msg() {
-
-
-        //---------------- Dialog------------------------------------------------------------------
-        final MaterialDialog alert = new MaterialDialog(AnsweredQueryViewActivity.this);
-        alert.setTitle("");
-        alert.setMessage("Oops.! Something went wrong. Please go back and Try again.");
-        alert.setCanceledOnTouchOutside(false);
-        alert.setPositiveButton("OK", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alert.dismiss();
-            }
-        });
-
-                          /*  alert.setNegativeButton("No", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    alert.dismiss();
-                                }
-                            });*/
-        alert.show();
-        //-----------------Dialog-----------------------------------------------------------------
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-
-    }
-
-
-    public void query_release_check() {
-
-        //---------------- Dialog------------------------------------------------------------------
-        final MaterialDialog alert = new MaterialDialog(AnsweredQueryViewActivity.this);
-        alert.setTitle("Oops!");
-        alert.setMessage("This query has been released. Please check your dashboard for new query.");
-        alert.setCanceledOnTouchOutside(false);
-        alert.setPositiveButton("OK", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(AnsweredQueryViewActivity.this, NewQueriesActivity.class);
-                startActivity(i);
-                finish();
-                alert.dismiss();
-            }
-        });
-
-                          /*  alert.setNegativeButton("No", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    alert.dismiss();
-                                }
-                            });*/
-        alert.show();
-        //-----------------Dialog-----------------------------------------------------------------
-
-        //----------- Flurry -------------------------------------------------
-        Map<String, String> articleParams = new HashMap<String, String>();
-        articleParams.put("qid:", current_qid);
-        articleParams.put("user_id:", (Model.id));
-        FlurryAgent.logEvent("android.doc.resume_return_msgbox", articleParams);
-        //----------- Flurry -------------------------------------------------
-    }
-
-
-    @Override
-    public void onBackPressed() {
-
-        finish();
-
-    }
-
-
-    public void showFeedbackDialog() {
-
-        try {
-            final MaterialDialog alert = new MaterialDialog(AnsweredQueryViewActivity.this);
-            View view = LayoutInflater.from(AnsweredQueryViewActivity.this).inflate(R.layout.ask_feedback, null);
-            alert.setView(view);
-
-            alert.setTitle("Reply to feedback");
-
-            final EditText edt_coupon = (EditText) view.findViewById(R.id.edt_coupon);
-
-            alert.setCanceledOnTouchOutside(false);
-            alert.setPositiveButton("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    feedback_text = edt_coupon.getText().toString();
-
-                    if (!(feedback_text.equals(""))) {
-                        try {
-                            feedback_json = new JSONObject();
-                            feedback_json.put("feedback_id", feedback_id_text);
-                            feedback_json.put("user_id", (Model.id));
-                            feedback_json.put("qid", current_qid);
-                            feedback_json.put("reply", feedback_text);
-
-                            System.out.println("feedback_json----------" + feedback_json.toString());
-
-                            new JSON_post_feedback().execute(feedback_json);
-
-                            alert.dismiss();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        edt_coupon.setError("Feedback cannot be empty");
-                    }
-                }
-            });
-
-            alert.setNegativeButton("CANCEL", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    alert.dismiss();
-                }
-            });
-            alert.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     private class JSON_post_feedback extends AsyncTask<JSONObject, Void, Boolean> {
 
@@ -1308,47 +1458,6 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
             }
         }
     }
-
-    public void submit_followup() {
-
-        try {
-
-            if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
-                if (current_answer_id != null && !current_answer_id.isEmpty() && !current_answer_id.equals("null") && !current_answer_id.equals("")) {
-
-                    try {
-                        followup_txt = URLEncoder.encode((edt_followup.getText().toString()), "UTF-8");
-
-                        Model.query_typed = "";
-
-                        json = new JSONObject();
-                        json.put("user_id", (Model.id));
-                        json.put("answer_id", current_answer_id);
-                        json.put("followup", ans_followup_text);
-
-                        System.out.println("json------------" + json.toString());
-
-                        new JSONPostFollowup().execute(json);
-
-
-                        //------------ Google firebase Analitics--------------------
-                        Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
-                        Bundle params = new Bundle();
-                        params.putString("User", Model.id + "/" + Model.name);
-                        params.putString("Details", ans_followup_text);
-                        Model.mFirebaseAnalytics.logEvent("Followup_toPat", params);
-                        //------------ Google firebase Analitics--------------------
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     class JSONPostFollowup extends AsyncTask<JSONObject, Void, Boolean> {
 
@@ -1454,25 +1563,115 @@ public class AnsweredQueryViewActivity extends AppCompatActivity {
         }
     }
 
+    private class JSON_canianswer extends AsyncTask<String, Void, Boolean> {
 
-    public void alertdia(String diamsg) {
+        ProgressDialog dialog;
 
-        final Context context = this;
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder
-                .setMessage(diamsg)
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(AnsweredQueryViewActivity.this);
+            dialog.setTitle("Picking this Query., please wait");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
 
-                        edt_followup.setText("");
-                        fullprocess();
+        @Override
+        protected Boolean doInBackground(String... urls) {
+            try {
+                str_response = new JSONParser().getJSONString(urls[0]);
+                System.out.println("str_response--------------" + str_response);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
 
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                jsonobj_canisnaswer = new JSONObject(str_response);
+ /*
+                //------------ Tracker ------------------------
+                MyApp.tracker().send(new HitBuilders.EventBuilder()
+                        .setCategory("Query_View")
+                        .setAction("Answering_Status=" + str_response)
+                        .build());
+                //------------ Tracker ------------------------*/
+
+                if (jsonobj_canisnaswer.has("token_status")) {
+                    String token_status = jsonobj_canisnaswer.getString("token_status");
+                    if (token_status.equals("0")) {
+
+                        //============================================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //============================================================
+
+                        finishAffinity();
+                        Intent intent = new Intent(AnsweredQueryViewActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
-                });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+                } else {
+
+                    answering_status = jsonobj_canisnaswer.getString("status");
+
+               /*     opt_freefollow = jsonobj_canisnaswer.getString("opt_freefollow");
+                    enable_freefollow = jsonobj_canisnaswer.getString("enable_freefollow");
+
+                    //----------------------------------------------
+                    if ((opt_freefollow).equals("1")) {
+                        check_enable_ffollowup = "Yes";
+                        isEnablefFollowup = "Yes";
+                        followup_switch.setVisibility(View.VISIBLE);
+                        followup_switch.setChecked(true);
+                        System.out.println("Opt_freefollowup_--------------1");
+                    } else {
+
+                        check_enable_ffollowup = "No";
+                        isEnablefFollowup = "No";
+
+                        followup_switch.setVisibility(View.GONE);
+                        followup_switch.setChecked(false);
+                    }
+                    //----------------------------------------------*/
+
+                    //----------------------------------------------
+                    if ((answering_status).equals("0")) {
+                        Toast.makeText(getApplicationContext(), "Sorry! Another doctor has already picked this query.", Toast.LENGTH_LONG).show();
+                    } else {
+                        answer_layout.setVisibility(View.VISIBLE);
+                        btn_ansquery.setVisibility(View.GONE);
+                        scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                    try {
+
+                        //----------- Flurry -------------------------------------------------
+                        Map<String, String> articleParams = new HashMap<String, String>();
+                        articleParams.put("android.doc.qid", current_qid);
+                        articleParams.put("android.doc.answering_status", answering_status);
+                        articleParams.put("android.doc.check_enable_free_followup", check_enable_ffollowup);
+                        FlurryAgent.logEvent("android.doc.Can_Answer_Status", articleParams);
+                        //----------- Flurry -------------------------------------------------
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    dialog.cancel();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
+
+
 
 
 }

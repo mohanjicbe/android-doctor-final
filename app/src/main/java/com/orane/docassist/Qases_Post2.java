@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -19,10 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,34 +34,34 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.android.volley.toolbox.ImageLoader;
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 import com.orane.docassist.file_picking.utils.FileUtils;
 import com.orane.docassist.fileattach_library.DefaultCallback;
 import com.orane.docassist.fileattach_library.EasyImage;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -153,7 +149,6 @@ public class Qases_Post2 extends AppCompatActivity {
         System.out.println("Get Intent comment_id-----" + comment_id);
         //------ getting Values ---------------------------
 
-
         Model.upload_files = "";
 
         TextView tvattach = (TextView) findViewById(R.id.tvattach);
@@ -191,11 +186,12 @@ public class Qases_Post2 extends AppCompatActivity {
                 }
             });
         }
-        EasyImage.configuration(this)
+
+     /*   EasyImage.configuration(this)
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
                 .setCopyPickedImagesToPublicGalleryAppFolder(true)
-                .setAllowMultiplePickInGallery(true);
+                .setAllowMultiplePickInGallery(true);*/
         //------------------ Initialize File Attachment ---------------------------------
 
 
@@ -238,7 +234,7 @@ public class Qases_Post2 extends AppCompatActivity {
 
     private void initImageLoader() {
 
-        try {
+        /*try {
             DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                     .cacheOnDisc().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                     .bitmapConfig(Bitmap.Config.RGB_565).build();
@@ -251,7 +247,7 @@ public class Qases_Post2 extends AppCompatActivity {
             imageLoader.init(config);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private class JSONPostQuery extends AsyncTask<JSONObject, Void, Boolean> {
@@ -522,7 +518,7 @@ public class Qases_Post2 extends AppCompatActivity {
 
                         Model.have_free_credit = "0";
 
-                        Toast.makeText(getApplicationContext(), "Your query has been posted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Your query has been posted successfully.", Toast.LENGTH_SHORT).show();
 
                         //============================================================
                         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -702,7 +698,8 @@ public class Qases_Post2 extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
+
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -743,6 +740,7 @@ public class Qases_Post2 extends AppCompatActivity {
 /*                    System.out.println("Model.attach_qid-----------" + (attach_qid));
                     System.out.println("Model.attach_id-----------" + (attach_id));*/
                     System.out.println("Model.attach_file_url-----------" + (attach_file_url));
+                    System.out.println("Model.attach_file_url-----------" + (selectedPath));
 
                     close_button.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -794,7 +792,7 @@ public class Qases_Post2 extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+    /*public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -894,7 +892,7 @@ public class Qases_Post2 extends AppCompatActivity {
             return contentAsString;
         }
     }
-
+*/
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
@@ -1156,7 +1154,7 @@ public class Qases_Post2 extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        EasyImage.clearConfiguration(this);
+        // EasyImage.clearConfiguration(this);
         super.onDestroy();
     }
 
@@ -1176,6 +1174,8 @@ public class Qases_Post2 extends AppCompatActivity {
 
                         //((android.os.ResultReceiver) getIntent().getParcelableExtra("finisher")).send(1, new Bundle());
 
+                        finish();
+
                         Intent intent = new Intent(Qases_Post2.this, QasesActivity.class);
                         intent.putExtra("qtype", "myfeeds");
                         intent.putExtra("finisher", new android.os.ResultReceiver(null) {
@@ -1192,12 +1192,60 @@ public class Qases_Post2 extends AppCompatActivity {
                         intent.putExtra("qtype", "myfeeds");
                         startActivity(intent);
 */
-
-
                     }
                 });
+
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private String upload_file(String file_path) {
+
+        last_upload_file =file_path;
+
+        if (comment_id != null && !comment_id.isEmpty() && !comment_id.equals("null") && !comment_id.equals("")){
+
+        }
+        else{
+            comment_id="0";
+        }
+
+        String ServerUploadPath = Model.BASE_URL + "sapp/caseUpload?os_type=android&comment_id=" + comment_id + "&user_id=" + Model.id + "&case_id=" + qase_id + "&token=" + Model.token;
+        System.out.println("upLoadServerUri---------------------" + ServerUploadPath);
+
+        //String ServerUploadPath = Model.BASE_URL + "/sapp/upload?user_id=" + (Model.id) + "&qid=" + (qid) + "&token=" + Model.token;
+        //System.out.println("ServerUploadPath--" + ServerUploadPath);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString = response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return contentAsString;
     }
 
 }

@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/android-doctor.iml" filepath="$PROJECT_DIR$/.idea/android-doctor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/commonlib/commonlib.iml" filepath="$PROJECT_DIR$/commonlib/commonlib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mobilertc/mobilertc.iml" filepath="$PROJECT_DIR$/mobilertc/mobilertc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-doctor.iml" filepath="$PROJECT_DIR$/.idea/modules/android-doctor.iml" group="android-doctor" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="android-doctor/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/commonlib/commonlib.iml" filepath="$PROJECT_DIR$/.idea/modules/commonlib/commonlib.iml" group="android-doctor/commonlib" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mobilertc/mobilertc.iml" filepath="$PROJECT_DIR$/.idea/modules/mobilertc/mobilertc.iml" group="android-doctor/mobilertc" />
     </modules>
   </component>
 </project>

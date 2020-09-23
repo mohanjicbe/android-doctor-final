@@ -15,7 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -190,7 +190,7 @@ public class Qases_View_Activity extends BaseActivity implements ObservableScrol
                 comment_text = edt_comment.getText().toString();
 
                 if (comment_text.equals("")) {
-                    edt_comment.setError("Please enter comment");
+                    edt_comment.setError("Please enter the comment");
                 } else {
                     try {
                         json_comment = new JSONObject();
@@ -575,7 +575,7 @@ public class Qases_View_Activity extends BaseActivity implements ObservableScrol
 
 
                 //--------------------Ad---------
-                String ad_url = Model.BASE_URL + "/sapp/fetchAd?os_type=android&user_id=" + Model.id + "&browser_country=" + Model.browser_country + "&mcase_id=" + qases_id + "page_src=10";
+                String ad_url = Model.BASE_URL + "/sapp/fetchAd?token=" + Model.token + "&os_type=android&user_id=" + Model.id + "&browser_country=" + Model.browser_country + "&mcase_id=" + qases_id + "page_src=10";
                 System.out.println("ad_url----------" + ad_url);
                 new JSON_Ad().execute(ad_url);
                 //---------------------Ad--------

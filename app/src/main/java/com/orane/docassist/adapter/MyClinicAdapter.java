@@ -78,9 +78,6 @@ public class MyClinicAdapter extends ArrayAdapter<Item> {
             holder.tv_zip_code.setText(Html.fromHtml(objBean.getZip()));
         }
 
-
-
-
         ColorGenerator generator = ColorGenerator.MATERIAL;
         int color = generator.getRandomColor();
 
@@ -98,7 +95,7 @@ public class MyClinicAdapter extends ArrayAdapter<Item> {
 
     public class ViewHolder {
 
-        public TextView tv_clinic_name, tv_zip_code,tv_clinic_geo, tvid, lable_bullet, tv_clinic_street;
+        public TextView tv_clinic_name, tv_zip_code, tv_clinic_geo, tvid, lable_bullet, tv_clinic_street;
         CircleImageView imageview_poster;
     }
 

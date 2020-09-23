@@ -18,97 +18,101 @@ import java.net.URL;
 
 public class JSONParser {
 
-    final String TAG = "JsonParser.java";
     static InputStream is = null;
     static JSONObject jObj = null;
     static JSONArray jarray = null;
     static String json = "";
-    String contentAsString;
     static JSONArray JArr = null;
-    long startTime;
+    final String TAG = "JsonParser.java";
     public StringBuilder total;
     public String sub_url;
+    String contentAsString;
+    long startTime;
     URL url2;
 
 
     public JSONObject JSON_POST(JSONObject jsonobj, String post_flag) throws IOException {
 
         if (post_flag.equals("confirm_password")) {
-            sub_url = "/app/updateNewPassword?os_type=android";
+            sub_url = "/app/updateNewPassword?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("getforgotpwd_requet")) {
-            sub_url = "/app/getForgotPassPin?os_type=android";
+            sub_url = "/app/getForgotPassPin?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("feedback")) {
-            sub_url = "/sapp/feedback?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/feedback?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("reply_to_feedback")) {
-            sub_url = "/sapp/docReply2Feedback?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/docReply2Feedback?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("sendTextAns")) {
-            sub_url = "query/sendTextAns?os_type=android";
+            sub_url = "query/sendTextAns?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("submitAnswer")) {
-            sub_url = "/sapp/submitAnswer?os_type=android&user_id=" + Model.id + "token=" + Model.token;
+            sub_url = "/sapp/submitAnswer?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("mobileWallet")) {
-            sub_url = "/sapp/mobileWallet?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/mobileWallet?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("saveqanswer")) {
-            sub_url = "/sapp/saveqanswer?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/saveqanswer?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("dialappt")) {
-            sub_url = "/sapp/dialappt?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/dialappt?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("hostClickVideo")) {
-            sub_url = "/sapp/hostClickVideo?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/hostClickVideo?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("sendSlot")) {
-            sub_url = "sapp/sendSlot?os_type=android";
+            sub_url = "sapp/sendSlot?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("sendEmail")) {
-            sub_url = "/sapp/sendEmail?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/sendEmail?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("updateHlinePlans")) {
-            sub_url = "sapp/updateHlinePlans?os_type=android&token=" + Model.token;
+            sub_url = "sapp/updateHlinePlans?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("loginSubmit")) {
             sub_url = "/mobileajax/loginSubmit?os_type=android";
         } else if (post_flag.equals("addPatient")) {
-            sub_url = "/sapp/addPatient?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/addPatient?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("addClinic")) {
-            sub_url = "/sapp/addClinic?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/addClinic?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("writenotes")) {
-            sub_url = "/sapp/addConsultNote?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/addConsultNote?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("comments")) {
-            sub_url = "/sapp/caseComment?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/caseComment?oos_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("PostQase")) {
-            sub_url = "/sapp/caseAdd?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/caseAdd?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("PostQaseFinal")) {
-            sub_url = "/sapp/caseActivate?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/caseActivate?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("submit_qases")) {
-            sub_url = "/sapp/caseActivate?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/caseActivate?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("upvote")) {
-            sub_url = "/sapp/vote?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/vote?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("best")) {
-            sub_url = "/sapp/voteBestComment?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/voteBestComment?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("notes_entry")) {
-            sub_url = "/sapp/addPatientNote?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/addPatientNote?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("notes_view")) {
-            sub_url = "/sapp/viewPatientNotes?os_type=android&token=" + Model.token;
+            sub_url = "/sapp/viewPatientNotes?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("update_notes")) {
-            sub_url = "/sapp/updatePatientNote?os_type=android";
+            sub_url = "/sapp/updatePatientNote?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("delete_notes")) {
-            sub_url = "/sapp/deletePatientNote?os_type=android";
+            sub_url = "/sapp/deletePatientNote?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("confirm_booking")) {
-            sub_url = "/sapp/consultationConfirmBooking?os_type=android";
+            sub_url = "/sapp/consultationConfirmBooking?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("mypatsearch")) {
-            sub_url = "/sapp/patientSearch?os_type=android";
+            sub_url = "/sapp/patientSearch?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("SubmitFollowup")) {
-            sub_url = "/sapp/followMessage2Pat?os_type=android";
+            sub_url = "/sapp/followMessage2Pat?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("stage1")) {
             sub_url = "/sapp/updateDoctorProfileDet?stage=1&os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("academic")) {
             sub_url = "/sapp/updateDoctorProfileDet?user_id=" + Model.id + "&token=" + Model.token + "&os_type=android&stage=2";
         } else if (post_flag.equals("credential_answer")) {
-            sub_url = "/sapp/credential_answer?os_type=android";
+            sub_url = "/sapp/credential_answer?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("cred_submitAnswer")) {
-            sub_url = "/sapp/credSubmitAnswer?os_type=android&user_id=" + Model.id + "token=" + Model.token;
+            sub_url = "/sapp/credSubmitAnswer?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("writePrescription")) {
-            sub_url = "/sapp/writePrescription?os_type=android&user_id=" + Model.id + "token=" + Model.token;
+            sub_url = "/sapp/writePrescription?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
+        } else if (post_flag.equals("writeDrug")) {
+            sub_url = "/sapp/addPrescription?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
+        } else if (post_flag.equals("writePresNotes")) {
+            sub_url = "/sapp/addPrescription?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("video_desc_entry")) {
-            sub_url = "/sapp/insertOrUpdateVideoDet?os_type=android&user_id=" + Model.id + "token=" + Model.token;
+            sub_url = "/sapp/insertOrUpdateVideoDet?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("check_uname")) {
-            sub_url = "mobileajax/verifyUsername?os_type=android";
+            sub_url = "mobileajax/verifyUsername?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("validatemobnoexists")) {
-            sub_url = "mobileajax/validateMobileNoEmail?os_type=android";
+            sub_url = "mobileajax/validateMobileNoEmail?user_id=" + Model.id + "&token=" + Model.token + "&os_type=android";
         } else if (post_flag.equals("signupDoc_Update_Mobno")) {
             sub_url = "sapp/changeMobileOrEmail?os_type=android&user_id=" + Model.id + "&token=" + Model.token + "&t=mob";
         } else if (post_flag.equals("signupDoc_Update_email")) {
@@ -124,7 +128,7 @@ public class JSONParser {
         } else if (post_flag.equals("post_acedemic")) {
             sub_url = "sapp/insertOrUpdateDocEducation?os_type=android&user_id=" + Model.id + "&token=" + Model.token + "&isNew=1";
         } else if (post_flag.equals("signup1")) {
-            sub_url = "mobileajax/DocSignup4PersonalDet?os_type=android";
+            sub_url = "mobileajax/docSignup4PersonalDet?os_type=android";
         } else if (post_flag.equals("signup2")) {
             sub_url = "sapp/docSignup4AcademicDet?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("proffessional")) {
@@ -140,16 +144,17 @@ public class JSONParser {
         } else if (post_flag.equals("signupDocStep3")) {
             sub_url = "/mobileajax/signupDocStep3";
         } else if (post_flag.equals("personal")) {
-            sub_url = "/sapp/updateDoctorProfile?updFlagg=personal";
+            sub_url = "/sapp/updateDoctorProfile?updFlagg=personal&os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("professional")) {
-            sub_url = "/sapp/updateDoctorProfile?updFlagg=professional";
+            sub_url = "/sapp/updateDoctorProfile?updFlagg=professional&os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("validate_username")) {
-            sub_url = "mobileajax/verifyUsername?os_type=android";
+            sub_url = "mobileajax/verifyUsername?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         } else if (post_flag.equals("validate_email_mobno")) {
             sub_url = "mobileajax/validateMobileNoEmail?os_type=android";
-        }
-else if (post_flag.equals("logout")) {
-            sub_url = "sapp/appLogout?";
+        } else if (post_flag.equals("logout")) {
+            sub_url = "sapp/appLogout?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
+        } else if (post_flag.equals("notes_save")) {
+            sub_url = "sapp/writeConsultationReview?user_id=" + Model.id + "&token=" + Model.token;
         }
 
 
@@ -198,7 +203,7 @@ else if (post_flag.equals("logout")) {
         } else if (post_flag.equals("mypatsearch")) {
             sub_url = "/sapp/patientSearch?token=" + Model.token;
         } else if (post_flag.equals("pod_list")) {
-            sub_url = "/sapp/qinboxDocPod";
+            sub_url = "/sapp/qinboxDocPod?user_id=" + Model.id + "&token=" + Model.token;
         }
 
         InputStream is = null;

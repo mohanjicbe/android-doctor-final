@@ -9,9 +9,10 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
@@ -202,10 +203,10 @@ public class Credentials_query_view extends AppCompatActivity {
                         submit_answer();
 
                     } else {
-                        edt_answer.setError("Answer cannot be Empty");
+                        edt_answer.setError("Please enter the answer");
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -812,7 +813,7 @@ public class Credentials_query_view extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Internet is not connected.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again.", Toast.LENGTH_SHORT).show();
         }
     }
 

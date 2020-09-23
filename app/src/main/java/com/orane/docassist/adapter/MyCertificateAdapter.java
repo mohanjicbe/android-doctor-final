@@ -58,7 +58,7 @@ public class MyCertificateAdapter extends ArrayAdapter<Item> {
         holder.tv_clinic_geo = (TextView) view.findViewById(R.id.tv_clinic_geo);
         holder.tvid = (TextView) view.findViewById(R.id.tvid);
         holder.tv_year = (TextView) view.findViewById(R.id.tv_year);
-        holder.tv_filename = (TextView) view.findViewById(R.id.tv_filename);
+        //holder.tv_filename = (TextView) view.findViewById(R.id.tv_filename);
 
         if (holder.tvid != null && null != objBean.getHlid()
                 && objBean.getHlid().trim().length() > 0) {
@@ -85,7 +85,7 @@ public class MyCertificateAdapter extends ArrayAdapter<Item> {
         }
 
 
-        if (holder.tv_filename != null && null != objBean.getFupcode() && objBean.getFupcode().trim().length() > 0) {
+       /* if (holder.tv_filename != null && null != objBean.getFupcode() && objBean.getFupcode().trim().length() > 0) {
             holder.tv_filename.setText(Html.fromHtml(objBean.getFupcode()));
 
             System.out.println("objBean.getFupcode()----------" + objBean.getFupcode());
@@ -94,7 +94,7 @@ public class MyCertificateAdapter extends ArrayAdapter<Item> {
         } else {
             holder.tv_filename.setText("There is no certificate");
             holder.tv_filename.setTextColor(Color.RED);
-        }
+        }*/
 
         return view;
     }

@@ -14,13 +14,14 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -37,15 +38,21 @@ import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import com.orane.docassist.Home.Home_MainActivity;
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.fileattach_library.EasyImage;
 
 import net.alhazmy13.mediapicker.Video.VideoPicker;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -58,14 +65,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-import io.github.memfis19.annca.Annca;
-import io.github.memfis19.annca.internal.configuration.AnncaConfiguration;
 import me.drakeet.materialdialog.MaterialDialog;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
@@ -114,7 +120,7 @@ public class Video_Description_Activity extends AppCompatActivity {
 
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -122,7 +128,7 @@ public class Video_Description_Activity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -132,20 +138,20 @@ public class Video_Description_Activity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color));
         }
 
-        edt_title = (EditText) findViewById(R.id.edt_title);
-        edt_desc = (EditText) findViewById(R.id.edt_desc);
+        edt_title = findViewById(R.id.edt_title);
+        edt_desc = findViewById(R.id.edt_desc);
 
-        tv_video_tit = (TextView) findViewById(R.id.tv_video_tit);
-        tv_attach_videos = (TextView) findViewById(R.id.tv_attach_videos);
-        tv_desc = (TextView) findViewById(R.id.tv_desc);
-        tv_spec = (TextView) findViewById(R.id.tv_spec);
-        tv_spec_name = (TextView) findViewById(R.id.tv_spec_name);
-        tv_notes_tit = (TextView) findViewById(R.id.tv_notes_tit);
-        tv_notes = (TextView) findViewById(R.id.tv_notes);
-        img_remove = (ImageView) findViewById(R.id.img_remove);
-        select_layout = (LinearLayout) findViewById(R.id.select_layout);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        btn_attach_video = (Button) findViewById(R.id.btn_attach_video);
+        tv_video_tit = findViewById(R.id.tv_video_tit);
+        tv_attach_videos = findViewById(R.id.tv_attach_videos);
+        tv_desc = findViewById(R.id.tv_desc);
+        tv_spec = findViewById(R.id.tv_spec);
+        tv_spec_name = findViewById(R.id.tv_spec_name);
+        tv_notes_tit = findViewById(R.id.tv_notes_tit);
+        tv_notes = findViewById(R.id.tv_notes);
+        img_remove = findViewById(R.id.img_remove);
+        select_layout = findViewById(R.id.select_layout);
+        btn_submit = findViewById(R.id.btn_submit);
+        btn_attach_video = findViewById(R.id.btn_attach_video);
 
         tv_notes.setText(Html.fromHtml(getString(R.string.video_note)));
 
@@ -184,18 +190,14 @@ public class Video_Description_Activity extends AppCompatActivity {
                 if ((Model.select_spec_val) != null && !(Model.select_spec_val).isEmpty() && !(Model.select_spec_val).equals("null") && !(Model.select_spec_val).equals("") && !(Model.select_spec_val).equals("0")) {
 
                     if (edt_title_text.equals("")) {
-                        edt_title.setError("Title cannot be empty");
+                        edt_title.setError("Please enter a title for the video");
                     } else if (edt_desc_text.equals("")) {
-                        edt_desc.setError("Description cannot be empty");
+                        edt_desc.setError("Type details of your case here");
                     } else {
 
                    /* if (Build.VERSION.SDK_INT > 15) {
                         askForPermissions(new String[]{
                                         android.Manifest.permission.CAMERA,
-
-
-=====================
-
                                         android.Manifest.permission.RECORD_AUDIO,
                                         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                         android.Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -210,7 +212,7 @@ public class Video_Description_Activity extends AppCompatActivity {
 
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Select Speciality..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please Select the Speciality", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -355,7 +357,7 @@ public class Video_Description_Activity extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -370,6 +372,7 @@ public class Video_Description_Activity extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
 
             try {
+
                 JSONObject jObj = new JSONObject(upload_response);
                 attach_status = jObj.getString("status");
 
@@ -420,7 +423,7 @@ public class Video_Description_Activity extends AppCompatActivity {
     }
 
 
-    public String upload_file(String fullpath) {
+    /*public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -515,12 +518,12 @@ public class Video_Description_Activity extends AppCompatActivity {
 
             return contentAsString;
         }
-    }
+    }*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
             total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -568,7 +571,7 @@ public class Video_Description_Activity extends AppCompatActivity {
             System.out.println("checkSelfPermission--------- ");
         }
 
-        try {
+      /*  try {
             AnncaConfiguration.Builder videoLimited = new AnncaConfiguration.Builder(activity, CAPTURE_MEDIA);
             videoLimited.setMediaAction(AnncaConfiguration.MEDIA_ACTION_VIDEO);
             videoLimited.setMediaQuality(AnncaConfiguration.MEDIA_QUALITY_AUTO);
@@ -580,7 +583,7 @@ public class Video_Description_Activity extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     protected final void askForPermissions(String[] permissions, int requestCode) {
@@ -667,7 +670,7 @@ public class Video_Description_Activity extends AppCompatActivity {
             }
         } else {
             System.out.println("Video is not uploaded correctly");
-            Toast.makeText(Video_Description_Activity.this, "Video is not uploaded correctly, please try again..!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Video_Description_Activity.this, "Failed to upload the video. Please check the format and try again.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -721,7 +724,7 @@ public class Video_Description_Activity extends AppCompatActivity {
                 if (report_response.equals("1")) {
                     say_success();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Video upload failed, try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Failed to upload the video. Please check the format and try again.", Toast.LENGTH_LONG).show();
                 }
 
                 dialog.cancel();
@@ -730,6 +733,42 @@ public class Video_Description_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String upload_file(String file_path) {
+        last_upload_file=file_path;
+        String ServerUploadPath = Model.BASE_URL + "sapp/uploadDocVideo?user_id=" + Model.id + "&token=" + Model.token;
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString = response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return contentAsString;
     }
 
 }

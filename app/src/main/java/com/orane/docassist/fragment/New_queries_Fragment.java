@@ -11,10 +11,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -62,7 +62,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dmax.dialog.SpotsDialog;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class New_queries_Fragment extends Fragment {
@@ -76,7 +75,7 @@ public class New_queries_Fragment extends Fragment {
     ListView listView;
     TextView empty_msgmsg, tv_info;
     JSONObject object, json_response_obj, jsonobj_canisnaswer, json_err_feedback;
-    public String tv_id_val, answering_status, tv_hline_text, str_response, Log_Status, pat_location, str_price, params, prio_text, followcode_text;
+    public String doctor_id_text,tv_id_val, answering_status, tv_hline_text, str_response, Log_Status, pat_location, str_price, params, prio_text, followcode_text;
     private ProgressBar bar;
     ProgressBar progressBar, progressBar_bottom;
     Intent intent;
@@ -143,7 +142,6 @@ public class New_queries_Fragment extends Fragment {
         //Model.id = "410443";
         //Model.token = "1f34004ebcb05f9acda6016d5cc52d5e-2f9aa47d34a52323ed2ea81506be444a";
 
-
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         progressBar_bottom = (ProgressBar) rootView.findViewById(R.id.progressBar_bottom);
         btn_reload = (Button) rootView.findViewById(R.id.btn_reload);
@@ -209,6 +207,7 @@ public class New_queries_Fragment extends Fragment {
                     TextView askeddate = (TextView) view.findViewById(R.id.tvdate);
                     TextView prio = (TextView) view.findViewById(R.id.tvpriority);
                     TextView tv_hline = (TextView) view.findViewById(R.id.tv_hline);
+                    TextView tv_doctor_id = (TextView) view.findViewById(R.id.tv_doctor_id);
 
                     prio_text = prio.getText().toString();
                     tv_id_val = tv_id.getText().toString();
@@ -216,6 +215,7 @@ public class New_queries_Fragment extends Fragment {
                     str_price = price.getText().toString();
                     followcode_text = followcode.getText().toString();
                     tv_hline_text = tv_hline.getText().toString();
+                    doctor_id_text = tv_doctor_id.getText().toString();
 
                     Model.ans_cache = "";
 
@@ -225,10 +225,12 @@ public class New_queries_Fragment extends Fragment {
                     System.out.println("str_price------------------" + str_price);
                     System.out.println("followcode_text------------------" + followcode_text);
                     System.out.println("tv_hline_text------------------" + tv_hline_text);
+                    System.out.println("doctor_id_text------------------" + doctor_id_text);
 
                     if (tv_hline_text != null && !tv_hline_text.isEmpty() && !tv_hline_text.equals("null") && !tv_hline_text.equals("") && tv_hline_text.equals("1")) {
                         intent = new Intent(getActivity(), HotlineChatViewActivity.class);
                         intent.putExtra("follouwupcode", followcode_text);
+                        intent.putExtra("doctor_id", doctor_id_text);
                         startActivity(intent);
                         getActivity().finish();
                     } else {
@@ -494,6 +496,7 @@ public class New_queries_Fragment extends Fragment {
                             objItem = new Item();
                             objItem.setId(jsonobj1.getString("qid"));
                             objItem.setTitle(jsonobj1.getString("query"));
+                            objItem.setDocname(jsonobj1.getString("doctor_id"));
 
                             //---------------------------------------------------------
                             if (jsonobj1.has("speciality")) {
@@ -957,16 +960,17 @@ public class New_queries_Fragment extends Fragment {
 
     private class JSON_canianswer extends AsyncTask<String, Void, Boolean> {
 
-        AlertDialog dialog;
+        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = new SpotsDialog(getActivity());
-            dialog.setTitle("Checking Query Status..Please wait");
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage("Checking Query Status..Please wait");
             dialog.show();
             dialog.setCancelable(false);
+
         }
 
         @Override

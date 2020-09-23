@@ -1,3 +1,4 @@
+/*
 package com.orane.docassist;
 
 import android.Manifest;
@@ -20,7 +21,6 @@ import com.opentok.android.Stream;
 import com.opentok.android.Subscriber;
 import com.opentok.android.SubscriberKit;
 import com.orane.docassist.Home.Home_MainActivity;
-import com.orane.docassist.R;
 
 import java.util.List;
 
@@ -155,7 +155,9 @@ public class Webrtc_Activity extends AppCompatActivity
         mSession.connect(token);
     }
 
-    /* Web Service Coordinator delegate methods */
+    */
+/* Web Service Coordinator delegate methods *//*
+
 
     @Override
     public void onSessionConnectionDataReady(String apiKey, String sessionId, String token) {
@@ -173,7 +175,9 @@ public class Webrtc_Activity extends AppCompatActivity
 
     }
 
-    /* Session Listener methods */
+    */
+/* Session Listener methods *//*
+
 
     @Override
     public void onConnected(Session session) {
@@ -234,7 +238,9 @@ public class Webrtc_Activity extends AppCompatActivity
         showOpenTokError(opentokError);
     }
 
-    /* Publisher Listener methods */
+    */
+/* Publisher Listener methods *//*
+
 
     @Override
     public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
@@ -299,3 +305,4 @@ public class Webrtc_Activity extends AppCompatActivity
                 .show();
     }
 }
+*/

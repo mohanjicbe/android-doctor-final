@@ -10,9 +10,10 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -56,7 +57,6 @@ import java.util.List;
 import java.util.Map;
 
 
-import dmax.dialog.SpotsDialog;
 import me.drakeet.materialdialog.MaterialDialog;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
@@ -612,7 +612,7 @@ public class POD_queries_Fragment extends Fragment {
         //---------------- Dialog------------------------------------------------------------------
         final MaterialDialog alert = new MaterialDialog(getActivity());
         alert.setTitle("Oops!");
-        alert.setMessage("Oops.! Something went wrong. Please go back and Try again.");
+        alert.setMessage("Something went wrong; please try again.");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Yes,logout!", new View.OnClickListener() {
             @Override
@@ -725,7 +725,7 @@ public class POD_queries_Fragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = new SpotsDialog(getActivity());
+            dialog = new ProgressDialog(getActivity());
             dialog.setTitle("Checking Query Status..Please wait");
             dialog.show();
             dialog.setCancelable(false);
@@ -780,7 +780,7 @@ public class POD_queries_Fragment extends Fragment {
                     answering_status = jsonobj_canisnaswer.getString("status");
 
                     if ((answering_status).equals("0")) {
-                        Toast.makeText(getActivity(), "Sorry.! Another doctor has picked. You are not allowed to answer this query.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Sorry! Another doctor has already picked this query.", Toast.LENGTH_LONG).show();
                     } else {
                         System.out.println("Success----");
 

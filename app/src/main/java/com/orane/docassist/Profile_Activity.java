@@ -7,21 +7,21 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.adapter.Consult_ViewPagerAdapter;
 import com.orane.docassist.adapter.ViewPagerAdapter;
 import com.orane.docassist.fragment.AcademicFragment;
 import com.orane.docassist.fragment.PersonalFragment;
-import com.orane.docassist.fragment.ProfessionalFragment;
 import com.orane.docassist.fragment.ProffessionalFragment;
 
 import org.json.JSONObject;
@@ -69,6 +69,7 @@ public class Profile_Activity extends AppCompatActivity {
             getSupportActionBar().setTitle("Profile");
         }
 
+
      /*   mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
         mTitle.setTypeface(khandBold);
@@ -87,7 +88,7 @@ public class Profile_Activity extends AppCompatActivity {
         }
 
         //------------- getting Qases------------------------------------
-        String full_url = Model.BASE_URL + "/sapp/getDoctorProfileDet?os_type=android&user_id=" + Model.id + "&token";
+        String full_url = Model.BASE_URL + "/sapp/getDoctorProfileDet?os_type=android&user_id=" + Model.id + "&token=" + Model.token;
         System.out.println("qases_view_url------------" + full_url);
         new JSONAsyncTask().execute(full_url);
         //------------- getting Qases------------------------------------

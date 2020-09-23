@@ -15,10 +15,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,17 +35,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.R;
 import com.orane.docassist.file_picking.utils.FileUtils;
-import com.orane.docassist.fileattach_library.DefaultCallback;
-import com.orane.docassist.fileattach_library.EasyImage;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -74,7 +78,6 @@ public class File_Browse extends AppCompatActivity {
 
     String action;
     ViewSwitcher viewSwitcher;
-    ImageLoader imageLoader;
 
     InputStream is = null;
     int serverResponseCode = 0;
@@ -124,7 +127,7 @@ public class File_Browse extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+/*
         //------------------ Initialize File Attachment ---------------------------------
         Nammu.init(this);
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -163,12 +166,12 @@ public class File_Browse extends AppCompatActivity {
 
                 }
             });
-        }
+        }*/
 
     }
 
     private void initImageLoader() {
-
+/*
         try {
             DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                     .cacheOnDisc().imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
@@ -182,7 +185,7 @@ public class File_Browse extends AppCompatActivity {
             imageLoader.init(config);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
@@ -213,7 +216,7 @@ public class File_Browse extends AppCompatActivity {
     }
 
 
-    public void attach_dialog() {
+   /* public void attach_dialog() {
 
         List<String> mAnimals = new ArrayList<String>();
         mAnimals.add("Take Photo");
@@ -272,7 +275,7 @@ public class File_Browse extends AppCompatActivity {
         });
         AlertDialog alertDialogObject = dialogBuilder.create();
         alertDialogObject.show();
-    }
+    }*/
 
     private void showChooser() {
         try {
@@ -308,7 +311,7 @@ public class File_Browse extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -359,6 +362,7 @@ public class File_Browse extends AppCompatActivity {
         }
     }
 
+/*
 
     public String upload_file(String fullpath) {
 
@@ -461,6 +465,7 @@ public class File_Browse extends AppCompatActivity {
             return contentAsString;
         }
     }
+*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
@@ -560,7 +565,7 @@ public class File_Browse extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+    /*    EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
                 e.printStackTrace();
@@ -580,7 +585,7 @@ public class File_Browse extends AppCompatActivity {
                     if (photoFile != null) photoFile.delete();
                 }
             }
-        });
+        });*/
     }
 
     private void onPhotosReturned(List<File> returnedPhotos) {
@@ -606,9 +611,51 @@ public class File_Browse extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        EasyImage.clearConfiguration(this);
+     //   EasyImage.clearConfiguration(this);
         super.onDestroy();
     }
 
 
+    private String upload_file(String file_path) {
+        last_upload_file=file_path;
+        if (type_text.equals("photo")) {
+            upLoadServerUri = Model.BASE_URL + "/mobileajax/uploadDocPhoto?user_id=" + (Model.id) + "&token=" + Model.token;
+        } else {
+            upLoadServerUri = Model.BASE_URL + "/mobileajax/uploadDocPhoto?user_id=" + (Model.id) + "&token=" + Model.token + "&item=video";
+        }
+
+        System.out.println("upLoadServerUri-------------" + upLoadServerUri);
+        System.out.println("file_path-------------" + file_path);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(upLoadServerUri);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
+    }
 }

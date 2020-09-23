@@ -6,11 +6,11 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@mipmap/toolbar_bg"
         android:theme="@style/ThemeOverlay.MyApp.ActionBar"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 

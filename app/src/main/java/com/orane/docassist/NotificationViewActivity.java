@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -16,7 +16,6 @@ import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.Detector;
 import com.orane.docassist.New_Main.New_MainActivity;
 import com.orane.docassist.R;
-import com.poliveira.apps.parallaxlistview.ParallaxScrollView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -80,9 +79,9 @@ public class NotificationViewActivity extends AppCompatActivity {
         tv_date.setText(Html.fromHtml(currentDateandTime));
         tv_desc.setText(Html.fromHtml(push_msg));
 
-        ParallaxScrollView mScrollView = (ParallaxScrollView) v.findViewById(R.id.view);
+        /*ParallaxScrollView mScrollView = (ParallaxScrollView) v.findViewById(R.id.view);
         mScrollView.setParallaxView(getLayoutInflater().inflate(R.layout.notifi_view_header, mScrollView, false));
-
+*/
 
         tv_gotohome.setOnClickListener(new View.OnClickListener() {
             @Override

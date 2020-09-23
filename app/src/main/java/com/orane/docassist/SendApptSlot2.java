@@ -8,8 +8,10 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,6 +85,7 @@ public class SendApptSlot2 extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.sendapptslot2);
 
         //================ Shared Pref ======================
@@ -92,7 +95,7 @@ public class SendApptSlot2 extends AppCompatActivity implements
         //================ Shared Pref ======================
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -105,13 +108,13 @@ public class SendApptSlot2 extends AppCompatActivity implements
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color));
         }
 
-        spinner_mypatients = (Spinner) findViewById(R.id.spinner_mypatients);
-        spinner_ccode = (Spinner) findViewById(R.id.spinner_ccode);
-        newpat_layout = (LinearLayout) findViewById(R.id.newpat_layout);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        edt_pname = (MaterialEditText) findViewById(R.id.edt_pname);
-        edt_pemail = (MaterialEditText) findViewById(R.id.edt_pemail);
-        edt_mobno = (MaterialEditText) findViewById(R.id.edt_mobno);
+        spinner_mypatients = findViewById(R.id.spinner_mypatients);
+        spinner_ccode = findViewById(R.id.spinner_ccode);
+        newpat_layout = findViewById(R.id.newpat_layout);
+        btn_submit = findViewById(R.id.btn_submit);
+        edt_pname = findViewById(R.id.edt_pname);
+        edt_pemail = findViewById(R.id.edt_pemail);
+        edt_mobno = findViewById(R.id.edt_mobno);
 
         Typeface font_reg = Typeface.createFromAsset(getAssets(), Model.font_name);
         Typeface font_bold = Typeface.createFromAsset(getAssets(), Model.font_name_bold);
@@ -217,14 +220,12 @@ public class SendApptSlot2 extends AppCompatActivity implements
                         System.out.println("postappt_json------------->" + postappt_json.toString());
 
 
-
                         //------------ Google firebase Analitics--------------------
                         Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
                         Bundle params = new Bundle();
                         params.putString("Details", "");
                         Model.mFirebaseAnalytics.logEvent("Send_Appointment_Slot", params);
                         //------------ Google firebase Analitics--------------------
-
 
                         //-------------------------------------------------------------
                         HashMap<String, String> properties = new HashMap<String, String>();
@@ -260,10 +261,6 @@ public class SendApptSlot2 extends AppCompatActivity implements
                         articleParams.put("android.doc.pat_phno", pat_phno);
                         FlurryAgent.logEvent("android.doc.Send_Appointment_Slot", articleParams);
                         //----------- Flurry -------------------------------------------------
-
-
-                        //-------------------------------------------------------------
-
 
                         new JSON_Send_Appt().execute(postappt_json);
 

@@ -8,8 +8,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -115,10 +115,12 @@ public class InviteDoctorActivity extends AppCompatActivity {
 
 
                     } else {
-                        edt_doctname.setError("Doctor Email cannot be Empty");
+                        edt_doctemail.setError("Please enter valid email address.");
+                        edt_doctemail.requestFocus();
                     }
                 } else {
-                    edt_doctname.setError("Doctor Name cannot be Empty");
+                    edt_doctname.setError("Please enter the Doctor name");
+                    edt_doctname.requestFocus();
                 }
             }
         });
@@ -141,9 +143,9 @@ public class InviteDoctorActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.notify) {
+        /*if (id == R.id.notify) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -249,7 +251,7 @@ public class InviteDoctorActivity extends AppCompatActivity {
 
     public void say_failure() {
 
-        Toast.makeText(InviteDoctorActivity.this,"Invited a doctor failed.. Try again!",Toast.LENGTH_SHORT).show();
+        Toast.makeText(InviteDoctorActivity.this,"Failed to invite a doctor. Please try again.",Toast.LENGTH_SHORT).show();
 
 /*        new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
                 .setTitleText("Oops...")

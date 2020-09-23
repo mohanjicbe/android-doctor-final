@@ -11,9 +11,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 
 
-import dmax.dialog.SpotsDialog;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class POD_NewQueriesActivity extends AppCompatActivity {
@@ -745,13 +746,13 @@ public class POD_NewQueriesActivity extends AppCompatActivity {
 
     private class JSON_canianswer extends AsyncTask<String, Void, Boolean> {
 
-        AlertDialog dialog;
+        ProgressDialog dialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog = new SpotsDialog(POD_NewQueriesActivity.this);
+            dialog = new ProgressDialog(POD_NewQueriesActivity.this);
             dialog.setTitle("Checking Query Status..Please wait");
             dialog.show();
             dialog.setCancelable(false);
@@ -806,7 +807,7 @@ public class POD_NewQueriesActivity extends AppCompatActivity {
                     answering_status = jsonobj_canisnaswer.getString("status");
 
                     if ((answering_status).equals("0")) {
-                        Toast.makeText(getApplicationContext(), "Sorry.! Another doctor has picked. You are not allowed to answer this query.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Sorry! Another doctor has already picked this query.", Toast.LENGTH_LONG).show();
                     } else {
                         System.out.println("Success----");
 

@@ -6,8 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.CardView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,9 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orane.docassist.Model.Model;
@@ -141,7 +143,7 @@ public class AcademicFragment extends DialogFragment {
                         new Asyc_PersonData().execute(json_personalObj);
 
                     } else {
-                        edt_imc.setError("Medical Reg no cannot be empty");
+                        edt_imc.setError("Please enter your Medical Registration Number");
                         edt_imc.requestFocus();
                     }
 
@@ -273,6 +275,8 @@ public class AcademicFragment extends DialogFragment {
                 if (status_val.equals("1")) {
                     say_success();
 
+                    tv_pending_text.setVisibility(View.VISIBLE);
+                    scroll_layout.setVisibility(View.GONE);
 
                     //------------ Google firebase Analitics--------------------
                     Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());

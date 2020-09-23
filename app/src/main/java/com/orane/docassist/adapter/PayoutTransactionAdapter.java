@@ -81,8 +81,7 @@ public class PayoutTransactionAdapter extends ArrayAdapter<Item> {
                 && objBean.getWamt().trim().length() > 0) {
             holder.tv_btit_amt.setText(Html.fromHtml(objBean.getWamt()));
         }
-        if (holder.tv_desc != null && null != objBean.getWdesc()
-                && objBean.getWdesc().trim().length() > 0) {
+        if (holder.tv_desc != null && null != objBean.getWdesc()  && objBean.getWdesc().trim().length() > 0) {
             holder.tv_desc.setText(Html.fromHtml(objBean.getWdesc()));
         }
 

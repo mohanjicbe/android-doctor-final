@@ -1,6 +1,7 @@
 package com.orane.docassist.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,12 +13,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,13 +28,23 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.DialogFragment;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.R;
+import com.orane.docassist.Signup1;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -47,6 +57,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,8 +73,9 @@ public class PersonalFragment extends DialogFragment {
     Button btn_submit;
     Map<String, String> cc_map = new HashMap<String, String>();
     EditText edt_phoneno;
+    String edt_text,err_val;
     InputStream is = null;
-    JSONObject json_personal, json_response_obj, json_profile, json_personalObj;
+    JSONObject json_personal,json_validate, json_response_obj, json_profile, json_personalObj,login_jsonobj;
     RelativeLayout ccode_layout;
     String selected_cc_value, upload_response, contentAsString, attach_qid, upload_response_status, selectedfilename, selectedPath, serverResponseMessage, upLoadServerUri, last_upload_file, local_url, dob_val, gender_val, selected_cc_text;
     RadioButton radio1, radio2;
@@ -82,20 +95,20 @@ public class PersonalFragment extends DialogFragment {
 
         View rootView = inflater.inflate(R.layout.personal_fragment, container, false);
 
-        scroll_layout = (ScrollView) rootView.findViewById(R.id.scroll_layout);
-        tv_pending_text = (TextView) rootView.findViewById(R.id.tv_pending_text);
-        edtname = (MaterialEditText) rootView.findViewById(R.id.edtname);
-        edt_emailid = (MaterialEditText) rootView.findViewById(R.id.edt_emailid);
-        edt_dob = (MaterialEditText) rootView.findViewById(R.id.edt_dob);
-        edt_phoneno = (EditText) rootView.findViewById(R.id.edt_phoneno);
-        edt_panno = (MaterialEditText) rootView.findViewById(R.id.edt_panno);
-        tv_ccode = (TextView) rootView.findViewById(R.id.tv_ccode);
-        btn_submit = (Button) rootView.findViewById(R.id.btn_submit);
-        ccode_layout = (RelativeLayout) rootView.findViewById(R.id.ccode_layout);
-        radio1 = (RadioButton) rootView.findViewById(R.id.radio1);
-        radio2 = (RadioButton) rootView.findViewById(R.id.radio2);
-        profile_image = (ImageView) rootView.findViewById(R.id.profile_image);
-        tv_upload_photo = (TextView) rootView.findViewById(R.id.tv_upload_photo);
+        scroll_layout = rootView.findViewById(R.id.scroll_layout);
+        tv_pending_text = rootView.findViewById(R.id.tv_pending_text);
+        edtname = rootView.findViewById(R.id.edtname);
+        edt_emailid = rootView.findViewById(R.id.edt_emailid);
+        edt_dob = rootView.findViewById(R.id.edt_dob);
+        edt_phoneno = rootView.findViewById(R.id.edt_phoneno);
+        edt_panno = rootView.findViewById(R.id.edt_panno);
+        tv_ccode = rootView.findViewById(R.id.tv_ccode);
+        btn_submit = rootView.findViewById(R.id.btn_submit);
+        ccode_layout = rootView.findViewById(R.id.ccode_layout);
+        radio1 = rootView.findViewById(R.id.radio1);
+        radio2 = rootView.findViewById(R.id.radio2);
+        profile_image = rootView.findViewById(R.id.profile_image);
+        tv_upload_photo = rootView.findViewById(R.id.tv_upload_photo);
 
         apply_personal();
 
@@ -123,49 +136,61 @@ public class PersonalFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
 
+
                 try {
 
-                    String uname = edtname.getText().toString();
-                    String dob_val = edt_dob.getText().toString();
                     String email_val = edt_emailid.getText().toString();
                     String ccode_val = tv_ccode.getText().toString();
                     String phno = edt_phoneno.getText().toString();
-                    String panno = edt_panno.getText().toString();
 
-                    String[] separated = dob_val.split("-");
-                    String DD_val = separated[0];
-                    String month_val = separated[1];
-                    String yyyy_val = separated[2];
+                    json_validate = new JSONObject();
+                    json_validate.put("email", email_val);
+                    json_validate.put("ccode", ccode_val);
+                    json_validate.put("mobile", phno);
 
-                    String post_date = yyyy_val + "-" + month_val + "-" + DD_val;
+                    System.out.println("json_validate----" + json_validate.toString());
 
-                    if (radio1.isChecked()) {
-                        gender_val = "1";
-                    }
+                    new Async_validateEmailMobno().execute(json_validate);
 
-                    if (radio2.isChecked()) {
-                        gender_val = "2";
-                    }
-
-                    json_personalObj = new JSONObject();
-                    json_personalObj.put("name", uname);
-                    json_personalObj.put("gender", gender_val);
-                    json_personalObj.put("dob", post_date);
-                    json_personalObj.put("mobile", phno);
-                    json_personalObj.put("ccode", ccode_val);
-                    json_personalObj.put("email", email_val);
-                    json_personalObj.put("photo", selectedPath);
-
-                    System.out.println("json_personalObj---" + json_personalObj.toString());
-
-                    new Asyc_PersonData().execute(json_personalObj);
-
-                } catch (Exception e2) {
-                    e2.printStackTrace();
+                    //--------------------------------------------------
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
+
 
             }
         });
+
+        /*edt_dob.addTextChangedListener(new TextWatcher(){
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+                edt_text =edt_dob.getText().toString();
+                int o = 0;
+
+                if ((edt_text.charAt(2) == '/') && (edt_text.charAt(4) == '/')) {
+                    //Toast.makeText(getActivity(), "Format Is right", Toast.LENGTH_LONG).show();
+                    edt_dob.setTextColor(Color.BLACK);
+                } else {
+                    edt_dob.setTextColor(Color.RED);
+                    edt_dob.setError("Invalid date");
+                }
+                //ss = "";
+            }
+        });*/
+
 
         return rootView;
     }
@@ -247,8 +272,6 @@ public class PersonalFragment extends DialogFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void dialog_ccode() {
@@ -793,13 +816,15 @@ public class PersonalFragment extends DialogFragment {
                 if (status_val.equals("1")) {
                     say_success();
 
+                    tv_pending_text.setVisibility(View.VISIBLE);
+                    scroll_layout.setVisibility(View.GONE);
+
                     //------------ Google firebase Analitics--------------------
                     Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
                     Bundle params = new Bundle();
                     params.putString("Details", json_response_obj.toString());
                     Model.mFirebaseAnalytics.logEvent("Profile_Personal_Success", params);
                     //------------ Google firebase Analitics--------------------
-
 
                 } else {
                     String err_val = json_response_obj.getString("err");
@@ -830,7 +855,7 @@ public class PersonalFragment extends DialogFragment {
 
     }
 
-    public String upload_file(String fullpath) {
+   /* public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -919,11 +944,11 @@ public class PersonalFragment extends DialogFragment {
             return contentAsString;
         }
     }
-
+*/
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
         try {
-            BufferedReader r = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            BufferedReader r = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
             total = new StringBuilder();
             String line;
             while ((line = r.readLine()) != null) {
@@ -950,7 +975,9 @@ public class PersonalFragment extends DialogFragment {
 
         EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new DefaultCallback() {
             @Override
+
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+
                 e.printStackTrace();
             }
 
@@ -958,7 +985,6 @@ public class PersonalFragment extends DialogFragment {
             public void onImagesPicked(List<File> imageFiles, EasyImage.ImageSource source, int type) {
                 onPhotosReturned(imageFiles);
                 System.out.println("Selected file------------" + source.toString());
-
             }
 
             @Override
@@ -983,17 +1009,6 @@ public class PersonalFragment extends DialogFragment {
 
             selectedPath = (returnedPhotos.get(i).toString());
             selectedfilename = (returnedPhotos.get(i)).getName();
-
-
-            //----------------- Kissmetrics ----------------------------------
-            Model.kiss = KISSmetricsAPI.sharedAPI(Model.kissmetric_apikey, getApplicationContext());
-            Model.kiss.record("android.doctor.upload_profile_image");
-            HashMap<String, String> properties = new HashMap<String, String>();
-            properties.put("android.doctor.Qid", (attach_qid));
-            properties.put("android.doctor.attach_file_path", selectedPath);
-            properties.put("android.doctor.attach_filename", selectedfilename);
-            Model.kiss.set(properties);
-            //----------------- Kissmetrics ----------------------------------
 
             //----------- Flurry -------------------------------------------------
             Map<String, String> articleParams = new HashMap<String, String>();
@@ -1023,9 +1038,7 @@ public class PersonalFragment extends DialogFragment {
                 profile_image.setImageBitmap(myBitmap);
             }
 
-
             new AsyncTask_fileupload().execute(selectedPath);
-
         }
 
     }
@@ -1060,7 +1073,7 @@ public class PersonalFragment extends DialogFragment {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]);  //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -1100,10 +1113,13 @@ public class PersonalFragment extends DialogFragment {
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == IMAGE_PICKER_SELECT
-                && resultCode == Activity.RESULT_OK) {
+
+        if (requestCode == IMAGE_PICKER_SELECT && resultCode == Activity.RESULT_OK) {
+
             String path = getPathFromCameraData(data, this.getActivity());
+
             Log.i("PICTURE", "Path: " + path);
+
             if (path != null) {
 
                 System.out.println("path--------------------------- " + path);
@@ -1134,6 +1150,175 @@ public class PersonalFragment extends DialogFragment {
         String picturePath = cursor.getString(columnIndex);
         cursor.close();
         return picturePath;
+    }
+
+
+    class Async_validateEmailMobno extends AsyncTask<JSONObject, Void, Boolean> {
+
+        ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage("Validating. Please Wait...");
+            dialog.show();
+            dialog.setCancelable(false);
+        }
+
+        @Override
+        protected Boolean doInBackground(JSONObject... urls) {
+            try {
+
+                System.out.println("Parameters---------------" + urls[0]);
+
+                JSONParser jParser = new JSONParser();
+                login_jsonobj = jParser.JSON_POST(urls[0], "validatemobnoexists");
+
+
+                System.out.println("Signup json---------------" + login_jsonobj.toString());
+
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+
+            try {
+
+                String isValid_val = login_jsonobj.getString("isValid");
+
+                System.out.println("isValid_val ---" + isValid_val);
+
+                if (isValid_val.equals("true")) {
+
+                    try {
+
+                        String uname = edtname.getText().toString();
+                        String dob_val = edt_dob.getText().toString();
+                        String email_val = edt_emailid.getText().toString();
+                        String ccode_val = tv_ccode.getText().toString();
+                        String phno = edt_phoneno.getText().toString();
+                        String panno = edt_panno.getText().toString();
+
+                        String[] separated = dob_val.split("-");
+                        String DD_val = separated[0];
+                        String month_val = separated[1];
+                        String yyyy_val = separated[2];
+
+                        String post_date = yyyy_val + "-" + month_val + "-" + DD_val;
+
+
+                        if (radio1.isChecked()) {
+                            gender_val = "1";
+                        }
+
+                        if (radio2.isChecked()) {
+                            gender_val = "2";
+                        }
+
+
+                        json_personalObj = new JSONObject();
+                        json_personalObj.put("name", uname);
+                        json_personalObj.put("gender", gender_val);
+                        json_personalObj.put("dob", post_date);
+                        json_personalObj.put("mobile", phno);
+                        json_personalObj.put("ccode", ccode_val);
+                        json_personalObj.put("email", email_val);
+                        json_personalObj.put("photo", selectedPath);
+
+                        System.out.println("json_personalObj---" + json_personalObj.toString());
+
+                        new Asyc_PersonData().execute(json_personalObj);
+
+                    } catch (Exception e2) {
+                        e2.printStackTrace();
+                    }
+
+                } else {
+
+                    if (login_jsonobj.has("err")) {
+                        err_val = login_jsonobj.getString("err");
+                    }
+
+                    if (login_jsonobj.has("t")) {
+                        String type_val = login_jsonobj.getString("t");
+
+                        if (type_val.equals("mob")) {
+                            edt_phoneno.requestFocus();
+                            edt_phoneno.setError(err_val);
+                        }
+                        if (type_val.equals("email")) {
+                            edt_emailid.requestFocus();
+                            edt_emailid.setError(err_val);
+                        }
+
+                    } else {
+                       /* final MaterialDialog alert = new MaterialDialog(getActivity());
+                        alert.setTitle("Alert");
+                        alert.setMessage("This mobile number or Email id is already exists");
+                        alert.setCanceledOnTouchOutside(false);
+                        alert.setPositiveButton("Ok", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                signup();
+                            }
+                        });
+                        alert.show();*/
+
+                        Toast.makeText(getActivity(), err_val, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+                dialog.cancel();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private String upload_file(String file_path) {
+        last_upload_file=file_path;
+        String ServerUploadPath = Model.BASE_URL + "mobileajax/uploadDocPhoto?user_id=" + Model.id + "&token=" + Model.token;
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
     }
 
 }

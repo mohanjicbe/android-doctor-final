@@ -1,9 +1,6 @@
 package com.orane.docassist.fileattach_library;
 
-/**
- * Stas Parshin
- * 05 November 2015
- */
+
 public abstract class DefaultCallback implements EasyImage.Callbacks {
 
     @Override

@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
@@ -161,6 +161,15 @@ public class CommonActivity extends AppCompatActivity {
 
                     startActivity(Intent.createChooser(email, "Choose an Email client :"));
 
+                    //------------ Google firebase Analitics--------------------
+                    Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                    Bundle params = new Bundle();
+                    params.putString("user_id", Model.id);
+                    params.putString("name", Model.name);
+                    Model.mFirebaseAnalytics.logEvent("Whatsapp_support_chat", params);
+                    //------------ Google firebase Analitics--------------------
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -184,7 +193,7 @@ public class CommonActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 try {
-                    String url = Model.BASE_URL + "p/terms";
+                    String url = Model.BASE_URL + "p/terms?nolayout=1";
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
@@ -216,7 +225,7 @@ public class CommonActivity extends AppCompatActivity {
                 feedback_val = edt_feedback.getText().toString();
 
                 if (feedback_val.equals("")) {
-                    edt_feedback.setError("Entered text cannot be empty");
+                    edt_feedback.setError("Please enter your valuable feedback");
 
                 } else {
 
@@ -348,7 +357,7 @@ public class CommonActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     Intent i = new Intent(getApplicationContext(), WebViewActivity.class);
-                    i.putExtra("url", Model.BASE_URL + "/p/terms");
+                    i.putExtra("url", Model.BASE_URL + "/p/terms?nolayout=1");
                     i.putExtra("type", "Terms");
                     startActivity(i);
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -364,7 +373,7 @@ public class CommonActivity extends AppCompatActivity {
 
                 try {
                     Intent i = new Intent(getApplicationContext(), WebViewActivity.class);
-                    i.putExtra("url", Model.BASE_URL + "/p/privacy");
+                    i.putExtra("url", Model.BASE_URL + "/p/privacy?nolayout=1");
                     i.putExtra("type", "Privacy Policy");
                     startActivity(i);
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -553,6 +562,7 @@ public class CommonActivity extends AppCompatActivity {
 
         //-------------- Support ----------------------------------------------
         if (type_text.equals("about_app")) {
+
             aboutApp_layout.setVisibility(View.VISIBLE);
             report_layout.setVisibility(View.GONE);
             settings_layout.setVisibility(View.GONE);

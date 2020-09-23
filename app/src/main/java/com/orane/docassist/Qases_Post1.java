@@ -7,8 +7,10 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +42,7 @@ public class Qases_Post1 extends AppCompatActivity {
 
     EditText edt_qtitle, edt_desc;
     RelativeLayout first_layout;
+
     Spinner spinner_speciality;
     TextView tvdocname, tv_strprice, tv_forname, tv_soid, tvqfee, tvtit, tvfquery, tvprice;
     TextView follow_text, tv_editbutton, tv_spec_name;
@@ -174,43 +177,54 @@ public class Qases_Post1 extends AppCompatActivity {
                 qtitle_txt = edt_qtitle.getText().toString();
                 qdesc_txt = edt_desc.getText().toString();
 
-                if (qtitle_txt.equals("")) {
-                    edt_qtitle.setError("Case title cannot be empty");
-                } else {
 
-                    if (!(Model.select_spec_val).equals("0")) {
+                if (qtitle_txt != null && !qtitle_txt.isEmpty() && !qtitle_txt.equals("null") && !qtitle_txt.equals("")) {
 
-                        try {
-                            json_qase_post = new JSONObject();
-                            json_qase_post.put("user_id", (Model.id));
-                            json_qase_post.put("title", qtitle_txt);
-                            json_qase_post.put("question", qdesc_txt);
-                            json_qase_post.put("speciality", Model.select_spec_val);
+                    if (qdesc_txt != null && !qdesc_txt.isEmpty() && !qdesc_txt.equals("null") && !qdesc_txt.equals("")) {
 
-                            System.out.println("json_qase_post---" + json_qase_post.toString());
 
-                            new JSONPostQuery().execute(json_qase_post);
+                        if (!(Model.select_spec_val).equals("0")) {
 
                             try {
+                                json_qase_post = new JSONObject();
+                                json_qase_post.put("user_id", (Model.id));
+                                json_qase_post.put("title", qtitle_txt);
+                                json_qase_post.put("question", qdesc_txt);
+                                json_qase_post.put("speciality", Model.select_spec_val);
 
-                                //----------- Flurry -------------------------------------------------
-                                Map<String, String> articleParams = new HashMap<String, String>();
-                                articleParams.put("android.doc.title_txt:", qtitle_txt);
-                                articleParams.put("android.doc.qase_Desc:", qdesc_txt);
-                                articleParams.put("android.doc.speciality:", Model.select_spec_val);
-                                FlurryAgent.logEvent("android.doc.post_Qase1", articleParams);
-                                //----------- Flurry -------------------------------------------------
+                                System.out.println("json_qase_post---" + json_qase_post.toString());
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                new JSONPostQuery().execute(json_qase_post);
+
+                                try {
+
+                                    //----------- Flurry -------------------------------------------------
+                                    Map<String, String> articleParams = new HashMap<String, String>();
+                                    articleParams.put("android.doc.title_txt:", qtitle_txt);
+                                    articleParams.put("android.doc.qase_Desc:", qdesc_txt);
+                                    articleParams.put("android.doc.speciality:", Model.select_spec_val);
+                                    FlurryAgent.logEvent("android.doc.post_Qase1", articleParams);
+                                    //----------- Flurry -------------------------------------------------
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } catch (Exception e2) {
+                                e2.printStackTrace();
                             }
-
-                        } catch (Exception e2) {
-                            e2.printStackTrace();
+                        } else {
+                            Toast.makeText(Qases_Post1.this, "Please Select the Speciality!", Toast.LENGTH_LONG).show();
                         }
+
+
                     } else {
-                        Toast.makeText(Qases_Post1.this, "Please Select Speciality..!", Toast.LENGTH_LONG).show();
+                        edt_desc.setError("Type details of your case here");
+                        edt_desc.requestFocus();
                     }
+                } else {
+                    edt_qtitle.setError("Please enter the case");
+                    edt_qtitle.requestFocus();
                 }
             }
         });

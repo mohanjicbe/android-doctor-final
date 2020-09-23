@@ -10,8 +10,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class SplashActivity extends AppCompatActivity {
     public static final String update_count = "update_count_key";
     public static final String update_count_start = "update_count_start_key";
 
+
     AlertDialog alertDialog;
     public String country_url, update_count_start_text, currentVersion, user_id_val, uname, country_code_no, country, pass, Log_Status;
     JSONObject jsonobj, jsonobj_ad;
@@ -54,6 +56,7 @@ public class SplashActivity extends AppCompatActivity {
         Model.token = sharedpreferences.getString(token, "");
         user_id_val = sharedpreferences.getString(id, "");
         Model.id = sharedpreferences.getString(id, "");
+
         update_count_start_text = sharedpreferences.getString(update_count_start, "false");
 
         try {
@@ -83,9 +86,9 @@ public class SplashActivity extends AppCompatActivity {
         try {
 
             if (user_id_val != null && !user_id_val.isEmpty() && !user_id_val.equals("null") && !user_id_val.equals("")) {
-                country_url = Model.BASE_URL + "sapp/country?os_type=android&track=true&user_id=" + user_id_val;
+                country_url = Model.BASE_URL + "sapp/country?os_type=android&track=true&user_id=" + user_id_val + "&token=" + Model.token;
             } else {
-                country_url = Model.BASE_URL + "sapp/country?os_type=android&track=true&user_id=";
+                country_url = Model.BASE_URL + "sapp/country?token=" + Model.token + "&os_type=android&track=true&user_id=";
             }
 
             //---------------------------------------------------------
@@ -160,6 +163,7 @@ public class SplashActivity extends AppCompatActivity {
         if (isInternetOn()) {
 
             Log_Status = sharedpreferences.getString(Login_Status, "");
+
             uname = sharedpreferences.getString(user_name, "");
             pass = sharedpreferences.getString(password, "");
 
@@ -168,12 +172,13 @@ public class SplashActivity extends AppCompatActivity {
         } else {
 
             Log_Status = sharedpreferences.getString(Login_Status, "");
+
             uname = sharedpreferences.getString(user_name, "");
             pass = sharedpreferences.getString(password, "");
 
             process_code();
 
-            Toast.makeText(SplashActivity.this, "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SplashActivity.this, "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -3,13 +3,13 @@ package com.orane.docassist.New_Main;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +20,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import com.orane.docassist.CommonActivity;
-import com.orane.docassist.Home.Home_MainActivity;
 import com.orane.docassist.InviteDoctorActivity;
 import com.orane.docassist.LoginActivity;
 import com.orane.docassist.Model.Model;
@@ -35,15 +37,12 @@ import com.orane.docassist.WebViewActivity;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
-
-import me.drakeet.materialdialog.MaterialDialog;
 
 public class SettingsFragment extends Fragment {
 
     LinearLayout chat_layout, abtus_layout, terms_layout, policy_layout, reportissue_layout, rate_layout, share_layout, aredoctor_layout, pv_consult_layout, contactus_layout, csupport_layout, invite_layout, signout_layout;
     Switch switch_notisound, switch_stopnoti;
-    JSONObject logout_jsonobj,logout_json_validate;
+    JSONObject logout_jsonobj, logout_json_validate;
 
     public String noti_sound_val, stop_noti_val;
 
@@ -69,7 +68,6 @@ public class SettingsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.settings_fragment, container, false);
 
         FlurryAgent.onPageView();
-
 
         chat_layout = (LinearLayout) view.findViewById(R.id.chat_layout);
         contactus_layout = (LinearLayout) view.findViewById(R.id.contactus_layout);
@@ -183,7 +181,7 @@ public class SettingsFragment extends Fragment {
 
 
                 Intent i = new Intent(getActivity(), WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/terms");
+                i.putExtra("url", "https://www.icliniq.com/p/terms?nolayout=1");
                 i.putExtra("type", "Terms");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -207,25 +205,17 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
         invite_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-               /* try {
-                    Model.kiss.record("android.doc.invite_doctors");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Model.kiss.set(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-*/
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
                 Bundle params = new Bundle();
                 params.putString("User", Model.id + "/" + Model.name);
                 Model.mFirebaseAnalytics.logEvent("invite_doctors", params);
                 //------------ Google firebase Analitics--------------------
-
 
                 FlurryAgent.logEvent("Invite Doctors");
                 Intent i = new Intent(getActivity(), InviteDoctorActivity.class);
@@ -238,13 +228,6 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-         /*       try {
-                    Model.kiss.record("android.doc.about_us");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Model.kiss.set(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
                 Bundle params = new Bundle();
@@ -264,13 +247,6 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-               /* try {
-                    Model.kiss.record("android.doc.PrivatePolicy");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    Model.kiss.set(properties);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
 
                 //------------ Google firebase Analitics--------------------
                 Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
@@ -280,7 +256,7 @@ public class SettingsFragment extends Fragment {
                 //------------ Google firebase Analitics--------------------
 
                 Intent i = new Intent(getActivity(), WebViewActivity.class);
-                i.putExtra("url", "https://www.icliniq.com/p/privacy");
+                i.putExtra("url", "https://www.icliniq.com/p/privacy?nolayout=1");
                 i.putExtra("type", "Privacy Policy");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
@@ -324,15 +300,6 @@ public class SettingsFragment extends Fragment {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
-
-                /*try {
-                    Model.kiss.record("android.doc.RateApp_Clicked");
-                    HashMap<String, String> properties = new HashMap<String, String>();
-                    properties.put("android.doc.url_link", url);
-                    Model.kiss.set(properties);
-                } catch (Exception ee) {
-                    System.out.println("Exception-----------" + ee.toString());
-                }*/
             }
         });
 
@@ -386,6 +353,7 @@ public class SettingsFragment extends Fragment {
                 params.putString("User", Model.id + "/" + Model.name);
                 Model.mFirebaseAnalytics.logEvent("Settings_Contact_us", params);
                 //------------ Google firebase Analitics--------------------
+
                 Intent i = new Intent(getActivity(), CommonActivity.class);
                 i.putExtra("type", "contactus");
                 startActivity(i);
@@ -423,42 +391,45 @@ public class SettingsFragment extends Fragment {
     public void ask_logout() {
 
 
-        //---------------- Dialog------------------------------------------------------------------
-        final MaterialDialog alert = new MaterialDialog(getActivity());
-        alert.setTitle("Logout.!");
-        alert.setMessage("Are you sure you want to logout?");
-        alert.setCanceledOnTouchOutside(false);
-        alert.setPositiveButton("Yes", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //-------------- Logout-------------------------------------------------
-                try {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+        builder1.setMessage("Are you sure you want to logout?");
+        builder1.setCancelable(true);
 
-                    logout_json_validate = new JSONObject();
-                    logout_json_validate.put("user_id", Model.id);
-                    logout_json_validate.put("reg_id", Model.device_token);
-                    logout_json_validate.put("os_type", "1");
-                    System.out.println("logout_json_validate----" + logout_json_validate.toString());
-                    new JSON_logout().execute(logout_json_validate);
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
 
-                    //--------------------------------------------------
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                //--------------- Logout------------------------------------------------
+                            logout_json_validate = new JSONObject();
+                            logout_json_validate.put("user_id", Model.id);
+                            logout_json_validate.put("reg_id", Model.token);
+                            logout_json_validate.put("token", Model.token);
+                            logout_json_validate.put("os_type", "1");
 
+                            System.out.println("logout_json_validate----" + logout_json_validate.toString());
 
-            }
-        });
+                            new JSON_logout().execute(logout_json_validate);
 
-        alert.setNegativeButton("No", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alert.dismiss();
-            }
-        });
-        alert.show();
-        //-----------------Dialog-----------------------------------------------------------------
+                            //--------------------------------------------------
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        //--------------- Logout------------------------------------------------
+
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
 
 
     }
@@ -504,18 +475,31 @@ public class SettingsFragment extends Fragment {
 
                 dialog.cancel();
 
-                getActivity().finishAffinity();
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                if (logout_jsonobj.has("status")) {
+                    String sta_val = logout_jsonobj.getString("status");
+                    if (sta_val.equals("1")) {
 
+                        //===============Apply Noti Settings Values=============================================
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(Login_Status, "0");
+                        editor.apply();
+                        //===============Apply Noti Settings Values=============================================
+
+                        getActivity().finishAffinity();
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                    else{
+                        Toast.makeText(getActivity(), "Logout failed. please try later", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
 
 
 }

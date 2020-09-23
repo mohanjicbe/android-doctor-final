@@ -6,11 +6,11 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@mipmap/toolbar_bg"
         android:theme="@style/ThemeOverlay.MyApp.ActionBar"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -25,7 +25,7 @@
             android:textSize="17sp"
             android:textStyle="normal" />
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
 
     <ScrollView
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:padding="5dp"
-                    android:text="Doctor's Name"
+                    android:text="Doctor's Name *"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -89,7 +89,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:padding="5dp"
-                    android:text="Doctor's E-mail"
+                    android:text="Doctor's E-mail *"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 

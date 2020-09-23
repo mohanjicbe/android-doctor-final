@@ -7,8 +7,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +19,9 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.flurry.android.FlurryAgent;
 
@@ -118,7 +119,16 @@ public class MyClinicAddActivity extends AppCompatActivity implements AdapterVie
 
             edt_cname.setText(clinic_name);
             edt_street.setText(clinic_street);
-            edt_zip.setText(clinic_zip_code);
+
+            //---------------------------------------------
+            if (clinic_zip_code != null && !clinic_zip_code.isEmpty() && !clinic_zip_code.equals("null") && !clinic_zip_code.equals("")) {
+                edt_zip.setText(clinic_zip_code);
+            } else {
+                edt_zip.setText("");
+            }
+            //---------------------------------------------
+
+
             autoCompView.setText(clinic_geo);
 
 
@@ -151,13 +161,13 @@ public class MyClinicAddActivity extends AppCompatActivity implements AdapterVie
 
                     try {
                         if (cname.equals("")) {
-                            edt_cname.setError("Clinic name cannot be empty");
+                            edt_cname.setError("Please enter your clinic name");
                             edt_cname.requestFocus();
                         } else if (sstreet.equals("")) {
-                            edt_street.setError("Street cannot be empty");
+                            edt_street.setError("Please enter the street");
                             edt_street.requestFocus();
                         } else if (edt_zip_val.equals("")) {
-                            edt_zip.setError("Zip code cannot be empty");
+                            edt_zip.setError("Please enter the Zip code");
                             edt_zip.requestFocus();
                         } else {
 
@@ -203,7 +213,7 @@ public class MyClinicAddActivity extends AppCompatActivity implements AdapterVie
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -432,7 +442,7 @@ public class MyClinicAddActivity extends AppCompatActivity implements AdapterVie
                         FlurryAgent.logEvent("android.doc.Add_New_Clinic", articleParams);
                         //----------- Flurry -------------------------------------------------
 
-                        Toast.makeText(getApplicationContext(), "Clinic added Successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Your clinic has been successfully added", Toast.LENGTH_LONG).show();
 
                     } else {
 
@@ -445,7 +455,7 @@ public class MyClinicAddActivity extends AppCompatActivity implements AdapterVie
                         FlurryAgent.logEvent("android.doc.Update_Clinic", articleParams);
                         //----------- Flurry -------------------------------------------------
 
-                        Toast.makeText(getApplicationContext(), "Clinic updated successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Your clinic has been successfully updated", Toast.LENGTH_LONG).show();
                     }
 
                     Model.query_launch = "cliniqadd";
@@ -453,7 +463,7 @@ public class MyClinicAddActivity extends AppCompatActivity implements AdapterVie
                     finish();
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Failed. Try Again.!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Your requested update failed. Please try again..!", Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

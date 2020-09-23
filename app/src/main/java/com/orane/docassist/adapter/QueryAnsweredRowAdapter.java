@@ -73,6 +73,7 @@ public class QueryAnsweredRowAdapter extends ArrayAdapter<Item> {
         holder.tvgeo = (TextView) view.findViewById(R.id.tvgeo);
         holder.tv_hline = (TextView) view.findViewById(R.id.tv_hline);
         holder.full_layout = (LinearLayout) view.findViewById(R.id.full_layout);
+        holder.tv_doctor_id = (TextView) view.findViewById(R.id.tv_doctor_id);
 
         Typeface font_reg = Typeface.createFromAsset(getContext().getAssets(), Model.font_name);
         Typeface font_bold = Typeface.createFromAsset(getContext().getAssets(), Model.font_name_bold);
@@ -133,6 +134,11 @@ public class QueryAnsweredRowAdapter extends ArrayAdapter<Item> {
             holder.tv_hline.setText(Html.fromHtml(objBean.getHline()));
         }
 
+        if (holder.tv_doctor_id != null && null != objBean.getDocname()
+                && objBean.getDocname().trim().length() > 0) {
+            holder.tv_doctor_id.setText(Html.fromHtml(objBean.getDocname()));
+        }
+
         holder.tvprice.setVisibility(View.GONE);
 
         return view;
@@ -140,7 +146,7 @@ public class QueryAnsweredRowAdapter extends ArrayAdapter<Item> {
 
     public class ViewHolder {
 
-        public TextView tvquery, tvaskedname, tv_hline,tvDate, tvprice, tvspeciality, tvfollowupcode, tvgeo;
+        public TextView tvquery,tv_doctor_id, tvaskedname, tv_hline,tvDate, tvprice, tvspeciality, tvfollowupcode, tvgeo;
         public LinearLayout full_layout;
     }
 

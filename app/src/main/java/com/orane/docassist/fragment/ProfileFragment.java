@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +21,17 @@ import android.widget.ImageView;
 
 import com.orane.docassist.File_Browse;
 import com.orane.docassist.Model.Model;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.R;
-import com.orane.docassist.fileattach_library.DefaultCallback;
-import com.orane.docassist.fileattach_library.EasyImage;
 import com.squareup.picasso.Picasso;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -94,11 +102,11 @@ public class ProfileFragment extends Fragment {
             });
         }
 
-        EasyImage.configuration(getActivity())
+      /*  EasyImage.configuration(getActivity())
                 .setImagesFolderName("Attachments")
                 .setCopyTakenPhotosToPublicGalleryAppFolder(true)
                 .setCopyPickedImagesToPublicGalleryAppFolder(true)
-                .setAllowMultiplePickInGallery(true);
+                .setAllowMultiplePickInGallery(true);*/
 
         //------------------ Initialize File Attachment ---------------------------------
 
@@ -163,12 +171,12 @@ public class ProfileFragment extends Fragment {
 
                     int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
                     if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                        EasyImage.openCamera(getActivity(), 0);
+                        //EasyImage.openCamera(getActivity(), 0);
                     } else {
                         Nammu.askForPermission(getActivity(), Manifest.permission.CAMERA, new PermissionCallback() {
                             @Override
                             public void permissionGranted() {
-                                EasyImage.openCamera(getActivity(), 0);
+                               // EasyImage.openCamera(getActivity(), 0);
                             }
 
                             @Override
@@ -181,7 +189,7 @@ public class ProfileFragment extends Fragment {
                 } else {
                     //showChooser();
 
-                    int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                 /*   int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                         EasyImage.openDocuments(getActivity(), 0);
                     } else {
@@ -196,7 +204,7 @@ public class ProfileFragment extends Fragment {
 
                             }
                         });
-                    }
+                    }*/
 
                 }
             }
@@ -227,7 +235,7 @@ public class ProfileFragment extends Fragment {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -283,7 +291,7 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    public String upload_file(String fullpath) {
+  /*  public String upload_file(String fullpath) {
 
         String fpath_filename = fullpath.substring(fullpath.lastIndexOf("/") + 1);
 
@@ -312,46 +320,13 @@ public class ProfileFragment extends Fragment {
 
             try {
 
-                upLoadServerUri = Model.BASE_URL + "mobileajax/uploadDocPhoto?user_id=" + Model.id;
+                upLoadServerUri = Model.BASE_URL + "mobileajax/uploadDocPhoto?user_id=" + Model.id + "&token=" + Model.token;
                 System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
 
                 FileInputStream fileInputStream = new FileInputStream(fullpath);
                 System.out.println("fullpath---------------------------------" + fullpath);
                 URL url = new URL(upLoadServerUri);
 
-                // Open a HTTP  connection to  the URL
-                /* Aani - June 15 -Jul 15
-                Adi - Jul 15 - Aug 15
-                Aavani - Aug 15 - Sep 15
-
-                1. pp sizes, photo standard sizes,Image resolution details, Photo paper qualities, Photo Frames sizes & qualities,
-                DSLR Camera all features, Lighting concepts, Photo printing machines details, Video resolution and details
-                2. Photo Portfolios, Photo Slide vidoes, Photo Albums and sizes, Photo print Gifts, Camera Stablizers types,
-                Marriage Album Designing, Mar Video Editing, Drone Camera operations & types, Function Live coverage,
-                Function magazine,
-                3. Cinematic Video Shoots, Outdoor Songs Shootings,
-                */
-                /*
-                Instruments: Lightings, Backdrops, Notice (Bulletin) Board,
-
-                1. Visiting card, Letter pad, Catalog, PP cover, Brown covers, Photo Papers, Stamp Seal, Scissors, Logo T-Shirts
-
-                2. Registration, Bank Account, IT Filing, Expenses Book, Price List Book, Bill Book, Work Book,
-                Coimbatore All Photo studio Contact Details & Locations maps,
-
-                3. Noyyal Media App - Online Shopping, Frames etc... Live Coverage,
-                        Photos & Video Galleries,
-
-                4. Websites, Mobile Apps, FB Pages, Youtube Channel,
-
-
-                Noyyal Photos & Videos - powered by Noyyal Media
-                -----------------------------------------------------
-                1. Noyyal Media App & websites -> Individual Logins, Images & Videos Galleries, Online orders,
-                   Live Broadastings, Photo Albums & Frames Shoppings, Offers, Photo Technology Articles,
-                   Latest Photos Shooted, Ad Video Clips...
-
-                */
 
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setDoInput(true);
@@ -405,7 +380,7 @@ public class ProfileFragment extends Fragment {
 
             return contentAsString;
         }
-    }
+    }*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
@@ -434,7 +409,7 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new DefaultCallback() {
+    /*    EasyImage.handleActivityResult(requestCode, resultCode, data, getActivity(), new DefaultCallback() {
             @Override
             public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
                 System.out.println("File Error------------" + e.toString());
@@ -455,7 +430,7 @@ public class ProfileFragment extends Fragment {
                     if (photoFile != null) photoFile.delete();
                 }
             }
-        });
+        });*/
     }
 
     private void onPhotosReturned(List<File> returnedPhotos) {
@@ -508,7 +483,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EasyImage.clearConfiguration(getActivity());
+        //EasyImage.clearConfiguration(getActivity());
     }
 
 
@@ -619,4 +594,44 @@ public class ProfileFragment extends Fragment {
             }
         }
     }
+
+
+    private String upload_file(String file_path) {
+
+        last_upload_file=file_path;
+        String ServerUploadPath = Model.BASE_URL + "mobileajax/uploadDocPhoto?user_id=" + Model.id + "&token=" + Model.token;
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
+    }
+
+
 }

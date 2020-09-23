@@ -6,8 +6,11 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,7 +58,7 @@ public class Invite_Pat_To_Hotline extends AppCompatActivity implements AdapterV
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
-    private static final String API_KEY = "AIzaSyCNuv_IjcLxDa8j_L3xFtnO3gAmglhdC1I"; //Browser key
+    private static final String API_KEY = ""; //Browser key
     Button btn_submit;
     public String pname, pemail, pmobno, get_pat_name, get_pat_email, get_pat_mobile, ccode_txt, ccode_val, status, cname, sstreet, clinic_street, edt_city, place_id_txt, clinic_id, clinic_name, clinic_geo;
     MaterialEditText edt_cname, edt_street, edt_state, edt_zip, edt_country;
@@ -162,8 +165,9 @@ public class Invite_Pat_To_Hotline extends AppCompatActivity implements AdapterV
                 if (isInternetOn()) {
 
                     try {
-                        if (pname.equals("")) edt_pname.setError("Patient Name cannot be empty");
-                        else if (pemail.equals("")) edt_pemail.setError("Email cannot be empty");
+                        if (pname.equals("")) edt_pname.setError("Please enter the patient name");
+                        else if (pemail.equals("")) edt_pemail.setError("Please enter the email address");
+                        else if (pmobno.equals("")) edt_pemail.setError("Mobile number is mandatory");
                         else {
 
                             adpatient_json = new JSONObject();
@@ -189,7 +193,7 @@ public class Invite_Pat_To_Hotline extends AppCompatActivity implements AdapterV
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -381,7 +385,7 @@ public class Invite_Pat_To_Hotline extends AppCompatActivity implements AdapterV
                         e.printStackTrace();
                     }
 
-                    Toast.makeText(getApplicationContext(), "Failed. Try Again.!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Your requested update failed. Please try again..!", Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -945,7 +949,7 @@ public class Invite_Pat_To_Hotline extends AppCompatActivity implements AdapterV
         //---------------- Dialog------------------------------------------------------------------
         final MaterialDialog alert = new MaterialDialog(Invite_Pat_To_Hotline.this);
         alert.setTitle("Invited successfully..!");
-        alert.setMessage("Your Invites has been sent to the patient.");
+        alert.setMessage("Your invitation has been sent to the patient");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("OK", new View.OnClickListener() {
             @Override

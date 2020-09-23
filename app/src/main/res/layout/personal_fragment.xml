@@ -4,14 +4,14 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:mask="http://schemas.android.com/tools"
     android:background="@color/white"
     android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/scroll_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +39,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:hint="Date of Birth : DD/MM/YYYY"
-                android:inputType="textPersonName"
+                android:inputType="number"
+                mask:mask="##/##/####"
                 android:textSize="15dp"
                 app:met_floatingLabel="highlight" />
 
@@ -295,6 +296,7 @@
         android:text="Your Personal profile is under review. It will be activated within 1 or 2 days"
         android:textColor="@color/grey_800"
         android:textSize="15sp"
+        android:visibility="gone"
         android:textStyle="normal" />
 
 </RelativeLayout>

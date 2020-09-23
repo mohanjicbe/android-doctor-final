@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height"
         android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
+        android:background="@mipmap/toolbar_bg"
         android:theme="@style/ThemeOverlay.MyApp.ActionBar"
         android:visibility="gone"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
@@ -31,14 +32,14 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="150dp"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
             android:fontFamily="sans-serif"
             android:text="Forgot your passsword?"
             android:textColor="@color/mds_bluegrey_600"
@@ -48,9 +49,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:fontFamily="sans-serif"
             android:text="Enter your email below to receive verification code"
             android:textColor="@color/mds_bluegrey_700"
@@ -84,10 +85,10 @@
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
             android:layout_marginTop="40dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/button_rounded"
             android:fontFamily="sans-serif"
             android:gravity="center"
@@ -144,7 +145,7 @@
                 android:padding="1dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="mohan@icliniq.com"
+                android:text=""
                 android:textColor="@color/mds_bluegrey_800"
                 android:textSize="16sp"
                 android:visibility="visible" />
@@ -224,8 +225,8 @@
                 android:layout_below="@id/edt_otp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/button_rounded"
                 android:elevation="10dp"
                 android:fontFamily="sans-serif"
@@ -263,14 +264,14 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
             android:fontFamily="sans-serif"
             android:text="Enter your new password"
             android:textColor="@color/mds_bluegrey_600"
@@ -279,10 +280,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="0dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:fontFamily="sans-serif"
             android:text="Use the form below to update your new password"
             android:textColor="@color/mds_bluegrey_600"
@@ -294,18 +295,48 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:orientation="vertical">
+            <!--
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_newpwd"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:fontFamily="sans-serif"
+                            android:hint="New Password"
+                            android:inputType="textPassword"
+                            android:textSize="17dp"
+                            app:met_floatingLabel="highlight" />-->
 
-            <com.rengwuxian.materialedittext.MaterialEditText
+            <com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText
                 android:id="@+id/edt_newpwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
-                android:fontFamily="sans-serif"
-                android:hint="New Password"
+                android:fontFamily="sans-serif-light"
+                android:hint="Password"
+                android:imeOptions="actionDone"
                 android:inputType="textPassword"
+                android:padding="10dp"
+                android:text=""
+                android:textColor="@color/black"
                 android:textSize="17dp"
-                app:met_floatingLabel="highlight" />
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="25dp"
+                android:gravity="left"
+                android:text="Password Should be at least Min 8 chars, 1 number, 1 symbol or special char. with combination of both upper case and lower case alphabets."
+                android:textColor="@color/mds_bluegrey_900"
+                android:textSize="9sp"
+                android:visibility="visible" />
 
         </LinearLayout>
 
@@ -336,10 +367,10 @@
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
             android:layout_marginTop="30dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/button_rounded"
             android:fontFamily="sans-serif"
             android:gravity="center"

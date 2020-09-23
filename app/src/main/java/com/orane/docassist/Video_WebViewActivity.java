@@ -14,13 +14,16 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,10 +37,17 @@ import android.widget.Toast;
 import com.flurry.android.FlurryAgent;
 import com.github.ksoichiro.android.observablescrollview.ObservableWebView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orane.docassist.Model.Model;
-import com.orane.docassist.R;
+import com.orane.docassist.Model.MultipartEntity2;
 import com.orane.docassist.fileattach_library.EasyImage;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -55,8 +65,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.memfis19.annca.Annca;
-import io.github.memfis19.annca.internal.configuration.AnncaConfiguration;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
 
@@ -94,7 +102,7 @@ public class Video_WebViewActivity extends AppCompatActivity {
         System.out.println("url-----" + url);
         //------ getting Values ---------------------------
 
-        url = Model.BASE_URL + "users/myVideos?user_id=" + Model.id + "&layout=empty&t=mob";
+        url = Model.BASE_URL + "users/myVideos?user_id=" + Model.id + "&layout=empty&t=mob&token=" + Model.token;
         System.out.println("url------------" + url);
 
         //------------ Object Creations -------------------------------
@@ -286,7 +294,6 @@ public class Video_WebViewActivity extends AppCompatActivity {
 
                 } else {
                     //showChooser();
-
                     int permissionCheck = ContextCompat.checkSelfPermission(Video_WebViewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
                     if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                         EasyImage.openDocuments(Video_WebViewActivity.this, 0);
@@ -373,7 +380,7 @@ public class Video_WebViewActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... urls) {
 
             try {
-                upload_response = upload_file(urls[0]);
+                upload_response = upload_file(urls[0]); //ok
                 System.out.println("upload_response---------" + upload_response);
 
                 return true;
@@ -423,6 +430,7 @@ public class Video_WebViewActivity extends AppCompatActivity {
         }
     }
 
+/*
 
     public String upload_file(String fullpath) {
 
@@ -453,7 +461,7 @@ public class Video_WebViewActivity extends AppCompatActivity {
 
             try {
 
-                upLoadServerUri = Model.BASE_URL + "users/myVideos?user_id=" + Model.id + "&layout=empty&t=mob";
+                upLoadServerUri = Model.BASE_URL + "users/myVideos?user_id=" + Model.id + "&layout=empty&t=mob&token=" + Model.token;
                 System.out.println("upLoadServerUri---------------------" + upLoadServerUri);
 
 
@@ -520,6 +528,7 @@ public class Video_WebViewActivity extends AppCompatActivity {
             return contentAsString;
         }
     }
+*/
 
     public String convertInputStreamToString(InputStream stream) throws IOException {
 
@@ -573,7 +582,7 @@ public class Video_WebViewActivity extends AppCompatActivity {
 
         }
 
-        try {
+     /*   try {
             AnncaConfiguration.Builder videoLimited = new AnncaConfiguration.Builder(activity, CAPTURE_MEDIA);
             videoLimited.setMediaAction(AnncaConfiguration.MEDIA_ACTION_VIDEO);
             videoLimited.setMediaQuality(AnncaConfiguration.MEDIA_QUALITY_AUTO);
@@ -582,7 +591,7 @@ public class Video_WebViewActivity extends AppCompatActivity {
             new Annca(videoLimited.build()).launchCamera();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     protected final void askForPermissions(String[] permissions, int requestCode) {
@@ -622,5 +631,44 @@ public class Video_WebViewActivity extends AppCompatActivity {
         }
     }
 
+
+    private String upload_file(String file_path) {
+        last_upload_file=file_path;
+        String ServerUploadPath   = Model.BASE_URL + "users/myVideos?user_id=" + Model.id + "&layout=empty&t=mob&token=" + Model.token;
+
+        System.out.println("ServerUploadPath-------------" + ServerUploadPath);
+        System.out.println("file_path-------------" + file_path);
+
+        File file_value = new File(file_path);
+
+        try {
+
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(ServerUploadPath);
+            MultipartEntity2 reqEntity = new MultipartEntity2();
+            reqEntity.addPart("file", file_value);
+            post.setEntity(reqEntity);
+
+            HttpResponse response = client.execute(post);
+            HttpEntity resEntity = response.getEntity();
+
+            try {
+                final String response_str = EntityUtils.toString(resEntity);
+
+                if (resEntity != null) {
+                    System.out.println("response_str-------" + response_str);
+                    contentAsString =response_str;
+
+                }
+            } catch (Exception ex) {
+                Log.e("Debug", "error: " + ex.getMessage(), ex);
+            }
+        } catch (Exception e) {
+            Log.e("Upload Exception", "");
+            e.printStackTrace();
+        }
+
+        return  contentAsString;
+    }
 
 }

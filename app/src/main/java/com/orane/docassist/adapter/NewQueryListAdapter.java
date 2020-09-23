@@ -80,6 +80,7 @@ public class NewQueryListAdapter extends ArrayAdapter<Item> {
         holder.tv_info = (TextView) view.findViewById(R.id.tv_info);
         holder.info_layout = (LinearLayout) view.findViewById(R.id.info_layout);
         holder.tv_id = (TextView) view.findViewById(R.id.tv_id);
+        holder.tv_doctor_id = (TextView) view.findViewById(R.id.tv_doctor_id);
 
 
         //----- tablet---------------------
@@ -143,6 +144,11 @@ public class NewQueryListAdapter extends ArrayAdapter<Item> {
         if (holder.tv_id != null && null != objBean.getId()
                 && objBean.getId().trim().length() > 0) {
             holder.tv_id.setText(Html.fromHtml(objBean.getId()));
+        }
+
+        if (holder.tv_doctor_id != null && null != objBean.getDocname()
+                && objBean.getDocname().trim().length() > 0) {
+            holder.tv_doctor_id.setText(Html.fromHtml(objBean.getDocname()));
         }
 
 
@@ -222,7 +228,7 @@ public class NewQueryListAdapter extends ArrayAdapter<Item> {
 
     public class ViewHolder {
 
-        public TextView tvquery, tvaskedname, tv_id, tvDate, tvprice, tvspeciality, tvfollowupcode, tvgeo, lable_bullet, tvpriority, tv_hline, tv_info;
+        public TextView tvquery, tvaskedname, tv_doctor_id, tv_id, tvDate, tvprice, tvspeciality, tvfollowupcode, tvgeo, lable_bullet, tvpriority, tv_hline, tv_info;
         private LinearLayout info_layout;
     }
 

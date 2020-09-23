@@ -9,10 +9,11 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orane.docassist.Model.Item;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
@@ -869,7 +871,7 @@ public class QasesActivity extends AppCompatActivity implements ObservableScroll
 
         final MaterialDialog alert = new MaterialDialog(QasesActivity.this);
         alert.setTitle("Logout..!");
-        alert.setMessage("For the Security Reasons, You need to logout and login again and continue.");
+        alert.setMessage("For security purpose, please logout and login again to continue");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Ok", new View.OnClickListener() {
             @Override

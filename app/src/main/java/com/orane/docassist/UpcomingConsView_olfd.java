@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -233,12 +233,12 @@ public class UpcomingConsView extends AppCompatActivity implements com.orane.doc
                 new JSON_ViewCons().execute(url);
                 //------------------------- Url Pass -------------------------
             } else {
-                Toast.makeText(getApplicationContext(), "Sorry..! Something went wrong. Go back and try again..", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
                 ask_logout();
             }
 
         } else {
-            Toast.makeText(getApplicationContext(), "Sorry..! Something went wrong. Go back and try again..", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
             //ask_logout();
         }
         //-----------------------------------------------------------------
@@ -272,7 +272,7 @@ public class UpcomingConsView extends AppCompatActivity implements com.orane.doc
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Sorry...! Call could not be connected.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Call is not getting connected", Toast.LENGTH_LONG).show();
                     System.out.println("appr_id------" + appr_id);
                 }
 
@@ -806,7 +806,7 @@ new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
 
                     } else {
 
-                        Toast.makeText(getApplicationContext(), "Connecting Failed.. Please try again.!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Oops! Problem with the connectivity. Please try again.", Toast.LENGTH_LONG).show();
                         System.out.println("Call Error text....." + err_text);
 
                     }
@@ -891,7 +891,7 @@ new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
 
                     } else {
 
-                        Toast.makeText(getApplicationContext(), "Connecting Failed.. Please try again.!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Oops! Problem with the connectivity. Please try again.", Toast.LENGTH_LONG).show();
                         System.out.println("Call Error text....." + err_text);
 
                     }
@@ -1328,7 +1328,7 @@ else {
                     Toast.makeText(getApplicationContext(), "Consultation Ended.", Toast.LENGTH_LONG).show();
                     start_cons_layout.setVisibility(View.GONE);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Consultation Ending Failed.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Failed to end your consultation. ", Toast.LENGTH_LONG).show();
                 }
 
                 dialog.dismiss();

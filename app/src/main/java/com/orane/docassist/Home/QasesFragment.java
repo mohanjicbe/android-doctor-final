@@ -7,11 +7,10 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,8 @@ import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orane.docassist.LoginActivity;
 import com.orane.docassist.Model.Item;
 import com.orane.docassist.Model.Model;
@@ -63,7 +64,7 @@ public class QasesFragment extends Fragment implements ObservableScrollViewCallb
     QasesListAdapter objAdapter;
     ProgressBar progressBar, progressBar_bottom;
     public Double floor_val;
-    FloatingActionButton fab;
+    public FloatingActionButton fab;
     Intent intent;
     Button btn_bookcons;
     public String str_response;
@@ -120,6 +121,8 @@ public class QasesFragment extends Fragment implements ObservableScrollViewCallb
         nolayout = (LinearLayout) rootView.findViewById(R.id.nolayout);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_query_new);
         btn_bookcons = (Button) rootView.findViewById(R.id.btn_bookcons);
+
+
 
         appBarLayout = (AppBarLayout) rootView.findViewById(R.id.appBarLayout);
 
@@ -351,6 +354,7 @@ public class QasesFragment extends Fragment implements ObservableScrollViewCallb
             nolayout.setVisibility(View.GONE);
             netcheck_layout.setVisibility(View.VISIBLE);
             fab.setVisibility(View.GONE);
+
         }
     }
 
@@ -839,7 +843,7 @@ public class QasesFragment extends Fragment implements ObservableScrollViewCallb
 
         final MaterialDialog alert = new MaterialDialog(getActivity());
         alert.setTitle("Logout..!");
-        alert.setMessage("For the Security Reasons, You need to logout and login again and continue.");
+        alert.setMessage("For security purpose, please logout and login again to continue");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("Ok", new View.OnClickListener() {
             @Override

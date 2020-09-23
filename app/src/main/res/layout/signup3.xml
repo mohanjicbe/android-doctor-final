@@ -156,7 +156,7 @@
             </RelativeLayout>
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/card_practise"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -239,7 +239,7 @@
 
 
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
             <LinearLayout
@@ -326,7 +326,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/edittext_border"
-                        android:hint="Fill your facebook profile link"
+                        android:hint="Fill your LinkedIn profile link"
                         android:inputType="textPersonName"
                         android:padding="10dp"
                         android:textSize="15dp" />
@@ -408,7 +408,7 @@
                         android:layout_marginRight="10dp"
                         android:background="@drawable/edittext_border"
                         android:gravity="center_vertical"
-                        android:hint="Fill your facebook profile link"
+                        android:hint="Fill your twitter profile link"
                         android:inputType="textPersonName"
                         android:padding="10dp"
                         android:textSize="15dp" />

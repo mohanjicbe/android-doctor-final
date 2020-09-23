@@ -1,10 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.ksoichiro:android-observablescrollview:1.5.2@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/android-observablescrollview-1.5.2.aar/42ad332ee4a7bfc651fe71e0eff3fe8e/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/android-observablescrollview-1.5.2.aar/42ad332ee4a7bfc651fe71e0eff3fe8e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d8bcb0c89131121407ecda4b6ef15e2/jetified-android-observablescrollview-1.5.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d8bcb0c89131121407ecda4b6ef15e2/jetified-android-observablescrollview-1.5.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6d8bcb0c89131121407ecda4b6ef15e2/jetified-android-observablescrollview-1.5.2/res" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.ksoichiro/android-observablescrollview/1.5.2/70b9c2e95eb12c8f307470030b215ebbd4597f32/android-observablescrollview-1.5.2-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.ksoichiro/android-observablescrollview/1.5.2/a2f8deed77d7292ef6493aa0f83fe2eba6fa0d73/android-observablescrollview-1.5.2-sources.jar!/" />
     </SOURCES>

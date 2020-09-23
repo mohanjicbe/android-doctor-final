@@ -7,9 +7,8 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import com.orane.docassist.Model.Model;
@@ -153,8 +153,8 @@ public class MyPatientAddActivity extends AppCompatActivity implements AdapterVi
                 if (isInternetOn()) {
 
                     try {
-                        if (pname.equals("")) edt_pname.setError("Patient Name cannot be empty");
-                        else if (pmobno.equals("")) edt_mobno.setError("Mobile No is mandatory");
+                        if (pname.equals("")) edt_pname.setError("Please enter the patient name");
+                        else if (pmobno.equals("")) edt_mobno.setError("Please enter your mobile number");
                         else {
 
                             adpatient_json = new JSONObject();
@@ -180,7 +180,7 @@ public class MyPatientAddActivity extends AppCompatActivity implements AdapterVi
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Internet is not available", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -353,7 +353,7 @@ public class MyPatientAddActivity extends AppCompatActivity implements AdapterVi
 
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Failed. Try Again.!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Your requested update failed. Please try again..!", Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {

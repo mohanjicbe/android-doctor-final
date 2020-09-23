@@ -7,9 +7,6 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +18,19 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.flurry.android.FlurryAgent;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.orane.docassist.AnsweredQueryViewActivity;
 import com.orane.docassist.HotlineChatViewActivity;
 import com.orane.docassist.LoginActivity;
 import com.orane.docassist.Model.Item;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
+import com.orane.docassist.NewQueryViewActivity;
 import com.orane.docassist.R;
 import com.orane.docassist.adapter.QueryAnsweredRowAdapter;
 
@@ -53,6 +55,7 @@ public class QueriesFragment extends Fragment {
     LinearLayout nolayout, netcheck_layout;
     SwipeRefreshLayout mSwipeRefreshLayout;
     Item objItem;
+    String doctor_id;
     List<Item> listArray;
     List<Item> arrayOfList;
     ListView listView;
@@ -148,6 +151,7 @@ public class QueriesFragment extends Fragment {
                     TextView from = (TextView) view.findViewById(R.id.tvgeo);
                     TextView askeddate = (TextView) view.findViewById(R.id.tvdate);
                     TextView tv_hline = (TextView) view.findViewById(R.id.tv_hline);
+                    TextView tv_doctor_id = (TextView) view.findViewById(R.id.tv_doctor_id);
 
                     Model.query = query.getText().toString();
                     Model.from = from.getText().toString();
@@ -155,6 +159,7 @@ public class QueriesFragment extends Fragment {
                     Model.patient = patient.getText().toString();
                     Model.askeddate = askeddate.getText().toString();
                     hline_val = tv_hline.getText().toString();
+                    doctor_id = tv_doctor_id.getText().toString();
 
 /*
                     Intent intent = new Intent(AnsweredQueriesActivity.this, QueryAnsweredDetailActivity.class);
@@ -164,14 +169,29 @@ public class QueriesFragment extends Fragment {
                     if (hline_val.equals("1")) {
                         Intent intent = new Intent(getActivity(), HotlineChatViewActivity.class);
                         intent.putExtra("follouwupcode", Model.followcode);
+                        intent.putExtra("doctor_id", doctor_id);
                         startActivity(intent);
+
                     } else {
-                        Intent intent = new Intent(getActivity(), AnsweredQueryViewActivity.class);
+                     /*   Intent intent = new Intent(getActivity(), AnsweredQueryViewActivity.class);
                         intent.putExtra("followupcode", Model.followcode);
                         intent.putExtra("query_price", "0");
                         intent.putExtra("pat_from", (Model.from));
                         intent.putExtra("qtype", "answered_query");
                         startActivity(intent);
+*/
+                        Intent intent = new Intent(getActivity(), NewQueryViewActivity.class);
+                        intent.putExtra("followupcode", Model.followcode);
+                        intent.putExtra("pat_location", Model.patient );
+                        intent.putExtra("str_price", "");
+                        intent.putExtra("qtype", "new_query");
+                        intent.putExtra("finisher", new android.os.ResultReceiver(null) {
+                            @Override
+                            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                                getActivity().finish();
+                            }
+                        });
+                        startActivityForResult(intent, 1);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -382,6 +402,7 @@ public class QueriesFragment extends Fragment {
 
                         objItem.setLink(jsonobj1.getString("askedby_name"));
                         objItem.setHline(jsonobj1.getString("is_hline"));
+                        objItem.setDocname(jsonobj1.getString("doctor_id"));
 
                         listArray.add(objItem);
                     }
@@ -692,8 +713,13 @@ public class QueriesFragment extends Fragment {
         if (isInternetOn()) {
             try {
 
+               // Model.id = "597789";
+
                 //--------------------------------------------------
                 String url = Model.BASE_URL + "sapp/qAnsweredDoc?user_id=" + (Model.id) + "&browser_country=" + (Model.browser_country) + "&page=1&&token=" + Model.token;
+                //String url = Model.BASE_URL + "sapp/qAnsweredDoc?user_id=597789&browser_country=" + (Model.browser_country) + "&page=1&&token=" + Model.token;
+
+
                 System.out.println("url----" + url);
                 new MyTask_server().execute(url);
                 //------------------------------------------------------------

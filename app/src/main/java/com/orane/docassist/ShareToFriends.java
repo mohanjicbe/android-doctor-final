@@ -6,9 +6,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.android.material.snackbar.Snackbar;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.R;
 
@@ -118,7 +118,7 @@ public class ShareToFriends extends AppCompatActivity {
                         snackbar.setActionTextColor(Color.WHITE);
                         View snackbarView = snackbar.getView();
                         snackbarView.setBackgroundColor(Color.GRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
                         textView.setTextColor(Color.WHITE);
                     }
 
@@ -143,7 +143,7 @@ public class ShareToFriends extends AppCompatActivity {
                     snackbar.setActionTextColor(Color.WHITE);
                     View snackbarView = snackbar.getView();
                     snackbarView.setBackgroundColor(Color.GRAY);
-                    TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
                     textView.setTextColor(Color.WHITE);
                     snackbar.show();
 
@@ -178,7 +178,7 @@ public class ShareToFriends extends AppCompatActivity {
                         snackbar.setActionTextColor(Color.WHITE);
                         View snackbarView = snackbar.getView();
                         snackbarView.setBackgroundColor(Color.GRAY);
-                        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+                        TextView textView = (TextView) snackbarView.findViewById(R.id.snackbar_text);
                         textView.setTextColor(Color.WHITE);
                         snackbar.show();
                     }
@@ -204,9 +204,9 @@ public class ShareToFriends extends AppCompatActivity {
             finish();
             return true;
         }
-        if (id == R.id.notify) {
+       /* if (id == R.id.notify) {
             return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 }

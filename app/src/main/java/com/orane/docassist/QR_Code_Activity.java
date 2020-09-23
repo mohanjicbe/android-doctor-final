@@ -16,9 +16,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -199,8 +200,8 @@ public class QR_Code_Activity extends AppCompatActivity {
 
     public void set_error() {
         final MaterialDialog alert = new MaterialDialog(QR_Code_Activity.this);
-        alert.setTitle("Oops..!");
-        alert.setMessage("Something went wrong. Profile link has been broken, Please try again after sometime...");
+        //alert.setTitle("Oops..!");
+        alert.setMessage("Something went wrong.. Just login again to view Your iCliniq Profile link QR Code..");
         alert.setCanceledOnTouchOutside(false);
         alert.setPositiveButton("OK", new View.OnClickListener() {
             @Override

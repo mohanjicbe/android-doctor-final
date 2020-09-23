@@ -25,7 +25,7 @@ public class ShareIntent {
         try {
 
             if (actname.equals("MainActivity")) {
-                sAux = "I am " + (Model.name) + ". Now available for online consultation at iCliniq. Reach me online, phone & video\n\n";
+                sAux = "I am " + (Model.name) + ". Now available for online consultation at iCliniq. It is #1 online consultation platform. Visit icliniq.com or just download the mobile app on\n\n";
                 sAux = sAux + Uri.parse("https://play.google.com/store/apps/details?id=com.orane.docassist");
             }
 

@@ -9,8 +9,8 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -173,7 +173,7 @@ public class HotlineHome extends AppCompatActivity {
                         //---------------------- Reff Fee Get -----------------------------
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -188,7 +188,7 @@ public class HotlineHome extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -204,7 +204,7 @@ public class HotlineHome extends AppCompatActivity {
                     overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -296,7 +296,7 @@ public class HotlineHome extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
 
             progressBar.setVisibility(View.GONE);
             netcheck_layout.setVisibility(View.GONE);

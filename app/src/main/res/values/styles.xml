@@ -19,34 +19,10 @@
         <item name="android:background">@drawable/spinner</item>
     </style>
 
-    <style name="tab_item">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="AppBarOverlay" parent="Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="elevation">0dp</item>
-    </style>
-
     <!-- ToolBar -->
-    <style name="ToolBarStyle" parent="Theme.AppCompat">
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textColorSecondary">@android:color/white</item>
-        <item name="actionMenuTextColor">@android:color/white</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-    </style>
-
-    <style name="TextAppearanceFinish" parent="android:TextAppearance.Holo.Medium">
-        <item name="android:textColor">#fff</item>
-    </style>
 
     <style name="toolbar_style" parent="@style/Base.TextAppearance.AppCompat.Title">
         <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="spinBars">true</item>
-        <item name="color">@android:color/black</item>
     </style>
 
     <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -55,37 +31,8 @@
         <item name="android:textColorPrimary">@color/white</item>
     </style>
 
-    <style name="menu_labels_style">
-        <item name="android:background">@drawable/fab_label_background</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Button" parent="Theme.AppCompat">
-        <item name="colorControlHighlight">@color/red_700</item>
-        <item name="colorButtonNormal">@color/pink_500</item>
-    </style>
-
-
-
-
-    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
-        <item name="android:windowAnimationStyle">@style/CustomDialogAnimation</item>
-    </style>
-
-    <style name="CustomDialogAnimation">
-        <item name="android:windowEnterAnimation">@anim/bottom_up</item>
-        <item name="android:windowExitAnimation">@anim/bottom_down</item>
-    </style>
-
-
-    <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textAllCaps">true</item>
-    </style>
 
     <style name="Base.Widget.Design.TabLayout" parent="android:Widget">
         <item name="tabIndicatorColor">?attr/colorAccent</item>
@@ -93,25 +40,7 @@
         <item name="tabPaddingStart">12dp</item>
         <item name="tabPaddingEnd">12dp</item>
         <item name="tabBackground">?attr/selectableItemBackground</item>
-        <item name="tabTextAppearance">@style/AppTheme.TextAppearance.Design.Tab</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
-    </style>
-
-    <style name="AppTheme.TextAppearance.Design.Tab" parent="TextAppearance.AppCompat.Button">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
-        <item name="textAllCaps">true</item>
-    </style>
-
-    <style name="AppTheme.ActionBar.Transparent" parent="AppTheme">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="windowActionBarOverlay">true</item>
-        <item name="colorPrimary">@android:color/transparent</item>
-    </style>
-
-    <style name="AppTheme.ActionBar" parent="AppTheme">
-        <item name="windowActionBarOverlay">false</item>
-        <item name="colorPrimary">@color/app_color</item>
     </style>
 
     <style name="Widget.MyApp.ActionBar" parent="Widget.AppCompat.ActionBar">
@@ -121,17 +50,12 @@
     </style>
 
 
-    <style name="AppTheme.SearchView" parent="Widget.AppCompat.SearchView">
-        <item name="searchIcon">@android:drawable/ic_menu_search</item>
-        <item name="closeIcon">@android:drawable/ic_menu_close_clear_cancel</item>
-    </style>
-
-    <style name="MenuButtonsSmall">
+    <!--<style name="MenuButtonsSmall">
         <item name="fab_size">mini</item>
         <item name="fab_colorNormal">@color/app_color</item>
         <item name="fab_colorPressed">@color/blue_400</item>
         <item name="fab_colorRipple">#62B2FF</item>
-    </style>
+    </style>-->
 
 
     <style name="fileChooserName">
@@ -147,9 +71,6 @@
     <style name="ThemeFullscreen" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
     </style>
-    <style name="ChooserTheme" parent="android:Theme.Light" />
-
-
 
 
     <style name="myDialog" parent="@android:style/Theme.Holo.Light.Dialog">
@@ -159,13 +80,6 @@
     <style name="myDialogTitle" parent="@android:style/TextAppearance.DialogWindowTitle">
         <item name="android:gravity">center_horizontal</item>
     </style>
-
-    <style name="DialogWindowTitle">
-        <item name="android:maxLines">1</item>
-        <item name="android:scrollHorizontally">true</item>
-        <item name="android:textAppearance">@android:style/TextAppearance.DialogWindowTitle</item>
-    </style>
-
 
 
 </resources>

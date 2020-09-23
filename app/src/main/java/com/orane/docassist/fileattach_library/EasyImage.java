@@ -13,10 +13,11 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,7 +62,14 @@ public class EasyImage implements Constants {
     private static Intent createDocumentsIntent(@NonNull Context context, int type) {
         storeType(context, type);
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
+        intent.setType("*/*");
+        return intent;
+    }
+
+    private static Intent createImagesIntent(@NonNull Context context, int type) {
+        storeType(context, type);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*, video/*");
         return intent;
     }
 
@@ -202,6 +210,10 @@ public class EasyImage implements Constants {
 
     public static void openDocuments(Activity activity, int type) {
         Intent intent = createDocumentsIntent(activity, type);
+        activity.startActivityForResult(intent, RequestCodes.PICK_PICTURE_FROM_DOCUMENTS);
+    }
+    public static void openImages(Activity activity, int type) {
+        Intent intent = createImagesIntent(activity, type);
         activity.startActivityForResult(intent, RequestCodes.PICK_PICTURE_FROM_DOCUMENTS);
     }
 
@@ -392,7 +404,7 @@ public class EasyImage implements Constants {
                 callbacks.onImagePickerError(e, ImageSource.CAMERA, restoreType(activity));
             } else {
                 if (configuration(activity).shouldCopyTakenPhotosToPublicGalleryAppFolder()) {
-                    EasyImageFiles.copyFilesInSeparateThread(activity, singleFileList(photoFile));
+                    EasyImageFiles.copyFilesInSeparateThread(activity,  singleFileList(photoFile));
                 }
 
                 callbacks.onImagesPicked(files, ImageSource.CAMERA, restoreType(activity));

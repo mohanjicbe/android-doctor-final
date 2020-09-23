@@ -28,4 +28,11 @@
         <attr name="hintText" format="string" />
     </declare-styleable>
 
+
+    <declare-styleable name="ExpandableLayout">
+        <attr name="expDuration" format="integer|reference"/>
+        <attr name="expWithParentScroll" format="boolean"/>
+        <attr name="expExpandScrollTogether" format="boolean"/>
+    </declare-styleable>
+
 </resources>

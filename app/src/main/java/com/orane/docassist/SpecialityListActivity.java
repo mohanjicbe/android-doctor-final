@@ -2,8 +2,6 @@ package com.orane.docassist;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -18,10 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import com.flurry.android.FlurryAgent;
 import com.orane.docassist.Model.Model;
-import com.orane.docassist.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,8 +44,8 @@ public class SpecialityListActivity extends AppCompatActivity {
         setContentView(R.layout.speciality_search);
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar_menu = (TextView) toolbar.findViewById(R.id.toolbar_menu);
+        toolbar = findViewById(R.id.toolbar);
+        toolbar_menu = toolbar.findViewById(R.id.toolbar_menu);
         setSupportActionBar(toolbar);
 
         //----------- Flurry -------------------------------------------------
@@ -64,20 +63,20 @@ public class SpecialityListActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color2));
         }
 
-        btn_viewall = (Button) findViewById(R.id.btn_viewall);
-        icon_layout = (LinearLayout) findViewById(R.id.icon_layout);
-        search_box = (LinearLayout) findViewById(R.id.search_box);
-        listView = (ListView) findViewById(R.id.listView1);
+        btn_viewall = findViewById(R.id.btn_viewall);
+        icon_layout = findViewById(R.id.icon_layout);
+        search_box = findViewById(R.id.search_box);
+        listView = findViewById(R.id.listView1);
 
-        b1_layout = (LinearLayout) findViewById(R.id.b1_layout);
-        b2_layout = (LinearLayout) findViewById(R.id.b2_layout);
-        b3_layout = (LinearLayout) findViewById(R.id.b3_layout);
-        b4_layout = (LinearLayout) findViewById(R.id.b4_layout);
-        b5_layout = (LinearLayout) findViewById(R.id.b5_layout);
-        b6_layout = (LinearLayout) findViewById(R.id.b6_layout);
-        b7_layout = (LinearLayout) findViewById(R.id.b7_layout);
-        b8_layout = (LinearLayout) findViewById(R.id.b8_layout);
-        b9_layout = (LinearLayout) findViewById(R.id.b9_layout);
+        b1_layout = findViewById(R.id.b1_layout);
+        b2_layout = findViewById(R.id.b2_layout);
+        b3_layout = findViewById(R.id.b3_layout);
+        b4_layout = findViewById(R.id.b4_layout);
+        b5_layout = findViewById(R.id.b5_layout);
+        b6_layout = findViewById(R.id.b6_layout);
+        b7_layout = findViewById(R.id.b7_layout);
+        b8_layout = findViewById(R.id.b8_layout);
+        b9_layout = findViewById(R.id.b9_layout);
 
         toolbar_menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -490,7 +489,7 @@ public class SpecialityListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // When clicked, show a toast with the TextView text
-                TextView tvspecname = (TextView) view.findViewById(R.id.tvspecname);
+                TextView tvspecname = view.findViewById(R.id.tvspecname);
                 //Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
                 select_Speciality = tvspecname.getText().toString();
                 Model.select_specname = tvspecname.getText().toString();
@@ -507,7 +506,7 @@ public class SpecialityListActivity extends AppCompatActivity {
             }
         });
 
-        EditText myFilter = (EditText) findViewById(R.id.myFilter);
+        EditText myFilter = findViewById(R.id.myFilter);
         myFilter.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {

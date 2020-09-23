@@ -10,10 +10,11 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableListView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orane.docassist.Model.Item;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
@@ -759,7 +761,7 @@ public class Patient_Notes_Activity extends AppCompatActivity implements Observa
                 if (report_response.equals("1")) {
                     full_process();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Notes Update Failed, Try after some time", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Failed to update noted. Please try again.", Toast.LENGTH_LONG).show();
                 }
 
                 dialog.cancel();
@@ -812,7 +814,7 @@ public class Patient_Notes_Activity extends AppCompatActivity implements Observa
                 if (report_response.equals("1")) {
                     full_process();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Notes Delete Failed, Try after some time", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Failed to update noted. Please try again.", Toast.LENGTH_LONG).show();
                 }
                 dialog.cancel();
 

@@ -14,8 +14,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.flurry.android.FlurryAgent;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -48,6 +49,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public String noti_sound_val, stop_noti_val;
 
     Intent i;
+
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -84,7 +86,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Model.push_title = data.getString("title");
             Model.fcode = "";
 
-            push_title =Model.push_title;
+            push_title = Model.push_title;
 
 
         } catch (Exception e) {
@@ -207,7 +209,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
 
+        System.out.println("New token--------------" + token);
         //sendRegistrationToServer(token);
+        Model.device_token = token;
     }
 
 

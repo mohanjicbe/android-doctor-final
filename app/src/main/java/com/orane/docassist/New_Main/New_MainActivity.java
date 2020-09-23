@@ -7,18 +7,18 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.orane.docassist.Home.QueriesFragment;
 import com.orane.docassist.LoginActivity;
@@ -29,6 +29,7 @@ import com.orane.docassist.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class New_MainActivity extends AppCompatActivity {
@@ -105,11 +106,19 @@ public class New_MainActivity extends AppCompatActivity {
         Model.token = sharedpreferences.getString(token, "");
         //============================================================
 
+/*      //============================================================
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        -------------
+        editor.putString(id, "524736");
+        editor.apply();
+        Model.id = "524736";
+        //============================================================*/
+
 
         try {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(getResources().getColor(R.color.app_color2));
+                getWindow().setStatusBarColor(getResources().getColor(R.color.light_blue_600));
             }
 
             if ((Model.id) != null && !(Model.id).isEmpty() && !(Model.id).equals("null") && !(Model.id).equals("")) {
@@ -134,8 +143,8 @@ public class New_MainActivity extends AppCompatActivity {
             //-------------------------------------------------------------------
         }
 
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        viewPager = findViewById(R.id.viewpager);
+        bottomNavigationView = findViewById(R.id.navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -154,8 +163,8 @@ public class New_MainActivity extends AppCompatActivity {
                             case R.id.navigation_settings:
                                 viewPager.setCurrentItem(3);
                                 break;
-
                         }
+
                         return false;
                     }
                 });
@@ -173,6 +182,7 @@ public class New_MainActivity extends AppCompatActivity {
                     bottomNavigationView.getMenu().getItem(0).setChecked(false);
                 }
                 Log.d("page", "" + position);
+
                 bottomNavigationView.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = bottomNavigationView.getMenu().getItem(position);
             }
@@ -186,6 +196,7 @@ public class New_MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         homeFragment = new HomeFragment();
         casesFragment = new CasesFragment();

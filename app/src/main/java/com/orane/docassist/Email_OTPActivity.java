@@ -7,9 +7,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -146,6 +145,9 @@ public class Email_OTPActivity extends AppCompatActivity {
             email_text = intent.getStringExtra("email");
             email_pin = intent.getStringExtra("email_pin");
 
+            System.out.println("email_text-----" + email_text);
+            System.out.println("email_pin-----" + email_pin);
+
             tv_mobno.setText(email_text);
 
             //---------------------------------------------------------
@@ -173,7 +175,7 @@ public class Email_OTPActivity extends AppCompatActivity {
 
                         new Async_SendOTP().execute(json_validate);
 
-                        Toast.makeText(getApplicationContext(), "OTP has been sent to your email", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "OTP has been sent to your Email address. Please check.", Toast.LENGTH_SHORT).show();
 
                         //--------------------------------------------------
                     } catch (Exception e) {
@@ -273,8 +275,8 @@ public class Email_OTPActivity extends AppCompatActivity {
 
                 } else {
                     edt_otp.requestFocus();
-                    edt_otp.setError("OTP mismatched");
-                    Snackbar.make(v, "OTP mismatched", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    edt_otp.setError("The OTP you have entered is incorrect. Please enter the valid OTP.");
+                    //Snackbar.make(v, "Entered OTP is incorrect. Please try again.", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 }
 
                 //finish();
@@ -298,7 +300,7 @@ public class Email_OTPActivity extends AppCompatActivity {
                     tv_mobno.setText(new_phno);
 
                     if (old_full_phno.equals(new_phno)) {
-                        Toast.makeText(getApplicationContext(), "You have entered same email id", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Please confirm the Email address", Toast.LENGTH_SHORT).show();
                     } else {
 
                         try {
@@ -323,8 +325,8 @@ public class Email_OTPActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Please enter mobile number", Toast.LENGTH_SHORT).show();
-                    edt_phoneno.setError("Mobile number cannot be empty");
+                    Toast.makeText(getApplicationContext(), "Please enter your mobile number", Toast.LENGTH_SHORT).show();
+                    edt_phoneno.setError("Please enter your mobile number");
                     edt_phoneno.requestFocus();
                 }
             }
@@ -350,7 +352,7 @@ public class Email_OTPActivity extends AppCompatActivity {
 
                         new Async_SendOTP().execute(json_validate);
 
-                        Toast.makeText(getApplicationContext(), "OTP has been sent again", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "OTP has been resent to your registered mobile number to your email address", Toast.LENGTH_SHORT).show();
 
                         //--------------------------------------------------
                     } catch (Exception e) {
@@ -590,7 +592,7 @@ public class Email_OTPActivity extends AppCompatActivity {
 
                 if (status_val.equals("1")) {
 
-                    Toast.makeText(getApplicationContext(), "Success..! OTP verified", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "OTP verified successfully", Toast.LENGTH_LONG).show();
 
                     finishAffinity();
                     Intent i = new Intent(Email_OTPActivity.this, Signup2.class);
@@ -604,7 +606,7 @@ public class Email_OTPActivity extends AppCompatActivity {
                     String err_val = jsonobj_verify_email_response.getString("err");
                     System.out.println("err_val---------" + err_val);
 
-                    edt_otp.setError("OTP verify failed");
+                    edt_otp.setError("OTP verification failed");
                     edt_otp.requestFocus();
 
                     Toast.makeText(getApplicationContext(), err_val, Toast.LENGTH_LONG).show();

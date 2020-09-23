@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -99,10 +99,10 @@ public class ReferDoctorActivity extends AppCompatActivity {
                         //------------------------------
 
                     } else {
-                        edt_doctname.setError("Doctor Email cannot be Empty");
+                        edt_doctname.setError("Please enter the doctor Email id");
                     }
                 } else {
-                    edt_doctname.setError("Doctor Name cannot be Empty");
+                    edt_doctname.setError("Please enter the doctor name");
                 }
             }
         });
@@ -126,9 +126,9 @@ public class ReferDoctorActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.notify) {
+        /*if (id == R.id.notify) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

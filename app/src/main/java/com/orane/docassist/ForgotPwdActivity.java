@@ -8,8 +8,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,28 +19,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.flurry.android.FlurryAgent;
-
 import com.google.firebase.analytics.FirebaseAnalytics;
-
 import com.orane.docassist.Model.Model;
-import com.orane.docassist.Network.Detector;
 import com.orane.docassist.Network.JSONParser;
 import com.orane.docassist.New_Main.New_MainActivity;
-import com.orane.docassist.R;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class ForgotPwdActivity extends AppCompatActivity {
 
     Button btn_submit, btn_pwdsubmit, btn_code_submit;
-    MaterialEditText edtemail, edt_newpwd, edt_confirmpwd;
+    MaterialEditText edtemail, edt_confirmpwd;
+    ShowHidePasswordEditText edt_newpwd;
     public String user_id, status_text, code_txt, name_txt, email_text, status_txt, err_txt, newpwd_text, confirmpwd_text, user_id_txt, isvalid, pin_txt, edt_otp_text;
     JSONObject post_json, login_json, login_jsonobj, jsonobj_forgotpwd, jsonobj_pwd_submit, jsonobj_pinsubmit;
     LinearLayout AskMail_Layout, verify_layout, enterpwd_Layout;
@@ -89,7 +90,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
         }
 
         //------------ Object Creations -------------------------------
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -109,21 +110,21 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
 
         //------- Initialize ------------------==========================================
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        btn_pwdsubmit = (Button) findViewById(R.id.btn_pwdsubmit);
-        btn_code_submit = (Button) findViewById(R.id.btn_otp_submit);
+        btn_submit = findViewById(R.id.btn_submit);
+        btn_pwdsubmit = findViewById(R.id.btn_pwdsubmit);
+        btn_code_submit = findViewById(R.id.btn_otp_submit);
 
-        tv_mobno = (TextView) findViewById(R.id.tv_mobno);
-        tv_text = (TextView) findViewById(R.id.tv_text);
-        tv_resend = (TextView) findViewById(R.id.tv_resend);
+        tv_mobno = findViewById(R.id.tv_mobno);
+        tv_text = findViewById(R.id.tv_text);
+        tv_resend = findViewById(R.id.tv_resend);
 
-        edt_otp = (EditText) findViewById(R.id.edt_otp);
-        edtemail = (MaterialEditText) findViewById(R.id.edtemail);
-        edt_newpwd = (MaterialEditText) findViewById(R.id.edt_newpwd);
-        edt_confirmpwd = (MaterialEditText) findViewById(R.id.edt_confirmpwd);
-        AskMail_Layout = (LinearLayout) findViewById(R.id.AskMail_Layout);
-        enterpwd_Layout = (LinearLayout) findViewById(R.id.enterpwd_Layout);
-        verify_layout = (LinearLayout) findViewById(R.id.verify_layout);
+        edt_otp = findViewById(R.id.edt_otp);
+        edtemail = findViewById(R.id.edtemail);
+        edt_newpwd = findViewById(R.id.edt_newpwd);
+        edt_confirmpwd = findViewById(R.id.edt_confirmpwd);
+        AskMail_Layout = findViewById(R.id.AskMail_Layout);
+        enterpwd_Layout = findViewById(R.id.enterpwd_Layout);
+        verify_layout = findViewById(R.id.verify_layout);
 
         AskMail_Layout.setVisibility(View.VISIBLE);
         enterpwd_Layout.setVisibility(View.GONE);
@@ -161,11 +162,11 @@ public class ForgotPwdActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     } else {
-                        edtemail.setError("Email cannot be empty");
+                        edtemail.setError("Please enter your email address");
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -208,7 +209,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
                             //------------ Google firebase Analitics--------------------
 
                         } else {
-                            Toast.makeText(ForgotPwdActivity.this, "Invalid Code", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ForgotPwdActivity.this, "Verification Code is incorrect. Please enter a valid Code.", Toast.LENGTH_SHORT).show();
 
                             System.out.println("Code is not matched-----------");
                             System.out.println("edt_otp_text-----------" + edt_otp_text);
@@ -218,7 +219,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -246,42 +247,47 @@ public class ForgotPwdActivity extends AppCompatActivity {
                     newpwd_text = edt_newpwd.getText().toString();
                     confirmpwd_text = edt_confirmpwd.getText().toString();
 
-                    System.out.println("newpwd_text----" + newpwd_text);
-                    System.out.println("confirmpwd_text----" + confirmpwd_text);
 
-                    try {
+                    if (newpwd_text.length() < 8 || !isValidPassword(newpwd_text)) {
+                        System.out.println("Pwd is Not Valid");
+                        diag_err_pwd();
+                    } else {
+                        System.out.println("newpwd_text----" + newpwd_text);
+                        System.out.println("confirmpwd_text----" + confirmpwd_text);
 
-                        if (newpwd_text.equals(confirmpwd_text)) {
+                        try {
 
-                            post_json = new JSONObject();
-                            post_json.put("pwd", newpwd_text);
-                            post_json.put("user_id", user_id_txt);
+                            if (newpwd_text.equals(confirmpwd_text)) {
 
-                            System.out.println("Submit_pwd_json------------" + post_json.toString());
+                                post_json = new JSONObject();
+                                post_json.put("pwd", newpwd_text);
+                                post_json.put("user_id", user_id_txt);
 
-                            new Async_Submitpwd().execute(post_json);
+                                System.out.println("Submit_pwd_json------------" + post_json.toString());
 
-                            //------------ Google firebase Analitics--------------------
-                            Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
-                            Bundle params = new Bundle();
-                            params.putString("User", Model.id + "/" + Model.name);
-                            Model.mFirebaseAnalytics.logEvent("Forgot_pwdsubmit", params);
-                            //------------ Google firebase Analitics--------------------
+                                new Async_Submitpwd().execute(post_json);
 
-                        } else {
-                            System.out.println("Password is not matched------");
-                            Toast.makeText(ForgotPwdActivity.this, "Confirm password is not matched", Toast.LENGTH_SHORT).show();
-                            edt_confirmpwd.setError("Confirm password is not matched");
+                                //------------ Google firebase Analitics--------------------
+                                Model.mFirebaseAnalytics = FirebaseAnalytics.getInstance(getApplicationContext());
+                                Bundle params = new Bundle();
+                                params.putString("User", Model.id + "/" + Model.name);
+                                Model.mFirebaseAnalytics.logEvent("Forgot_pwdsubmit", params);
+                                //------------ Google firebase Analitics--------------------
+
+                            } else {
+                                System.out.println("Password is not matched------");
+                                Toast.makeText(ForgotPwdActivity.this, "Those passwords don't match", Toast.LENGTH_SHORT).show();
+                                edt_confirmpwd.setError("Those passwords don't match");
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "No internet connection. Please try again..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please check your Internet Connection and try again", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -359,7 +365,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
                         enterpwd_Layout.setVisibility(View.GONE);
 
                     } else {
-                        Toast.makeText(getApplicationContext(), "Email id is not valid. Try Again...", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Incorrect Email address. Please enter valid Email address.", Toast.LENGTH_LONG).show();
                     }
 
                 } else {
@@ -433,7 +439,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
                     success();
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Password Submit failed. Try Again...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Password submission failed. Please try again.", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -672,7 +678,7 @@ public class ForgotPwdActivity extends AppCompatActivity {
 
                             try {
 
-                                Toast.makeText(getApplicationContext(), "Login Failed. Try Again...", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Incorrect Username or Password. Please enter your valid Username and Password", Toast.LENGTH_LONG).show();
 
                                 //----------- Flurry -------------------------------------------------
                                 Map<String, String> articleParams = new HashMap<String, String>();
@@ -788,5 +794,53 @@ public class ForgotPwdActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    public static boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{4,}$";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+
+    }
+
+    public void diag_err_pwd() {
+
+
+        try {
+            final MaterialDialog alert = new MaterialDialog(ForgotPwdActivity.this);
+            alert.setTitle("Incorrect password. Please try again.");
+            alert.setMessage("Password should contain atleast 1 Uppercase, 1 lowercase, 1 number, 1 special symbol and minimum 8 charecters");
+            alert.setCanceledOnTouchOutside(false);
+            alert.setPositiveButton("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+/*                    edt_password.setError("Incorrect password. Please try again.");
+                    edt_password.requestFocus();*/
+
+                    alert.dismiss();
+                }
+            });
+/*
+
+            alert.setNegativeButton("No", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alert.dismiss();
+                }
+            });
+*/
+
+            alert.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

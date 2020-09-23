@@ -7,16 +7,16 @@
     android:background="@color/mds_bluegrey_50"
     android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
-            android:background="?attr/colorPrimary"
+            android:background="@mipmap/toolbar_bg"
             android:theme="@style/ThemeOverlay.MyApp.ActionBar"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -30,9 +30,9 @@
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
     <ScrollView
@@ -340,7 +340,7 @@
                             android:background="@drawable/edittext_border"
                             android:fontFamily="sans-serif"
                             android:gravity="bottom"
-                            android:hint="Drug Qty"
+                            android:hint="Days"
                             android:inputType="number"
                             android:padding="8dp"
                             android:textSize="15sp" />
@@ -456,6 +456,12 @@
 
                     </LinearLayout>
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_drug_id"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"/>
 
                 <Button
                     android:id="@+id/btn_entry_submit"

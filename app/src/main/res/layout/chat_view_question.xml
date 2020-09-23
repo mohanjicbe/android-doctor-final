@@ -12,8 +12,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="0dp"
+        android:layout_marginRight="10dp"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -21,9 +21,9 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="bottom|left"
-            android:layout_marginBottom="2dp"
-            android:layout_marginRight="0dp"
             android:layout_marginLeft="4dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="2dp"
             android:src="@mipmap/patient_ico" />
 
         <LinearLayout
@@ -41,145 +41,197 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="5dp"
                 android:paddingLeft="15dp"
+                android:paddingTop="5dp"
                 android:paddingRight="10dp"
-                android:paddingTop="5dp">
+                android:paddingBottom="5dp">
+
+                <TextView
+                    android:id="@+id/tv_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="15dp"
+                    android:text=""
+                    android:visibility="visible"
+                    android:textColor="@color/mds_bluegrey_900"
+                    android:textSize="13sp" />
+
 
                 <TextView
                     android:id="@+id/tv_query"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="3dp"
+                    android:layout_marginRight="5dp"
+                    android:autoLink="web"
+                    android:clickable="true"
+                    android:fontFamily="sans-serif"
+                    android:linksClickable="true"
                     android:text="The medication does have some side effects like the liver enzymes."
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="normal"
-                    android:autoLink="web"
-                    android:linksClickable="true"
-                    android:clickable="true"
                     android:visibility="visible" />
 
                 //----------------------=More details about resentingcomplaint----------------
 
-                <TextView
-                    android:id="@+id/tvt_morecomp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="More details about the presenting complaint:"
-                    android:textColor="@color/mds_bluegrey_900"
-                    android:textSize="13sp"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/tv_morecomp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
-                    android:textColor="@color/grey_900"
-                    android:textSize="13sp" />
-                //----------------------More details ----------------
-
-                //----------------------Previous history issue----------------
-
-                <TextView
-                    android:id="@+id/tvt_prevhist"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Previous history of the same issue:"
-                    android:textColor="@color/mds_bluegrey_900"
-                    android:textSize="14sp"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/tv_prevhist"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
-                    android:textColor="@color/grey_900"
-                    android:textSize="14sp" />
-                //---------------------Previous history of the same issue---------------
-
-                //---------------------Current medications----------------
-
-                <TextView
-                    android:id="@+id/tvt_curmedi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Current medications:"
-                    android:textColor="@color/mds_bluegrey_900"
-                    android:textSize="14sp"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/tv_curmedi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
-                    android:textColor="@color/grey_900"
-                    android:textSize="14sp" />
-                //---------------------Current medications--------------
-
-                //--------------------Past medications of the same issue---------------
-
-                <TextView
-                    android:id="@+id/tvt_pastmedi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Past medications of the same issue:"
-                    android:textColor="@color/mds_bluegrey_900"
-                    android:textSize="14sp"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/tv_pastmedi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
-                    android:textColor="@color/grey_900"
-                    android:textSize="14sp" />
-                //--------------------Past medications of the same issue---------------
-
-                <TextView
-                    android:id="@+id/tvt_labtest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Lab tests performed:"
-                    android:textColor="@color/mds_bluegrey_900"
-                    android:textSize="14sp"
-                    android:textStyle="normal" />
-
-                <TextView
-                    android:id="@+id/tv_labtest"
+                <LinearLayout
+                    android:id="@+id/quest_extra_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="sans-serif-light"
-                    android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
-                    android:textColor="@color/grey_900"
-                    android:textSize="14sp" />
-                //--------------------Past medications of the same issue--------------
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvt_morecomp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="More details about the presenting complaint:"
+                        android:textColor="@color/mds_bluegrey_900"
+                        android:textSize="13sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_morecomp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
+                        android:textColor="@color/grey_900"
+                        android:textSize="13sp" />
+                    //----------------------More details ----------------
+
+                    //----------------------Previous history issue----------------
+
+                    <TextView
+                        android:id="@+id/tvt_prevhist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Previous history of the same issue:"
+                        android:textColor="@color/mds_bluegrey_900"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_prevhist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
+                        android:textColor="@color/grey_900"
+                        android:textSize="14sp" />
+                    //---------------------Previous history of the same issue---------------
+
+                    //---------------------Current medications----------------
+
+                    <TextView
+                        android:id="@+id/tvt_curmedi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Current medications:"
+                        android:textColor="@color/mds_bluegrey_900"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_curmedi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
+                        android:textColor="@color/grey_900"
+                        android:textSize="14sp" />
+                    //---------------------Current medications--------------
+
+                    //--------------------Past medications of the same issue---------------
+
+                    <TextView
+                        android:id="@+id/tvt_pastmedi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Past medications of the same issue:"
+                        android:textColor="@color/mds_bluegrey_900"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_pastmedi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
+                        android:textColor="@color/grey_900"
+                        android:textSize="14sp" />
+                    //--------------------Past medications of the same issue---------------
+
+                    <TextView
+                        android:id="@+id/tvt_labtest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Lab tests performed:"
+                        android:textColor="@color/mds_bluegrey_900"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_labtest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="Rest for rheumatoid arthritis, your treatment is going in right direction."
+                        android:textColor="@color/grey_900"
+                        android:textSize="14sp" />
+                    //--------------------Past medications of the same issue--------------
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/extra_hwlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="5dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/extra_hw_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/extra_hw_details"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="3dp"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/layout_attachfile"

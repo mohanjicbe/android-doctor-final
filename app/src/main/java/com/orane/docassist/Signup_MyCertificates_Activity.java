@@ -8,10 +8,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,11 +19,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.orane.docassist.Model.Item;
 import com.orane.docassist.Model.Model;
 import com.orane.docassist.Network.JSONParser;
-import com.orane.docassist.R;
 import com.orane.docassist.adapter.MyCertificateAdapter;
 
 import org.json.JSONArray;
@@ -97,7 +96,7 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
 
 
         //--------------------------------------------------------
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
@@ -105,7 +104,7 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
 
-            TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+            TextView mTitle = toolbar.findViewById(R.id.toolbar_title);
             Typeface khandBold = Typeface.createFromAsset(getApplicationContext().getAssets(), Model.font_name_bold);
             mTitle.setTypeface(khandBold);
         }
@@ -115,54 +114,52 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.app_color));
         }
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        progressBar_bottom = (ProgressBar) findViewById(R.id.progressBar_bottom);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        listView = (ListView) findViewById(R.id.listview);
-        LinearLayout1 = (RelativeLayout) findViewById(R.id.LinearLayout1);
-        netcheck_layout = (LinearLayout) findViewById(R.id.netcheck_layout);
-        nolayout = (LinearLayout) findViewById(R.id.nolayout);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_query_new);
-        listView = (ListView) findViewById(R.id.listview);
+        fab = findViewById(R.id.fab);
+        progressBar_bottom = findViewById(R.id.progressBar_bottom);
+        progressBar = findViewById(R.id.progressBar);
+        LinearLayout1 = findViewById(R.id.LinearLayout1);
+        netcheck_layout = findViewById(R.id.netcheck_layout);
+        nolayout = findViewById(R.id.nolayout);
+        mSwipeRefreshLayout = findViewById(R.id.mSwipeRefreshLayout);
+        listView = findViewById(R.id.listview);
 
 
         full_process();
-
-        progressBar_bottom.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
-        mSwipeRefreshLayout.setVisibility(View.GONE);
-        nolayout.setVisibility(View.VISIBLE);
-        netcheck_layout.setVisibility(View.GONE);
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+/*
                 try {
                     System.out.println("position-----" + position);
 
-                    TextView tv_clinic_name = (TextView) view.findViewById(R.id.tv_clinic_name);
-                    TextView tv_clinic_street = (TextView) view.findViewById(R.id.tv_clinic_street);
-                    TextView tv_clinic_geo = (TextView) view.findViewById(R.id.tv_clinic_geo);
-                    TextView tvid = (TextView) view.findViewById(R.id.tvid);
+                    TextView tv_clinic_name = view.findViewById(R.id.tv_clinic_name);
+                    // TextView tv_clinic_street = (TextView) view.findViewById(R.id.tv_clinic_street);
+                    TextView tv_clinic_geo = view.findViewById(R.id.tv_clinic_geo);
+                    TextView tvid = view.findViewById(R.id.tvid);
 
-                    System.out.println("clinic_id------" + tvid.getText().toString());
-                    System.out.println("clinic_name------" + tv_clinic_name.getText().toString());
-                    System.out.println("clinic_Street------" + tv_clinic_street.getText().toString());
-                    System.out.println("clinic_geo------" + tv_clinic_geo.getText().toString());
+                    String cid = tvid.getText().toString();
+                    String cname = tv_clinic_name.getText().toString();
+                    String cgeo = tv_clinic_geo.getText().toString();
+
+
+                    System.out.println("clinic_id------" + cid);
+                    System.out.println("clinic_name------" + cname);
+                    // System.out.println("clinic_Street------" + tv_clinic_street.getText().toString());
+                    System.out.println("clinic_geo------" + cgeo);
 
                     Intent intent = new Intent(Signup_MyCertificates_Activity.this, Signup_MyCertificates_AddActivity.class);
-                    intent.putExtra("clinic_id", tvid.getText().toString());
-                    intent.putExtra("clinic_name", tv_clinic_name.getText().toString());
-                    intent.putExtra("clinic_street", tv_clinic_street.getText().toString());
-                    intent.putExtra("clinic_geo", tv_clinic_geo.getText().toString());
+                    intent.putExtra("clinic_id", cid);
+                    intent.putExtra("clinic_name", cname);
+                    // intent.putExtra("clinic_street", tv_clinic_street.getText().toString());
+                    intent.putExtra("clinic_geo", cgeo);
                     intent.putExtra("mode", "update");
                     startActivity(intent);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
 
@@ -212,6 +209,12 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
 
                 if ((Model.education_response) != null && !(Model.education_response).isEmpty() && !(Model.education_response).equals("null") && !(Model.education_response).equals("")) {
                     apply_list(Model.education_response);
+                } else {
+                    progressBar_bottom.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+                    mSwipeRefreshLayout.setVisibility(View.GONE);
+                    nolayout.setVisibility(View.VISIBLE);
+                    netcheck_layout.setVisibility(View.GONE);
                 }
 
 
@@ -234,6 +237,8 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
         try {
             objAdapter = new MyCertificateAdapter(Signup_MyCertificates_Activity.this, R.layout.signup_my_certificates_row, arrayOfList);
             listView.setAdapter(objAdapter);
+
+            System.out.println("Adapter_set---------");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -244,6 +249,7 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
             objAdapter.addAll(arrayOfList);
             listView.setSelection(objAdapter.getCount() - (arrayOfList.size()));
             objAdapter.notifyDataSetChanged();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -270,6 +276,12 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //getMenuInflater().inflate(R.menu.myclinic_menu, menu);
+        /*
+        1. Unavukadai
+        2. Vanga santhipom
+        3. Namma Ooru samaiyal
+        4.
+        * */
         return true;
     }
 
@@ -286,17 +298,25 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-        if ((Model.query_launch).equals("add_education")) {
-           apply_list(Model.education_response);
-            System.out.println("Resume Model.education_response----------------" + Model.education_response);
+
+        if ((Model.query_launch) != null && !(Model.query_launch).isEmpty() && !(Model.query_launch).equals("null") && !(Model.query_launch).equals("")) {
+            if ((Model.query_launch).equals("add_education")) {
+                System.out.println("Resume Model.education_response----------------" + Model.education_response);
+
+                //String str_aaray ="[{\"eduId\":\"4452\",\"education\":\"mvvs\",\"educationYear\":\"2017\",\"college\":\"fjbfd\"}]";
+
+                apply_list(Model.education_response);
+
+            }
         }
     }
 
     public void OnClose_Click(View v) {
-        ImageView img1 = (ImageView) v.findViewById(R.id.img_close);
+        ImageView img1 = v.findViewById(R.id.img_close);
 
         System.out.println("Education is removed...");
     }
@@ -341,13 +361,14 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
 
                 } else {
 
+                    setAdapterToListview();
+
                     progressBar_bottom.setVisibility(View.GONE);
                     progressBar.setVisibility(View.GONE);
                     mSwipeRefreshLayout.setVisibility(View.VISIBLE);
                     nolayout.setVisibility(View.GONE);
                     netcheck_layout.setVisibility(View.GONE);
 
-                    setAdapterToListview();
                 }
 
             } else {
@@ -361,7 +382,6 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -378,7 +398,7 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
                     public void onClick(View v) {
 
                         View parent = (View) btn.getParent();
-                        TextView tvid = (TextView) parent.findViewById(R.id.tvid);
+                        TextView tvid = parent.findViewById(R.id.tvid);
                         String edu_id = tvid.getText().toString();
 
                         System.out.println("edu_id-----------" + edu_id);
@@ -470,6 +490,7 @@ public class Signup_MyCertificates_Activity extends AppCompatActivity {
 
                     String education_text = jsonobj.getString("education");
                     Model.education_response = education_text;
+
                     apply_list(Model.education_response);
                 } else {
                     String err_val = jsonobj.getString("err");
